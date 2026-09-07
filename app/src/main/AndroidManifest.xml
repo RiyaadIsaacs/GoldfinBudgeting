@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GoldfinBudgeting">
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.GoldfinBudgeting"
             android:windowSoftInputMode="adjustResize">
@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".HomeActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>
