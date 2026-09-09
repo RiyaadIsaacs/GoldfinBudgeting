@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--gold rectangle for home screen total spending-->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+android:shape="rectangle">
+
+<!--to give gold effect-->
+<gradient
+    android:startColor="#FFE066"
+    android:endColor="#C99400"
+    android:angle="315"/>
+
+<corners android:radius="24dp"/>
+
+</shape>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--red part of progress bar, fill part. spending not in safe zone-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="#E53935"/>
+
+    <corners android:radius="5dp"/>
+
+</shape>
