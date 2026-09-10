@@ -10,35 +10,31 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 
-class HomeActivity : AppCompatActivity() {
-
+class ExpensesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
-        setContentView(R.layout.activity_home)
+
+        setContentView(R.layout.activity_expenses)
 
         //keep content from hiding behind status bar
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        //find side drawer
+        //find the views we need by their id
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
 
-        //find hamburger menu icon
         val menuIcon = findViewById<TextView>(R.id.menuIcon)
 
-        //find close button
         val closeDrawerButton = findViewById<TextView>(R.id.closeDrawerButton)
 
-        //find logout button
         val logOutButton = findViewById<TextView>(R.id.logOutButton)
 
-        //find expenses tab
-        val expensesTab = findViewById<TextView>(R.id.expensesTab)
+        val homeTab = findViewById<TextView>(R.id.homeTab)
 
         //open side menu
         menuIcon.setOnClickListener {
@@ -50,17 +46,16 @@ class HomeActivity : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
-        //go back to log in screen
+        //go back to login screen
         logOutButton.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        //open expenses screen
-        expensesTab.setOnClickListener {
-            val intent = Intent(this, ExpensesActivity::class.java)
-            startActivity(intent)
+        //close expenses screen and go back to home screen. home screen is still sitting underneath expenses screen so just close screen
+        homeTab.setOnClickListener {
+            finish()
         }
     }
 }

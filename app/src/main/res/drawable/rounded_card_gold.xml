@@ -8,7 +8,9 @@ android:shape="rectangle">
 <!--to give gold effect-->
 <gradient
     android:startColor="#FFE066"
+
     android:endColor="#C99400"
+
     android:angle="315"/>
 
 <corners android:radius="24dp"/>
