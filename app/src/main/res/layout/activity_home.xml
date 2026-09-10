@@ -28,13 +28,18 @@
         android:paddingEnd="16dp"
         android:background="#F5F5F5">
 
+        <!--hamburger menu icon -->
         <TextView
+            android:id="@+id/menuIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="☰"
             android:textSize="24sp"
-            android:textColor="#333333"/>
+            android:textColor="#333333"
+            android:clickable="true"
+            android:focusable="true"/>
 
+        <!--home button-->
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -44,16 +49,20 @@
             android:textSize="18sp"
             android:textColor="#333333"/>
 
+        <!--log out button-->
         <TextView
+            android:id="@+id/logOutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Log Out"
             android:textSize="14sp"
-            android:textColor="#333333"/>
+            android:textColor="#333333"
+            android:clickable="true"
+            android:focusable="true"/>
 
     </LinearLayout>
 
-    <!--scrollable content -->
+    <!--scrollable content. these needs to be dynamic, like student notes, user must be able to add content and it gets displayed here -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -74,6 +83,7 @@
                 android:padding="24dp"
                 android:background="@drawable/rounded_card_gold">
 
+                <!--total spending text title-->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -82,6 +92,7 @@
                     android:textStyle="bold"
                     android:textColor="#000000"/>
 
+                <!--amoutn spent text. hard coded at the moment. need to change!-->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -94,7 +105,7 @@
 
             </LinearLayout>
 
-            <!--entry for subscription expense visuals -->
+            <!--entry for subscription expense visuals. these should be the object like in activity 5-->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,6 +122,7 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <!--subscription entry text. hard coded at the moment. need to change!-->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -196,7 +208,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!--entry for groceries expense visuals-->
+            <!--entry for groceries expense visuals. these should be the object like in activity 5-->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -298,7 +310,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!--entry for takeout expense visuals-->
+            <!--entry for takeout expense visuals. these should be the object like in activity 5-->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -400,7 +412,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!--entry for games expense visuals(over budget so its red)-->
+            <!--entry for games expense visuals(over budget so its red). these should be the object like in activity 5-->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -497,7 +509,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!--entry for car expense visuals. scroll view-->
+            <!--entry for car expense visuals. scroll view. these should be the object like in activity 5-->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
