@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
             }
             //this is the set email and password to signin
-            else if (email == "1234@gmail.com" && password == "1234")
+            else if (email == "1" && password == "1")
             {
                 Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show()
 
