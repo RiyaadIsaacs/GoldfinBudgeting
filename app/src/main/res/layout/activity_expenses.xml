@@ -86,7 +86,7 @@
                         android:paddingEnd="20dp"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
-                        android:text="August 2026 ▼"
+                        android:text="August 2026"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
@@ -602,7 +602,7 @@
                 android:id="@+id/closeDrawerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="✕"
+                android:text="X"
                 android:textSize="20sp"
                 android:textColor="#555555"
                 android:clickable="true"
@@ -611,6 +611,8 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/envelopesMenuItem"
+
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center"

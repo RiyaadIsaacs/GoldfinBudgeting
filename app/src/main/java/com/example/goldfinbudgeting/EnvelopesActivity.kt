@@ -10,48 +10,54 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 
-class HomeActivity : AppCompatActivity() {
-
+class EnvelopesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_home)
 
-        //keep content from hiding behind status bar
+        enableEdgeToEdge()
+
+        setContentView(R.layout.activity_envelopes)
+
+        //keep content from hiding behind status bar like in home screen and expenses screen
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-
             insets
         }
 
-        //find side drawer
+        //find drawer
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
 
-        //find hamburger menu icon
+        //find menu icon
         val menuIcon = findViewById<TextView>(R.id.menuIcon)
 
         //find close button
         val closeDrawerButton = findViewById<TextView>(R.id.closeDrawerButton)
 
-        //find logout button
+        //find log out button
         val logOutButton = findViewById<TextView>(R.id.logOutButton)
 
-        //find expenses tab
+        //find home tab button
+        val homeTab = findViewById<TextView>(R.id.homeTab)
+
+        //find expense tab button
         val expensesTab = findViewById<TextView>(R.id.expensesTab)
 
-        //open side menu
+        //find edit envelopes button
+        val editEnvelopesButton = findViewById<TextView>(R.id.editEnvelopesButton)
+
+        //open side menu when user clicks
         menuIcon.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
-        //close side menu
+        //close side menu when user clicks
         closeDrawerButton.setOnClickListener {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
-        //go back to log in screen
+        //back to login screen when user clicks
         logOutButton.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
 
@@ -60,19 +66,24 @@ class HomeActivity : AppCompatActivity() {
             finish()
         }
 
-        //open expenses screen
+        //close active screen and go home screen when user clicks
+        homeTab.setOnClickListener {
+            finish()
+        }
+
+        //open expenses screen when user clicks
         expensesTab.setOnClickListener {
             val intent = Intent(this, ExpensesActivity::class.java)
 
             startActivity(intent)
         }
 
-        //find envelopes in the drawer
-        val envelopesMenuItem = findViewById<TextView>(R.id.envelopesMenuItem)
 
-        //open envelopes screen
-        envelopesMenuItem.setOnClickListener {
-            val intent = Intent(this, EnvelopesActivity::class.java)
+
+
+        //open edit envelopes screen
+        editEnvelopesButton.setOnClickListener {
+            val intent = Intent(this, EditEnvelopesActivity::class.java)
 
             startActivity(intent)
         }

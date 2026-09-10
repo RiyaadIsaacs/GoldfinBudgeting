@@ -699,6 +699,8 @@
 
         <!--envelopes menu item in side menu-->
         <TextView
+            android:id="@+id/envelopesMenuItem"
+
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center"
