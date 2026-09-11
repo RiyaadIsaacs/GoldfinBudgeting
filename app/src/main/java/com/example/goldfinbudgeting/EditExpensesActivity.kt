@@ -2,7 +2,9 @@ package com.example.goldfinbudgeting
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -10,15 +12,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 
-class ExpensesActivity : AppCompatActivity() {
+class EditExpensesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
 
-        setContentView(R.layout.activity_expenses)
+        setContentView(R.layout.activity_edit_expenses)
 
-        //keep content from hiding behind status bar
+        //prevent content from hiding behind status bar
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
@@ -30,7 +32,7 @@ class ExpensesActivity : AppCompatActivity() {
         //find drawer
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
 
-        //find menu icon
+        //find burger menu icon
         val menuIcon = findViewById<TextView>(R.id.menuIcon)
 
         //find close drawer button
@@ -43,19 +45,31 @@ class ExpensesActivity : AppCompatActivity() {
         val homeTab = findViewById<TextView>(R.id.homeTab)
 
         //find expenses button
-        val editExpensesButton = findViewById<TextView>(R.id.editExpensesButton)
+        val expensesTab = findViewById<TextView>(R.id.expensesTab)
 
-        //open side menu
+        //find envelopes drawer button
+        val envelopesMenuItem = findViewById<TextView>(R.id.envelopesMenuItem)
+
+        //find cancel button
+        val cancelButton = findViewById<TextView>(R.id.cancelButton)
+
+        //find add button
+        val addButton = findViewById<TextView>(R.id.addButton)
+
+        //find edit text
+        val entryNameEditText = findViewById<EditText>(R.id.entryNameEditText)
+
+        //open burger menu
         menuIcon.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
-        //close side menu
+        //close burger menu
         closeDrawerButton.setOnClickListener {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
-        //go back to login screen
+        //go to login screen
         logOutButton.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
 
@@ -64,16 +78,36 @@ class ExpensesActivity : AppCompatActivity() {
             finish()
         }
 
-        //close expenses screen and go back to home screen. home screen is still sitting underneath expenses screen so just close screen
+        //close current active screen and go home
         homeTab.setOnClickListener {
             finish()
         }
 
-        //open edit expenses screen
-        editExpensesButton.setOnClickListener {
-            val intent = Intent(this, EditExpensesActivity::class.java)
+
+        //open expenses screen
+        expensesTab.setOnClickListener {
+            finish()
+        }
+
+        //open envelopes screen
+        envelopesMenuItem.setOnClickListener {
+            val intent = Intent(this, EnvelopesActivity::class.java)
 
             startActivity(intent)
+        }
+
+        //cancel button, go back to previous view
+        cancelButton.setOnClickListener {
+            finish()
+        }
+
+        //placeholder for local database for add button
+        addButton.setOnClickListener {
+            val name = entryNameEditText.text.toString()
+
+            Toast.makeText(this, "Would add: $name", Toast.LENGTH_SHORT).show()
+
+            finish()
         }
     }
 }

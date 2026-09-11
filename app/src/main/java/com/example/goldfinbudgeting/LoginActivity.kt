@@ -16,10 +16,13 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
 
+        //find edit text field for email
         val emailEditText = findViewById<EditText>(R.id.emailEditText)
 
+        //find edit text field for password
         val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
 
+        //find sign in button
         val signInButton = findViewById<Button>(R.id.signInButton)
 
         //listen for when user clicks button to sign in
@@ -35,14 +38,16 @@ class LoginActivity : AppCompatActivity() {
                 //give message to fill in fields
                 Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
             }
-            //this is the set email and password to signin
+            //this is the set email and password to signin. we'll change to something else later. kept it short for easier testing
             else if (email == "1" && password == "1")
             {
                 Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show()
 
                 //open and run home screen with correct email and password
                 val intent = Intent(this, HomeActivity::class.java)
+
                 startActivity(intent)
+
                 finish()
             }
             else //when email or password is incorrect send message. dont go to next screen
