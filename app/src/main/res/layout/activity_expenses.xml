@@ -537,11 +537,14 @@
 
             <!--profile tab-->
             <TextView
+                android:id="@+id/profileTab"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Profile"
+                android:clickable="true"
+                android:focusable="true"
                 android:textSize="14sp"
                 android:textColor="#000000"/>
 

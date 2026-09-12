@@ -47,6 +47,9 @@ class EditEnvelopesActivity : AppCompatActivity() {
         //find expenses button
         val expensesTab = findViewById<TextView>(R.id.expensesTab)
 
+        //find profile button
+        val profileTab = findViewById<TextView>(R.id.profileTab)
+
         //find envelopes drawer button
         val envelopesMenuItem = findViewById<TextView>(R.id.envelopesMenuItem)
 
@@ -86,6 +89,13 @@ class EditEnvelopesActivity : AppCompatActivity() {
         //open expenses screen
         expensesTab.setOnClickListener {
             val intent = Intent(this, ExpensesActivity::class.java)
+
+            startActivity(intent)
+        }
+
+        //open profile screen
+        profileTab.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java)
 
             startActivity(intent)
         }

@@ -838,13 +838,16 @@
             android:background="@drawable/rounded_bottom_nav">
 
             <TextView
+                android:id="@+id/profileTab"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Profile"
                 android:textSize="14sp"
-                android:textColor="#000000"/>
+                android:textColor="#000000"
+                android:clickable="true"
+                android:focusable="true"/>
 
             <TextView
                 android:id="@+id/homeTab"

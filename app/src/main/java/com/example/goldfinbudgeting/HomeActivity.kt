@@ -41,6 +41,9 @@ class HomeActivity : AppCompatActivity() {
         //find expenses tab
         val expensesTab = findViewById<TextView>(R.id.expensesTab)
 
+        //find profile tab
+        val profileTab = findViewById<TextView>(R.id.profileTab)
+
         //open side menu
         menuIcon.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -63,6 +66,13 @@ class HomeActivity : AppCompatActivity() {
         //open expenses screen
         expensesTab.setOnClickListener {
             val intent = Intent(this, ExpensesActivity::class.java)
+
+            startActivity(intent)
+        }
+
+        //open profile screen
+        profileTab.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java)
 
             startActivity(intent)
         }

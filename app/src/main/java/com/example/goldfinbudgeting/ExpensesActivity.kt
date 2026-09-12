@@ -42,6 +42,9 @@ class ExpensesActivity : AppCompatActivity() {
         //find home button
         val homeTab = findViewById<TextView>(R.id.homeTab)
 
+        //find profile button
+        val profileTab = findViewById<TextView>(R.id.profileTab)
+
         //find expenses button
         val editExpensesButton = findViewById<TextView>(R.id.editExpensesButton)
 
@@ -67,6 +70,13 @@ class ExpensesActivity : AppCompatActivity() {
         //close expenses screen and go back to home screen. home screen is still sitting underneath expenses screen so just close screen
         homeTab.setOnClickListener {
             finish()
+        }
+
+        //open profile screen
+        profileTab.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java)
+
+            startActivity(intent)
         }
 
         //open edit expenses screen
