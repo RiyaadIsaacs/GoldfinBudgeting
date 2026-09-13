@@ -14,6 +14,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+import android.widget.Toast
+
 class EnvelopesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,6 +118,11 @@ class EnvelopesActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        findViewById<RecyclerView>(R.id.envelopeRecyclerView).adapter?.notifyDataSetChanged()
+        val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
+
+        envelopeRecyclerView.adapter = EnvelopeAdapter(EnvelopeTempMemory.envelopes)
+
+        //list size check
+        Toast.makeText(this, "List size: ${EnvelopeTempMemory.envelopes.size}", Toast.LENGTH_SHORT).show()
     }
 }

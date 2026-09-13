@@ -4,7 +4,7 @@
 
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android = "http://schemas.android.com/apk/res/android"
-    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id = "@+id/drawerLayout"
     android:layout_width = "match_parent"
     android:layout_height = "match_parent">
@@ -17,7 +17,7 @@
         android:orientation = "vertical"
         android:background = "#EEEEEE">
 
-        <!--the top of the bar-->
+        <!--top bar of screen that has burger icon, title and log out-->
         <LinearLayout
             android:layout_width = "match_parent"
             android:layout_height = "56dp"
@@ -49,7 +49,6 @@
 
             <TextView
                 android:id = "@+id/logOutButton"
-
                 android:layout_width = "wrap_content"
                 android:layout_height = "wrap_content"
                 android:text = "Log Out"
@@ -60,76 +59,69 @@
 
         </LinearLayout>
 
-        <!--scrollable content-->
-        <ScrollView
+        <!--content area where filter row is fixed. Envelope list expands and scrolls by itself-->
+        <LinearLayout
             android:layout_width = "match_parent"
             android:layout_height = "0dp"
-            android:layout_weight = "1">
+            android:layout_weight = "1"
+            android:orientation = "vertical"
+            android:padding = "16dp">
 
+            <!--date filer and edit button rows at top-->
             <LinearLayout
                 android:layout_width = "match_parent"
                 android:layout_height = "wrap_content"
-                android:orientation = "vertical"
-                android:padding = "16dp">
+                android:orientation = "horizontal"
+                android:gravity = "center_vertical">
 
-                <!--date filter and edit button row-->
-                <LinearLayout
-                    android:layout_width = "match_parent"
+                <TextView
+                    android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
-                    android:orientation = "horizontal"
-                    android:gravity = "center_vertical">
+                    android:paddingStart = "20dp"
+                    android:paddingEnd = "20dp"
+                    android:paddingTop = "10dp"
+                    android:paddingBottom = "10dp"
+                    android:text = "August 2026"
+                    android:textSize = "14sp"
+                    android:textStyle = "bold"
+                    android:textColor = "#FFFFFF"
+                    android:background = "@drawable/rounded_button_gold"/>
 
-                    <TextView
-                        android:layout_width = "wrap_content"
-                        android:layout_height = "wrap_content"
-                        android:paddingStart = "20dp"
-                        android:paddingEnd = "20dp"
-                        android:paddingTop = "10dp"
-                        android:paddingBottom = "10dp"
-                        android:text = "August 2026"
-                        android:textSize = "14sp"
-                        android:textStyle = "bold"
-                        android:textColor = "#FFFFFF"
-                        android:background = "@drawable/rounded_button_gold"/>
+                <View
+                    android:layout_width = "0dp"
+                    android:layout_height = "1dp"
+                    android:layout_weight = "1"/>
 
-                    <View
-                        android:layout_width = "0dp"
-                        android:layout_height = "1dp"
-                        android:layout_weight = "1"/>
-
-                    <TextView
-                        android:id = "@+id/editEnvelopesButton"
-
-                        android:layout_width = "wrap_content"
-                        android:layout_height = "wrap_content"
-                        android:paddingStart = "20dp"
-                        android:paddingEnd = "20dp"
-                        android:paddingTop = "10dp"
-                        android:paddingBottom = "10dp"
-                        android:text = "Edit Envelopes"
-                        android:textSize = "14sp"
-                        android:textStyle = "bold"
-                        android:textColor = "#FFFFFF"
-                        android:background = "@drawable/rounded_button_gold"/>
-
-                </LinearLayout>
-
-                <!--envelope cards. EnvelopeAdapter fills in-->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id = "@+id/envelopeRecyclerView"
-
-                    android:layout_width = "match_parent"
+                <TextView
+                    android:id = "@+id/editEnvelopesButton"
+                    android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
-                    android:layout_marginTop = "16dp"
-                    android:nestedScrollingEnabled = "false"/>
+                    android:paddingStart = "20dp"
+                    android:paddingEnd = "20dp"
+                    android:paddingTop = "10dp"
+                    android:paddingBottom = "10dp"
+                    android:text = "Edit Envelopes"
+                    android:textSize = "14sp"
+                    android:textStyle = "bold"
+                    android:textColor = "#FFFFFF"
+                    android:background = "@drawable/rounded_button_gold"/>
 
             </LinearLayout>
 
-        </ScrollView>
+            <!--envelope cards. scrolls on own. not using scrollview-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/envelopeRecyclerView"
 
-        <!--hard code removed-->
+                android:layout_width = "match_parent"
+                android:layout_height = "0dp"
+                android:layout_weight = "1"
+                android:layout_marginTop = "16dp"
+                android:clipToPadding = "false"
+                android:paddingBottom = "16dp"/>
 
-        <!--bottom navigation bar like home and envelope screen -->
+        </LinearLayout>
+
+        <!--bottom navigation section-->
         <LinearLayout
             android:layout_width = "match_parent"
             android:layout_height = "56dp"
@@ -138,16 +130,13 @@
 
             <TextView
                 android:id = "@+id/profileTab"
-
                 android:layout_width = "0dp"
                 android:layout_height = "match_parent"
                 android:layout_weight = "1"
                 android:gravity = "center"
                 android:text = "Profile"
                 android:textSize = "14sp"
-                android:textColor = "#000000"
-                android:clickable = "true"
-                android:focusable = "true"/>
+                android:textColor = "#000000"/>
 
             <TextView
                 android:id = "@+id/homeTab"
@@ -179,7 +168,7 @@
 
     </LinearLayout>
 
-    <!--side drawer menu/burger icon-->
+    <!--side drawer menu. hamburger icon-->
     <LinearLayout
         android:layout_width = "260dp"
         android:layout_height = "match_parent"
@@ -220,6 +209,8 @@
         </LinearLayout>
 
         <TextView
+            android:id = "@+id/envelopesMenuItem"
+
             android:layout_width = "match_parent"
             android:layout_height = "48dp"
             android:gravity = "center"
@@ -240,7 +231,7 @@
             android:textColor = "#333333"
             android:background = "#EDE5F7"
             android:clickable = "true"
-            android:focusable= "true"/>
+            android:focusable = "true"/>
 
         <TextView
             android:layout_width = "match_parent"
