@@ -1,8 +1,8 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.GoldfinBudgeting" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+    <!--keep the app light. night mode was turning the launch screen black-->
+    <style name="Base.Theme.GoldfinBudgeting" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowBackground">#FFFFFF</item>
+        <item name="android:forceDarkAllowed">false</item>
     </style>
 
     <style name="Theme.GoldfinBudgeting" parent="Base.Theme.GoldfinBudgeting" />

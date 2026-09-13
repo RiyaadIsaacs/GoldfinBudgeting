@@ -7,12 +7,16 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class EnvelopeAdapter(private val envelopes: List<Envelope>) :
-    RecyclerView.Adapter<EnvelopeAdapter.EnvelopeViewHolder>() {
+class EnvelopeAdapter(
+    private val envelopes: List<Envelope>,
+    private val showDelete: Boolean = false,
+    private val onDelete: ((Envelope) -> Unit)? = null
+) : RecyclerView.Adapter<EnvelopeAdapter.EnvelopeViewHolder>() {
 
     //contains one card views in scene so don't have to look them up every time
     class EnvelopeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameText: TextView = itemView.findViewById(R.id.nameText)
+        val deleteButton: TextView = itemView.findViewById(R.id.deleteButton)
         val minMaxText: TextView = itemView.findViewById(R.id.minMaxText)
         val spentText: TextView = itemView.findViewById(R.id.spentText)
         val fillBar: View = itemView.findViewById(R.id.fillBar)
@@ -39,8 +43,17 @@ class EnvelopeAdapter(private val envelopes: List<Envelope>) :
         holder.spentText.text = "Spent: ${envelope.spent.toInt()}"
 
         //working out fill and marker percentages
-        val fillPercent = ((envelope.spent / envelope.max) * 100).coerceAtMost(100.0)
-        val markerPercent = (envelope.min / envelope.max) * 100
+        val fillPercent = if (envelope.max > 0) {
+            ((envelope.spent / envelope.max) * 100).coerceAtMost(100.0)
+        } else {
+            0.0
+        }
+
+        val markerPercent = if (envelope.max > 0) {
+            (envelope.min / envelope.max) * 100
+        } else {
+            0.0
+        }
 
         val fillParams = holder.fillBar.layoutParams as LinearLayout.LayoutParams
 
@@ -67,13 +80,25 @@ class EnvelopeAdapter(private val envelopes: List<Envelope>) :
         holder.markerAfter.layoutParams = afterParams
 
         //red fill when percentage reaches max
-        if (envelope.spent >= envelope.max) {
+        if (envelope.max > 0 && envelope.spent >= envelope.max) {
 
             holder.fillBar.setBackgroundResource(R.drawable.rounded_fill_red)
 
         } else {
 
             holder.fillBar.setBackgroundResource(R.drawable.rounded_fill_gold)
+        }
+
+        //same Delete button as the hardcoded edit-envelope cards
+        if (showDelete) {
+            holder.deleteButton.visibility = View.VISIBLE
+
+            holder.deleteButton.setOnClickListener {
+                onDelete?.invoke(envelope)
+            }
+        } else {
+            holder.deleteButton.visibility = View.INVISIBLE
+            holder.deleteButton.setOnClickListener(null)
         }
     }
 

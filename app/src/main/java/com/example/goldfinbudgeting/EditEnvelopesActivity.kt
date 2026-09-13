@@ -11,6 +11,8 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class EditEnvelopesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +70,13 @@ class EditEnvelopesActivity : AppCompatActivity() {
         //find max goal edit text
         val maxGoalEditText = findViewById<EditText>(R.id.maxGoalEditText)
 
+        //find envelope list under the form
+        val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
+
+        //show the same cards as home and envelopes, with Delete like the hardcoded ones
+        envelopeRecyclerView.layoutManager = LinearLayoutManager(this)
+        refreshEnvelopeList(envelopeRecyclerView)
+
         //open burger menu
         menuIcon.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -118,22 +127,52 @@ class EditEnvelopesActivity : AppCompatActivity() {
             finish()
         }
 
-        //placeholder until saving is added. these is where we will add the local database storage. adds it to envelope temp memory at the moment
+        //ask first, then add from the confirm page
         addButton.setOnClickListener {
-            val name = envelopeNameEditText.text.toString()
+            val name = envelopeNameEditText.text.toString().trim()
 
             val min = minGoalEditText.text.toString().toDoubleOrNull() ?: 0.0
 
             val max = maxGoalEditText.text.toString().toDoubleOrNull() ?: 0.0
 
-            if (name.isNotBlank()) {
+            if (name.isBlank()) {
+                Toast.makeText(this, "Please enter an envelope name", Toast.LENGTH_SHORT).show()
 
-                EnvelopeTempMemory.envelopes.add(Envelope(name, min, max, 0.0))
+                return@setOnClickListener
             }
 
-            Toast.makeText(this, "Would add: $name", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, ConfirmEnvelopeActivity::class.java)
 
-            finish()
+            intent.putExtra("action", "add")
+            intent.putExtra("name", name)
+            intent.putExtra("min", min)
+            intent.putExtra("max", max)
+
+            startActivity(intent)
+        }
+    }
+
+    //refresh list after coming back from the confirm page
+    override fun onResume() {
+        super.onResume()
+
+        val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
+
+        refreshEnvelopeList(envelopeRecyclerView)
+    }
+
+    private fun refreshEnvelopeList(envelopeRecyclerView: RecyclerView) {
+        envelopeRecyclerView.adapter = EnvelopeAdapter(
+            EnvelopeTempMemory.envelopes,
+            showDelete = true
+        ) { envelope ->
+            val intent = Intent(this, ConfirmEnvelopeActivity::class.java)
+
+            intent.putExtra("action", "delete")
+            intent.putExtra("name", envelope.name)
+            intent.putExtra("index", EnvelopeTempMemory.envelopes.indexOf(envelope))
+
+            startActivity(intent)
         }
     }
 }

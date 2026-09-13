@@ -14,4 +14,9 @@ object EnvelopeTempMemory {
 
         Envelope("Car", 4000.00, 10000.00, 2800.00)
     )
+
+    //remove one envelope from the temp list
+    fun deleteEnvelope(envelope: Envelope) {
+        envelopes.remove(envelope)
+    }
 }

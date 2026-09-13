@@ -3,6 +3,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -17,6 +18,8 @@
         android:layout_height="240dp"
         android:layout_marginTop="40dp"
         android:src="@drawable/goldfin_logo"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         android:contentDescription="GoldFin logo"/>
 
     <!--text for app title-->
