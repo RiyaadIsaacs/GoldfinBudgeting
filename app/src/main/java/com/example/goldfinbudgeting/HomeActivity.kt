@@ -10,6 +10,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 
+//recycler view
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
 class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +47,13 @@ class HomeActivity : AppCompatActivity() {
 
         //find profile tab
         val profileTab = findViewById<TextView>(R.id.profileTab)
+
+        //find envelope list
+        val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
+
+        //setup envelope list with adapter
+        envelopeRecyclerView.layoutManager = LinearLayoutManager(this)
+        envelopeRecyclerView.adapter = EnvelopeAdapter(EnvelopeTempMemory.envelopes)
 
         //open side menu
         menuIcon.setOnClickListener {
@@ -86,5 +97,15 @@ class HomeActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+    }
+
+    //refresh evelope list when screen is visible
+    override fun onResume() {
+        super.onResume()
+
+        val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
+
+        //adapter
+        envelopeRecyclerView.adapter = EnvelopeAdapter(EnvelopeTempMemory.envelopes)
     }
 }
