@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    android:layout_width = "match_parent"
+    android:layout_height = "wrap_content"
+    android:layout_marginBottom = "16dp"
+    app:cardCornerRadius = "16dp"
+    app:cardElevation = "4dp"
+    app:cardBackgroundColor = "#FAFAFA">
+
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:orientation = "vertical"
+        android:padding = "16dp">
+
+        <!--select category name-->
+        <TextView
+            android:id = "@+id/nameText"
+
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_gravity = "center_horizontal"
+            android:textSize = "18sp"
+            android:textStyle = "bold"
+            android:textColor = "#333333"/>
+
+        <!--select budget range-->
+        <TextView
+            android:id = "@+id/minMaxText"
+
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "8dp"
+            android:textSize = "14sp"
+            android:textColor = "#666666"/>
+
+        <!--this amount spent-->
+        <TextView
+            android:id = "@+id/spentText"
+
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "4dp"
+            android:textSize = "14sp"
+            android:textColor = "#666666"/>
+
+        <!--progress bar to show how much is spent-->
+        <FrameLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "20dp"
+            android:layout_marginTop = "10dp">
+
+            <View
+                android:layout_width = "match_parent"
+                android:layout_height = "10dp"
+                android:layout_gravity = "center_vertical"
+                android:background = "@drawable/rounded_track_gray"/>
+
+            <!--filled part of progress bar. weight of amount set in code and max equals to 100-->
+            <LinearLayout
+                android:layout_width = "match_parent"
+                android:layout_height = "10dp"
+                android:layout_gravity = "center_vertical"
+                android:orientation = "horizontal"
+                android:weightSum = "100">
+
+                <View
+                    android:id = "@+id/fillBar"
+
+                    android:layout_width = "0dp"
+                    android:layout_height = "match_parent"
+                    android:layout_weight = "0"
+                    android:background = "@drawable/rounded_fill_gold"/>
+
+                <View
+                    android:id = "@+id/fillSpacer"
+
+                    android:layout_width = "0dp"
+                    android:layout_height = "match_parent"
+                    android:layout_weight = "100"/>
+
+            </LinearLayout>
+
+            <!--min goal marker. Position determined in the code-->
+            <LinearLayout
+                android:layout_width = "match_parent"
+                android:layout_height = "match_parent"
+                android:orientation = "horizontal"
+                android:weightSum = "100">
+
+                <View
+                    android:id="@+id/markerBefore"
+
+                    android:layout_width = "0dp"
+                    android:layout_height = "match_parent"
+                    android:layout_weight = "0"/>
+
+                <View
+                    android:layout_width = "2dp"
+                    android:layout_height = "match_parent"
+                    android:background = "#000000" />
+
+                <View
+                    android:id = "@+id/markerAfter"
+                    android:layout_width = "0dp"
+                    android:layout_height = "match_parent"
+                    android:layout_weight = "100"/>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

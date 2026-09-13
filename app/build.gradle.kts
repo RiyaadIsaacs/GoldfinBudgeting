@@ -46,9 +46,13 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 
+
     //for scrolling
     implementation("androidx.cardview:cardview:1.0.0")
 
     //for slide out menu
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
+
+    //this is the recycleviews for scrolling and when more entries are added or removed
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 }

@@ -10,6 +10,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 
+//this is for recycle view for envelopes
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
 class EnvelopesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +53,13 @@ class EnvelopesActivity : AppCompatActivity() {
 
         //find edit envelopes button
         val editEnvelopesButton = findViewById<TextView>(R.id.editEnvelopesButton)
+
+        //find evnvelope viewer
+        val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
+
+        //set up envelope lst
+        envelopeRecyclerView.layoutManager = LinearLayoutManager(this)
+        envelopeRecyclerView.adapter = EnvelopeAdapter(EnvelopeTempMemory.envelopes)
 
         //open side menu when user clicks
         menuIcon.setOnClickListener {
@@ -97,5 +108,14 @@ class EnvelopesActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+
+    }
+
+    //refresh list of envelopes when screen is visible
+    override fun onResume() {
+        super.onResume()
+
+        findViewById<RecyclerView>(R.id.envelopeRecyclerView).adapter?.notifyDataSetChanged()
     }
 }

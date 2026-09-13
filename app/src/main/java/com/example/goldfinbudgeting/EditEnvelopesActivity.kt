@@ -62,6 +62,12 @@ class EditEnvelopesActivity : AppCompatActivity() {
         //find edit text
         val envelopeNameEditText = findViewById<EditText>(R.id.envelopeNameEditText)
 
+        //find min goal edit text
+        val minGoalEditText = findViewById<EditText>(R.id.minGoalEditText)
+
+        //find max goal edit text
+        val maxGoalEditText = findViewById<EditText>(R.id.maxGoalEditText)
+
         //open burger menu
         menuIcon.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -112,9 +118,18 @@ class EditEnvelopesActivity : AppCompatActivity() {
             finish()
         }
 
-        //placeholder until saving is added. these is where we will add the local database storage
+        //placeholder until saving is added. these is where we will add the local database storage. adds it to envelope temp memory at the moment
         addButton.setOnClickListener {
             val name = envelopeNameEditText.text.toString()
+
+            val min = minGoalEditText.text.toString().toDoubleOrNull() ?: 0.0
+
+            val max = maxGoalEditText.text.toString().toDoubleOrNull() ?: 0.0
+
+            if (name.isNotBlank()) {
+
+                EnvelopeTempMemory.envelopes.add(Envelope(name, min, max, 0.0))
+            }
 
             Toast.makeText(this, "Would add: $name", Toast.LENGTH_SHORT).show()
 
