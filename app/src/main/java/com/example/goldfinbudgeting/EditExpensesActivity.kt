@@ -146,13 +146,9 @@ class EditExpensesActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        //cancel clears an in-progress edit, otherwise goes back
+        //cancel discards unsaved form changes and goes back. expense data in memory stays intact
         cancelButton.setOnClickListener {
-            if (editingIndex != null) {
-                clearFormForNewExpense()
-            } else {
-                finish()
-            }
+            finish()
         }
 
         //open a calendar when they tap the date field or calendar icon
@@ -169,9 +165,23 @@ class EditExpensesActivity : AppCompatActivity() {
             showCategoryPicker(categoryText)
         }
 
-        //tap the dashed box to attach a receipt photo
+        //tap the dashed box to attach or view a receipt photo
         receiptPhotoButton.setOnClickListener {
-            pickReceiptImage.launch("image/*")
+            if (ReceiptViewer.hasReceipt(receiptPath)) {
+                AlertDialog.Builder(this)
+                    .setTitle("Receipt photo")
+                    .setItems(arrayOf("View photo", "Replace photo")) { _, which ->
+                        if (which == 0) {
+                            ReceiptViewer.show(this, receiptPath)
+                        } else {
+                            pickReceiptImage.launch("image/*")
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            } else {
+                pickReceiptImage.launch("image/*")
+            }
         }
 
         //save a new expense or update the one being edited
@@ -357,6 +367,7 @@ class EditExpensesActivity : AppCompatActivity() {
 
             val nameText = row.findViewById<TextView>(R.id.editExpenseNameText)
             val metaText = row.findViewById<TextView>(R.id.editExpenseMetaText)
+            val receiptButton = row.findViewById<TextView>(R.id.editExpenseReceiptButton)
             val editButton = row.findViewById<TextView>(R.id.editExpenseEditButton)
             val deleteButton = row.findViewById<TextView>(R.id.editExpenseDeleteButton)
             val divider = row.findViewById<View>(R.id.editExpenseRowDivider)
@@ -366,6 +377,16 @@ class EditExpensesActivity : AppCompatActivity() {
 
             if (rowIndex == monthExpenses.lastIndex) {
                 divider.visibility = View.GONE
+            }
+
+            if (ReceiptViewer.hasReceipt(expense.receiptPath)) {
+                receiptButton.visibility = View.VISIBLE
+                receiptButton.setOnClickListener {
+                    ReceiptViewer.show(this, expense.receiptPath)
+                }
+            } else {
+                receiptButton.visibility = View.GONE
+                receiptButton.setOnClickListener(null)
             }
 
             val startEdit = View.OnClickListener {

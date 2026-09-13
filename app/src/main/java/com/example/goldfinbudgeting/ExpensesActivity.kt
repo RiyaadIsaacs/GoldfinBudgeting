@@ -1,14 +1,19 @@
 package com.example.goldfinbudgeting
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -25,6 +30,12 @@ class ExpensesActivity : AppCompatActivity() {
 
     //null means show every category for the selected month
     private var selectedCategory: String? = null
+
+    private var searchQuery: String = ""
+
+    //when both are set, the list uses this range instead of the month chip
+    private var rangeStartMillis: Long? = null
+    private var rangeEndMillis: Long? = null
 
     private val categoryChips = mutableListOf<TextView>()
 
@@ -70,7 +81,40 @@ class ExpensesActivity : AppCompatActivity() {
         //find month filter chip
         val monthFilterButton = findViewById<TextView>(R.id.monthFilterButton)
 
+        //find search box
+        val expenseSearchEditText = findViewById<EditText>(R.id.expenseSearchEditText)
+
+        //find date range controls
+        val rangeStartButton = findViewById<TextView>(R.id.rangeStartButton)
+        val rangeEndButton = findViewById<TextView>(R.id.rangeEndButton)
+        val clearDateRangeButton = findViewById<TextView>(R.id.clearDateRangeButton)
+
         setupCategoryChips()
+        updateDateRangeButtons()
+
+        //filter the list as the user types a name, category, or note
+        expenseSearchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+
+            override fun afterTextChanged(s: Editable?) {
+                searchQuery = s?.toString().orEmpty()
+                refreshExpenseList()
+            }
+        })
+
+        rangeStartButton.setOnClickListener {
+            showRangeDatePicker(isStart = true)
+        }
+
+        rangeEndButton.setOnClickListener {
+            showRangeDatePicker(isStart = false)
+        }
+
+        clearDateRangeButton.setOnClickListener {
+            clearDateRange()
+        }
 
         //open side menu
         menuIcon.setOnClickListener {
@@ -127,6 +171,7 @@ class ExpensesActivity : AppCompatActivity() {
 
         setIntent(intent)
         applyFilterFromIntent(intent)
+        clearDateRange(refresh = false)
         refreshExpenseList()
     }
 
@@ -179,6 +224,76 @@ class ExpensesActivity : AppCompatActivity() {
         }
     }
 
+    private fun showRangeDatePicker(isStart: Boolean) {
+        val calendar = Calendar.getInstance()
+        val currentValue = if (isStart) rangeStartMillis else rangeEndMillis
+
+        calendar.timeInMillis = currentValue
+            ?: ExpenseTempMemory.dateOn(selectedYear, selectedMonth, if (isStart) 1 else 28)
+
+        DatePickerDialog(
+            this,
+            { _, year, month, day ->
+                val picked = ExpenseTempMemory.dateOn(year, month, day)
+
+                if (isStart) {
+                    rangeStartMillis = picked
+
+                    //if the end is before the new start, nudge it forward
+                    if (rangeEndMillis != null && rangeEndMillis!! < picked) {
+                        rangeEndMillis = picked
+                    }
+                } else {
+                    rangeEndMillis = picked
+
+                    //if the start is after the new end, nudge it backward
+                    if (rangeStartMillis != null && rangeStartMillis!! > picked) {
+                        rangeStartMillis = picked
+                    }
+                }
+
+                if (rangeStartMillis != null && rangeEndMillis != null &&
+                    rangeStartMillis!! > rangeEndMillis!!
+                ) {
+                    Toast.makeText(this, "From date must be before To date", Toast.LENGTH_SHORT).show()
+                }
+
+                updateDateRangeButtons()
+                refreshExpenseList()
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
+    private fun clearDateRange(refresh: Boolean = true) {
+        rangeStartMillis = null
+        rangeEndMillis = null
+        updateDateRangeButtons()
+
+        if (refresh) {
+            refreshExpenseList()
+        }
+    }
+
+    private fun updateDateRangeButtons() {
+        val rangeStartButton = findViewById<TextView>(R.id.rangeStartButton)
+        val rangeEndButton = findViewById<TextView>(R.id.rangeEndButton)
+
+        rangeStartButton.text = rangeStartMillis?.let {
+            "From ${ExpenseTempMemory.formatDate(it)}"
+        } ?: "From date"
+
+        rangeEndButton.text = rangeEndMillis?.let {
+            "To ${ExpenseTempMemory.formatDate(it)}"
+        } ?: "To date"
+    }
+
+    private fun hasActiveDateRange(): Boolean {
+        return rangeStartMillis != null && rangeEndMillis != null
+    }
+
     //Figma-style month list under the gold chip
     private fun showMonthDropdown(anchor: View) {
         val popupView = layoutInflater.inflate(R.layout.popup_month_dropdown, null)
@@ -213,6 +328,9 @@ class ExpensesActivity : AppCompatActivity() {
                 selectedYear = monthPair.first
                 selectedMonth = monthPair.second
 
+                //choosing a month exits custom range mode
+                clearDateRange(refresh = false)
+
                 popup.dismiss()
                 refreshExpenseList()
             }
@@ -233,14 +351,53 @@ class ExpensesActivity : AppCompatActivity() {
     private fun refreshExpenseList() {
         val monthFilterButton = findViewById<TextView>(R.id.monthFilterButton)
         val expenseListContainer = findViewById<LinearLayout>(R.id.expenseListContainer)
+        val expensesListTitle = findViewById<TextView>(R.id.expensesListTitle)
+        val expensesTotalText = findViewById<TextView>(R.id.expensesTotalText)
 
-        monthFilterButton.text = ExpenseTempMemory.monthTitle(selectedYear, selectedMonth)
+        monthFilterButton.text = if (hasActiveDateRange()) {
+            "Custom range"
+        } else {
+            ExpenseTempMemory.monthTitle(selectedYear, selectedMonth)
+        }
+
+        val activeStart = if (hasActiveDateRange()) rangeStartMillis else null
+        val activeEnd = if (hasActiveDateRange()) rangeEndMillis else null
 
         val filtered = ExpenseTempMemory.expensesForScreen(
             selectedYear,
             selectedMonth,
-            selectedCategory
+            selectedCategory,
+            searchQuery,
+            activeStart,
+            activeEnd
         )
+
+        val total = ExpenseTempMemory.totalForScreen(
+            selectedYear,
+            selectedMonth,
+            selectedCategory,
+            searchQuery,
+            activeStart,
+            activeEnd
+        )
+
+        //title shows which slice of spending the total belongs to
+        expensesListTitle.text = when {
+            hasActiveDateRange() && selectedCategory != null ->
+                "$selectedCategory in range"
+            hasActiveDateRange() ->
+                "Expenses in range"
+            searchQuery.isNotBlank() && selectedCategory != null ->
+                "Search in $selectedCategory"
+            searchQuery.isNotBlank() ->
+                "Search results"
+            selectedCategory != null ->
+                "$selectedCategory this month"
+            else ->
+                "Expenses this month"
+        }
+
+        expensesTotalText.text = ExpenseTempMemory.formatAmount(total)
 
         expenseListContainer.removeAllViews()
 
@@ -249,10 +406,21 @@ class ExpensesActivity : AppCompatActivity() {
 
             val nameText = row.findViewById<TextView>(R.id.expenseNameText)
             val amountText = row.findViewById<TextView>(R.id.expenseAmountText)
+            val receiptButton = row.findViewById<TextView>(R.id.expenseReceiptButton)
             val divider = row.findViewById<View>(R.id.expenseRowDivider)
 
             nameText.text = expense.name
             amountText.text = ExpenseTempMemory.formatAmount(expense.amount)
+
+            if (ReceiptViewer.hasReceipt(expense.receiptPath)) {
+                receiptButton.visibility = View.VISIBLE
+                receiptButton.setOnClickListener {
+                    ReceiptViewer.show(this, expense.receiptPath)
+                }
+            } else {
+                receiptButton.visibility = View.GONE
+                receiptButton.setOnClickListener(null)
+            }
 
             //hide divider under the last expense so the card edge stays clean
             if (index == filtered.lastIndex) {
@@ -267,11 +435,15 @@ class ExpensesActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
+                val calendar = Calendar.getInstance()
+
+                calendar.timeInMillis = expense.dateCreated
+
                 val intent = Intent(this, EditExpensesActivity::class.java)
 
                 intent.putExtra("expense_index", expenseIndex)
-                intent.putExtra("filter_year", selectedYear)
-                intent.putExtra("filter_month", selectedMonth)
+                intent.putExtra("filter_year", calendar.get(Calendar.YEAR))
+                intent.putExtra("filter_month", calendar.get(Calendar.MONTH))
 
                 startActivity(intent)
             }

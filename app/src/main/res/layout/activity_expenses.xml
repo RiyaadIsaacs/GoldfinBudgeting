@@ -118,6 +118,78 @@
 
                 </LinearLayout>
 
+                <!--search box to find expenses in the current month / category-->
+                <EditText
+                    android:id="@+id/expenseSearchEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="Search expenses"
+                    android:inputType="text"
+                    android:imeOptions="actionSearch"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:background="@drawable/rounded_input_field"
+                    android:textSize="14sp"
+                    android:textColor="#333333"
+                    android:textColorHint="#888888"/>
+
+                <!--custom date range. overrides the month chip while active-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/rangeStartButton"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:text="From date"
+                        android:textSize="13sp"
+                        android:textColor="#333333"
+                        android:background="@drawable/rounded_input_field"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/rangeEndButton"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:text="To date"
+                        android:textSize="13sp"
+                        android:textColor="#333333"
+                        android:background="@drawable/rounded_input_field"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/clearDateRangeButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:gravity="center"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:text="Clear"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#C9A200"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                </LinearLayout>
+
                 <!--teal card holding expenses list. hard coded, needs to be changed-->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -133,14 +205,33 @@
                         android:padding="16dp"
                         android:background="@drawable/rounded_card_white_border">
 
-                        <!--list title-->
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <!--list title and running total for the month / category filter-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Expenses this month"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="#333333"/>
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/expensesListTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Expenses this month"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="#333333"/>
+
+                            <TextView
+                                android:id="@+id/expensesTotalText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="R 0.00"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="#333333"/>
+
+                        </LinearLayout>
 
                         <!--gold divider-->
                         <View

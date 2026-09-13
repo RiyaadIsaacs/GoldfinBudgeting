@@ -89,17 +89,91 @@ object ExpenseTempMemory {
         }
     }
 
-    //month list, optionally narrowed to one category chip
-    fun expensesForScreen(year: Int, month: Int, category: String?): List<Expense> {
-        val inMonth = expensesInMonth(year, month)
-
-        if (category.isNullOrBlank()) {
-            return inMonth
+    //month list, optionally narrowed by category, search, and/or a custom date range
+    fun expensesForScreen(
+        year: Int,
+        month: Int,
+        category: String?,
+        searchQuery: String? = null,
+        rangeStartMillis: Long? = null,
+        rangeEndMillis: Long? = null
+    ): List<Expense> {
+        val baseList = if (rangeStartMillis != null && rangeEndMillis != null) {
+            expensesInRange(rangeStartMillis, rangeEndMillis)
+        } else {
+            expensesInMonth(year, month)
         }
 
-        return inMonth.filter { expense ->
-            expense.category.equals(category, ignoreCase = true)
+        val byCategory = if (category.isNullOrBlank()) {
+            baseList
+        } else {
+            baseList.filter { expense ->
+                expense.category.equals(category, ignoreCase = true)
+            }
         }
+
+        val query = searchQuery?.trim().orEmpty()
+
+        if (query.isBlank()) {
+            return byCategory
+        }
+
+        return byCategory.filter { expense ->
+            expense.name.contains(query, ignoreCase = true) ||
+                expense.category.contains(query, ignoreCase = true) ||
+                expense.description.contains(query, ignoreCase = true)
+        }
+    }
+
+    fun expensesInRange(startMillis: Long, endMillis: Long): List<Expense> {
+        val start = startOfDay(startMillis)
+        val end = endOfDay(endMillis)
+
+        return expenses.filter { expense ->
+            expense.dateCreated in start..end
+        }
+    }
+
+    fun totalForScreen(
+        year: Int,
+        month: Int,
+        category: String?,
+        searchQuery: String? = null,
+        rangeStartMillis: Long? = null,
+        rangeEndMillis: Long? = null
+    ): Double {
+        return expensesForScreen(
+            year,
+            month,
+            category,
+            searchQuery,
+            rangeStartMillis,
+            rangeEndMillis
+        ).sumOf { it.amount }
+    }
+
+    fun startOfDay(millis: Long): Long {
+        val calendar = Calendar.getInstance()
+
+        calendar.timeInMillis = millis
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        return calendar.timeInMillis
+    }
+
+    fun endOfDay(millis: Long): Long {
+        val calendar = Calendar.getInstance()
+
+        calendar.timeInMillis = millis
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.set(Calendar.SECOND, 59)
+        calendar.set(Calendar.MILLISECOND, 999)
+
+        return calendar.timeInMillis
     }
 
     //months shown in the expenses dropdown. Figma months plus any month that has an expense
