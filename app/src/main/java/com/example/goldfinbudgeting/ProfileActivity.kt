@@ -1,19 +1,33 @@
 package com.example.goldfinbudgeting
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import java.io.File
 
 class ProfileActivity : AppCompatActivity() {
+
+    //open the device photo picker. no storage permission needed
+    private val pickProfileImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            saveProfilePicture(uri)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -61,12 +75,22 @@ class ProfileActivity : AppCompatActivity() {
         val profilePrefs = getSharedPreferences("goldfin_profile", MODE_PRIVATE)
 
         displayNameEditText.setText(profilePrefs.getString("display_name", ""))
-        emailEditText.setText(profilePrefs.getString("email", ""))
+        emailEditText.setText(AccountStore.email(this))
         mobileEditText.setText(profilePrefs.getString("mobile", ""))
 
         val savedName = profilePrefs.getString("display_name", "")
         if (!savedName.isNullOrBlank()) {
             displayNameHeading.text = savedName
+        }
+
+        val profileImage = findViewById<ImageView>(R.id.profileImage)
+
+        profileImage.clipToOutline = true
+        loadProfilePicture(profileImage)
+
+        //tap the avatar to pick a photo from the device
+        profileImage.setOnClickListener {
+            pickProfileImage.launch("image/*")
         }
 
         //open side menu
@@ -118,11 +142,22 @@ class ProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Display name saved", Toast.LENGTH_SHORT).show()
         }
 
-        //save email address
+        //save email address and keep login in sync
         findViewById<TextView>(R.id.saveEmailButton).setOnClickListener {
-            profilePrefs.edit().putString("email", emailEditText.text.toString().trim()).apply()
+            val email = emailEditText.text.toString().trim()
 
-            Toast.makeText(this, "Email saved", Toast.LENGTH_SHORT).show()
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Please enter an email", Toast.LENGTH_SHORT).show()
+            } else {
+                AccountStore.setEmail(this, email)
+
+                Toast.makeText(this, "Email saved", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        //start the change password popups
+        findViewById<TextView>(R.id.changePasswordButton).setOnClickListener {
+            showCurrentPasswordPopup()
         }
 
         //save mobile number
@@ -140,6 +175,111 @@ class ProfileActivity : AppCompatActivity() {
         //account settings placeholder until that page is built
         findViewById<LinearLayout>(R.id.accountSettingsButton).setOnClickListener {
             Toast.makeText(this, "Account Settings coming soon", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showCurrentPasswordPopup() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_current_password, null)
+        val currentPasswordEditText = dialogView.findViewById<EditText>(R.id.currentPasswordEditText)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton("Confirm", null)
+            .setNegativeButton("Cancel") { popup, _ ->
+                popup.dismiss()
+            }
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val typedPassword = currentPasswordEditText.text.toString()
+
+                if (typedPassword == AccountStore.password(this)) {
+                    dialog.dismiss()
+
+                    showNewPasswordPopup()
+                } else {
+                    Toast.makeText(this, "Incorrect current password", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun showNewPasswordPopup() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_new_password, null)
+        val newPasswordEditText = dialogView.findViewById<EditText>(R.id.newPasswordEditText)
+        val confirmPasswordEditText = dialogView.findViewById<EditText>(R.id.confirmPasswordEditText)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton("Confirm", null)
+            .setNegativeButton("Cancel") { popup, _ ->
+                popup.dismiss()
+            }
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val newPassword = newPasswordEditText.text.toString()
+                val confirmPassword = confirmPasswordEditText.text.toString()
+
+                if (newPassword.isEmpty() || confirmPassword.isEmpty()) {
+                    Toast.makeText(this, "Please fill in both password fields", Toast.LENGTH_SHORT).show()
+                } else if (newPassword != confirmPassword) {
+                    Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                } else {
+                    AccountStore.setPassword(this, newPassword)
+
+                    dialog.dismiss()
+
+                    Toast.makeText(this, "Password updated", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun profilePictureFile(): File {
+        return File(filesDir, "profile_picture.jpg")
+    }
+
+    //copy the chosen photo into app storage so it stays after closing the app
+    private fun saveProfilePicture(uri: Uri) {
+        try {
+            val pictureFile = profilePictureFile()
+
+            contentResolver.openInputStream(uri)?.use { input ->
+                pictureFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            getSharedPreferences("goldfin_profile", MODE_PRIVATE)
+                .edit()
+                .putString("profile_picture", pictureFile.absolutePath)
+                .apply()
+
+            loadProfilePicture(findViewById(R.id.profileImage))
+
+            Toast.makeText(this, "Profile picture saved", Toast.LENGTH_SHORT).show()
+        } catch (_: Exception) {
+            Toast.makeText(this, "Could not save that photo", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadProfilePicture(profileImage: ImageView) {
+        val pictureFile = profilePictureFile()
+
+        if (pictureFile.exists()) {
+            profileImage.setPadding(0, 0, 0, 0)
+            profileImage.setImageURI(null)
+            profileImage.setImageURI(Uri.fromFile(pictureFile))
+        } else {
+            profileImage.setPadding(28, 28, 28, 28)
+            profileImage.setImageResource(R.drawable.ic_profile_person)
         }
     }
 }

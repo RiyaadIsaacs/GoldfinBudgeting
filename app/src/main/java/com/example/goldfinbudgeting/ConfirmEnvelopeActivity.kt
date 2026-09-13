@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
+import java.util.Calendar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -29,6 +30,7 @@ class ConfirmEnvelopeActivity : AppCompatActivity() {
         val name = intent.getStringExtra("name") ?: ""
         val min = intent.getDoubleExtra("min", 0.0)
         val max = intent.getDoubleExtra("max", 0.0)
+        val dateCreated = intent.getLongExtra("dateCreated", System.currentTimeMillis())
         val index = intent.getIntExtra("index", -1)
 
         val confirmMessage = findViewById<TextView>(R.id.confirmMessage)
@@ -61,15 +63,21 @@ class ConfirmEnvelopeActivity : AppCompatActivity() {
                 }
             } else {
                 if (name.isNotBlank()) {
-                    EnvelopeTempMemory.envelopes.add(Envelope(name, min, max, 0.0))
+                    EnvelopeTempMemory.envelopes.add(Envelope(name, min, max, 0.0, dateCreated))
 
                     Toast.makeText(this, "Added $name", Toast.LENGTH_SHORT).show()
                 }
 
                 //after adding, go back to the main envelopes screen instead of the edit form
+                val calendar = Calendar.getInstance()
+
+                calendar.timeInMillis = dateCreated
+
                 val intent = Intent(this, EnvelopesActivity::class.java)
 
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                intent.putExtra("filter_year", calendar.get(Calendar.YEAR))
+                intent.putExtra("filter_month", calendar.get(Calendar.MONTH))
 
                 startActivity(intent)
             }

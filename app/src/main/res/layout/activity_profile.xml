@@ -93,21 +93,19 @@
                         android:layout_gravity="center"
                         android:background="@drawable/profile_ring_inner"/>
 
-                    <LinearLayout
+                    <ImageView
+                        android:id="@+id/profileImage"
                         android:layout_width="135dp"
                         android:layout_height="135dp"
                         android:layout_gravity="center"
-                        android:gravity="center"
+                        android:padding="28dp"
                         android:background="@drawable/profile_avatar_circle"
-                        android:elevation="3dp">
-
-                        <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:src="@drawable/ic_profile_person"
-                            android:contentDescription="Profile avatar"/>
-
-                    </LinearLayout>
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_profile_person"
+                        android:elevation="3dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="Profile avatar"/>
 
                 </FrameLayout>
 
@@ -231,6 +229,20 @@
                             android:focusable="true"/>
 
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/changePasswordButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center"
+                        android:text="Change Password"
+                        android:textSize="16sp"
+                        android:textColor="#F5F5F5"
+                        android:background="@drawable/profile_save_button"
+                        android:elevation="4dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
 
                     <TextView
                         android:layout_width="wrap_content"

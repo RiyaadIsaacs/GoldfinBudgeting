@@ -75,6 +75,7 @@
                 android:gravity = "center_vertical">
 
                 <TextView
+                    android:id = "@+id/monthFilterButton"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
                     android:paddingStart = "20dp"
@@ -85,7 +86,9 @@
                     android:textSize = "14sp"
                     android:textStyle = "bold"
                     android:textColor = "#FFFFFF"
-                    android:background = "@drawable/rounded_button_gold"/>
+                    android:background = "@drawable/rounded_button_gold"
+                    android:clickable = "true"
+                    android:focusable = "true"/>
 
                 <View
                     android:layout_width = "0dp"

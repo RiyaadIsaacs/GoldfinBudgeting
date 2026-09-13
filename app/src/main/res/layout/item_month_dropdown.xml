@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--one month row. gray bar, centered title like the Figma dropdown-->
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/monthOptionText"
+    android:layout_width="159dp"
+    android:layout_height="41dp"
+    android:layout_marginBottom="5dp"
+    android:background="#DDD7D7"
+    android:gravity="center"
+    android:fontFamily="sans-serif-medium"
+    android:textSize="16sp"
+    android:letterSpacing="0.009375"
+    android:textColor="#000000"
+    android:clickable="true"
+    android:focusable="true"/>

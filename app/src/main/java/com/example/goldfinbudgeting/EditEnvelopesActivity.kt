@@ -1,10 +1,12 @@
 package com.example.goldfinbudgeting
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import java.util.Calendar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -70,6 +72,9 @@ class EditEnvelopesActivity : AppCompatActivity() {
         //find max goal edit text
         val maxGoalEditText = findViewById<EditText>(R.id.maxGoalEditText)
 
+        //find date created field
+        val dateCreatedEditText = findViewById<EditText>(R.id.dateCreatedEditText)
+
         //find envelope list under the form
         val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
 
@@ -127,6 +132,26 @@ class EditEnvelopesActivity : AppCompatActivity() {
             finish()
         }
 
+        //open a calendar when they tap the date field
+        dateCreatedEditText.setOnClickListener {
+            val calendar = Calendar.getInstance()
+
+            calendar.timeInMillis = EnvelopeTempMemory.parseDate(dateCreatedEditText.text.toString())
+
+            DatePickerDialog(
+                this,
+                { _, year, month, day ->
+                    dateCreatedEditText.setText(EnvelopeTempMemory.formatDate(EnvelopeTempMemory.dateOn(year, month, day)))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        dateCreatedEditText.isFocusable = false
+        dateCreatedEditText.isClickable = true
+
         //ask first, then add from the confirm page
         addButton.setOnClickListener {
             val name = envelopeNameEditText.text.toString().trim()
@@ -134,6 +159,8 @@ class EditEnvelopesActivity : AppCompatActivity() {
             val min = minGoalEditText.text.toString().toDoubleOrNull() ?: 0.0
 
             val max = maxGoalEditText.text.toString().toDoubleOrNull() ?: 0.0
+
+            val dateCreated = EnvelopeTempMemory.parseDate(dateCreatedEditText.text.toString())
 
             if (name.isBlank()) {
                 Toast.makeText(this, "Please enter an envelope name", Toast.LENGTH_SHORT).show()
@@ -147,6 +174,7 @@ class EditEnvelopesActivity : AppCompatActivity() {
             intent.putExtra("name", name)
             intent.putExtra("min", min)
             intent.putExtra("max", max)
+            intent.putExtra("dateCreated", dateCreated)
 
             startActivity(intent)
         }

@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 import android.content.Intent
 
@@ -17,17 +14,7 @@ class LoginActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge()
-
         setContentView(R.layout.activity_login)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-            v.setPadding(systemBars.left + 32, systemBars.top + 32, systemBars.right + 32, systemBars.bottom + 32)
-
-            insets
-        }
 
         //find edit text field for email
         val emailEditText = findViewById<EditText>(R.id.emailEditText)
@@ -51,8 +38,8 @@ class LoginActivity : AppCompatActivity() {
                 //give message to fill in fields
                 Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
             }
-            //this is the set email and password to signin. we'll change to something else later. kept it short for easier testing
-            else if (email == "1" && password == "1")
+            //check against the saved account. starts as 1 / 1 until they change it on profile
+            else if (email == AccountStore.email(this) && password == AccountStore.password(this))
             {
                 Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show()
 

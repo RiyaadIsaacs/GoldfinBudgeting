@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--white dropdown panel. 159 x 179 matches the Figma drop down-->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="159dp"
+    android:layout_height="wrap_content"
+    android:maxHeight="179dp"
+    android:background="#FFFFFF"
+    android:elevation="4dp"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:id="@+id/monthDropdownList"
+        android:layout_width="159dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+</ScrollView>

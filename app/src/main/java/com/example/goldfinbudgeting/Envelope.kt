@@ -9,5 +9,7 @@ data class Envelope (
 
     val max: Double,
 
-    val spent: Double
+    val spent: Double,
+
+    val dateCreated: Long
 )
