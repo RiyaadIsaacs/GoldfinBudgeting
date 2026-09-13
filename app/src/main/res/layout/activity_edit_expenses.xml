@@ -165,6 +165,7 @@
                         android:textColor = "#888888"/>
 
                     <LinearLayout
+                        android:id = "@+id/datePickerRow"
                         android:layout_width = "match_parent"
                         android:layout_height = "48dp"
                         android:layout_marginTop = "6dp"
@@ -173,7 +174,9 @@
                         android:gravity = "center_vertical"
                         android:background = "@drawable/rounded_input_field"
                         android:paddingStart = "16dp"
-                        android:paddingEnd = "16dp">
+                        android:paddingEnd = "16dp"
+                        android:clickable = "true"
+                        android:focusable = "true">
 
                         <EditText
                             android:id = "@+id/dateEditText"
@@ -182,13 +185,19 @@
                             android:layout_weight = "1"
                             android:text = "2026/08/14"
                             android:background = "@android:color/transparent"
-                            android:textSize = "14sp"/>
+                            android:textSize = "14sp"
+                            android:focusable = "false"
+                            android:clickable = "true"
+                            android:inputType = "none"/>
 
                         <TextView
+                            android:id = "@+id/calendarButton"
                             android:layout_width = "wrap_content"
                             android:layout_height = "wrap_content"
-                            android:text = "calender here"
-                            android:textSize = "18sp"/>
+                            android:text = "📅"
+                            android:textSize = "18sp"
+                            android:clickable = "true"
+                            android:focusable = "true"/>
 
                     </LinearLayout>
 
@@ -281,6 +290,7 @@
                         android:textColor = "#888888"/>
 
                     <LinearLayout
+                        android:id = "@+id/categoryPickerRow"
                         android:layout_width = "match_parent"
                         android:layout_height = "48dp"
                         android:layout_marginTop = "6dp"
@@ -294,6 +304,7 @@
                         android:focusable = "true">
 
                         <TextView
+                            android:id = "@+id/categoryText"
                             android:layout_width = "0dp"
                             android:layout_height = "wrap_content"
                             android:layout_weight = "1"
@@ -302,9 +313,10 @@
                             android:textColor = "#333333"/>
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text = "icon"
+                            android:id = "@+id/categoryIcon"
+                            android:layout_width = "wrap_content"
+                            android:layout_height = "wrap_content"
+                            android:text = "▾"
                             android:textSize = "20sp"
                             android:textColor = "#333333"/>
 
@@ -318,424 +330,61 @@
                         android:textSize = "12sp"
                         android:textColor = "#888888"/>
 
-                    <LinearLayout
+                    <FrameLayout
+                        android:id = "@+id/receiptPhotoButton"
                         android:layout_width = "80dp"
                         android:layout_height = "80dp"
                         android:layout_marginTop = "6dp"
-                        android:orientation = "vertical"
-                        android:gravity = "center"
                         android:background = "@drawable/rounded_dashed_border"
                         android:clickable = "true"
                         android:focusable = "true">
 
-                        <TextView
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            android:text = "Image here"
-                            android:textSize = "20sp"/>
+                        <ImageView
+                            android:id = "@+id/receiptImage"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "match_parent"
+                            android:scaleType = "centerCrop"
+                            android:visibility = "gone"
+                            android:contentDescription = "Receipt photo"/>
 
-                        <TextView
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            android:layout_marginTop = "4dp"
-                            android:text = "Tap to attach"
-                            android:textSize = "10sp"
-                            android:textColor = "#888888"
-                            android:gravity = "center"/>
+                        <LinearLayout
+                            android:id = "@+id/receiptPlaceholder"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "match_parent"
+                            android:orientation = "vertical"
+                            android:gravity = "center"
+                            android:padding = "4dp">
 
-                    </LinearLayout>
+                            <TextView
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:text = "📷"
+                                android:textSize = "20sp"/>
+
+                            <TextView
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_marginTop = "4dp"
+                                android:text = "Tap to attach"
+                                android:textSize = "10sp"
+                                android:textColor = "#888888"
+                                android:gravity = "center"/>
+
+                        </LinearLayout>
+
+                    </FrameLayout>
 
                 </LinearLayout>
 
-                <!--expense list section-->
+                <!--expense list section. filled in code so users can edit or delete-->
                 <LinearLayout
+                    android:id = "@+id/editExpenseListContainer"
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
                     android:orientation = "vertical"
                     android:background = "#FFFFFF"
                     android:paddingStart = "20dp"
-                    android:paddingEnd = "20dp">
-
-                    <!--expense row-->
-                    <LinearLayout
-                        android:layout_width = "match_parent"
-                        android:layout_height = "wrap_content"
-                        android:orientation = "vertical"
-                        android:paddingTop = "12dp"
-                        android:paddingBottom = "12dp">
-
-                        <LinearLayout
-                            android:layout_width = "match_parent"
-                            android:layout_height = "wrap_content"
-                            android:orientation = "horizontal">
-
-                            <TextView
-                                android:layout_width = "0dp"
-                                android:layout_height = "wrap_content"
-                                android:layout_weight = "1"
-                                android:text = "Call of Duty 3"
-                                android:textSize = "16sp"
-                                android:textStyle = "bold"
-                                android:textColor = "#333333"/>
-
-                            <TextView
-                                android:layout_width = "wrap_content"
-                                android:layout_height = "wrap_content"
-                                android:text = "Delete"
-                                android:textSize = "14sp"
-                                android:textColor = "#E64A19"
-                                android:clickable = "true"
-                                android:focusable = "true"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            android:text = "Games -> 5 Aug"
-                            android:textSize = "12sp"
-                            android:textStyle = "italic"
-                            android:textColor = "#888888"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width = "match_parent"
-                        android:layout_height = "1dp"
-                        android:background = "#EEEEEE"/>
-
-                    <!--another eexpense row-->
-                    <LinearLayout
-                        android:layout_width = "match_parent"
-                        android:layout_height = "wrap_content"
-                        android:orientation = "vertical"
-                        android:paddingTop = "12dp"
-                        android:paddingBottom = "12dp">
-
-                        <LinearLayout
-                            android:layout_width = "match_parent"
-                            android:layout_height = "wrap_content"
-                            android:orientation = "horizontal">
-
-                            <TextView
-                                android:layout_width = "0dp"
-                                android:layout_height = "wrap_content"
-                                android:layout_weight = "1"
-                                android:text = "McDonalds"
-                                android:textSize = "16sp"
-                                android:textStyle = "bold"
-                                android:textColor = "#333333"/>
-
-                            <TextView
-                                android:layout_width = "wrap_content"
-                                android:layout_height = "wrap_content"
-                                android:text = "Delete"
-                                android:textSize = "14sp"
-                                android:textColor = "#E64A19"
-                                android:clickable = "true"
-                                android:focusable = "true"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            android:text = "Takeouts -> 6 Aug"
-                            android:textSize = "12sp"
-                            android:textStyle = "italic"
-                            android:textColor = "#888888"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width = "match_parent"
-                        android:layout_height = "1dp"
-                        android:background = "#EEEEEE"/>
-
-                    <!--another expense row-->
-                    <LinearLayout
-                        android:layout_width = "match_parent"
-                        android:layout_height = "wrap_content"
-                        android:orientation = "vertical"
-                        android:paddingTop = "12dp"
-                        android:paddingBottom = "12dp">
-
-                        <LinearLayout
-                            android:layout_width = "match_parent"
-                            android:layout_height = "wrap_content"
-                            android:orientation = "horizontal">
-
-                            <TextView
-                                android:layout_width = "0dp"
-                                android:layout_height = "wrap_content"
-                                android:layout_weight = "1"
-                                android:text = "Spiderman: Brand New Day"
-                                android:textSize = "16sp"
-                                android:textStyle = "bold"
-                                android:textColor = "#333333"/>
-
-                            <TextView
-                                android:layout_width = "wrap_content"
-                                android:layout_height = "wrap_content"
-                                android:text = "Delete"
-                                android:textSize = "14sp"
-                                android:textColor = "#E64A19"
-                                android:clickable = "true"
-                                android:focusable = "true"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            android:text = "Entertainment -> 7 Aug"
-                            android:textSize = "12sp"
-                            android:textStyle = "italic"
-                            android:textColor = "#888888"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width = "match_parent"
-                        android:layout_height = "1dp"
-                        android:background = "#EEEEEE"/>
-
-                    <!--another expense row-->
-                    <LinearLayout
-                        android:layout_width = "match_parent"
-                        android:layout_height = "wrap_content"
-                        android:orientation = "vertical"
-                        android:paddingTop = "12dp"
-                        android:paddingBottom = "12dp">
-
-                        <LinearLayout
-                            android:layout_width = "match_parent"
-                            android:layout_height = "wrap_content"
-                            android:orientation = "horizontal">
-
-                            <TextView
-                                android:layout_width = "0dp"
-                                android:layout_height = "wrap_content"
-                                android:layout_weight = "1"
-                                android:text = "Astron Energy"
-                                android:textSize = "16sp"
-                                android:textStyle = "bold"
-                                android:textColor = "#333333"/>
-
-                            <TextView
-                                android:layout_width = "wrap_content"
-                                android:layout_height = "wrap_content"
-                                android:text = "Delete"
-                                android:textSize = "14sp"
-                                android:textColor = "#E64A19"
-                                android:clickable = "true"
-                                android:focusable = "true"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            android:text = "Car -> 8 Aug"
-                            android:textSize = "12sp"
-                            android:textStyle = "italic"
-                            android:textColor = "#888888" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width = "match_parent"
-                        android:layout_height = "1dp"
-                        android:background = "#EEEEEE" />
-
-                    <!--another expense row-->
-                    <LinearLayout
-                        android:layout_width = "match_parent"
-                        android:layout_height = "wrap_content"
-                        android:orientation = "vertical"
-                        android:paddingTop = "12dp"
-                        android:paddingBottom = "12dp">
-
-                        <LinearLayout
-                            android:layout_width = "match_parent"
-                            android:layout_height = "wrap_content"
-                            android:orientation = "horizontal">
-
-                            <TextView
-                                android:layout_width = "0dp"
-                                android:layout_height = "wrap_content"
-                                android:layout_weight = "1"
-                                android:text = "Netflix subscription"
-                                android:textSize = "16sp"
-                                android:textStyle = "bold"
-                                android:textColor = "#333333"/>
-
-                            <TextView
-                                android:layout_width = "wrap_content"
-                                android:layout_height = "wrap_content"
-                                android:text = "Delete"
-                                android:textSize = "14sp"
-                                android:textColor = "#E64A19"
-                                android:clickable = "true"
-                                android:focusable = "true"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            android:text = "Subscriptions -> 1 Aug"
-                            android:textSize = "12sp"
-                            android:textStyle = "italic"
-                            android:textColor = "#888888"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width = "match_parent"
-                        android:layout_height = "1dp"
-                        android:background = "#EEEEEE"/>
-
-                    <!--another expense row-->
-                    <LinearLayout
-                        android:layout_width = "match_parent"
-                        android:layout_height = "wrap_content"
-                        android:orientation = "vertical"
-                        android:paddingTop = "12dp"
-                        android:paddingBottom = "12dp">
-
-                        <LinearLayout
-                            android:layout_width = "match_parent"
-                            android:layout_height = "wrap_content"
-                            android:orientation = "horizontal">
-
-                            <TextView
-                                android:layout_width = "0dp"
-                                android:layout_height = "wrap_content"
-                                android:layout_weight = "1"
-                                android:text = "Kauai"
-                                android:textSize = "16sp"
-                                android:textStyle = "bold"
-                                android:textColor = "#333333"/>
-
-                            <TextView
-                                android:layout_width = "wrap_content"
-                                android:layout_height = "wrap_content"
-                                android:text = "Delete"
-                                android:textSize = "14sp"
-                                android:textColor = "#E64A19"
-                                android:clickable = "true"
-                                android:focusable = "true"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            android:text = "Takeouts -> 10 Aug"
-                            android:textSize = "12sp"
-                            android:textStyle = "italic"
-                            android:textColor = "#888888"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width = "match_parent"
-                        android:layout_height = "1dp"
-                        android:background = "#EEEEEE"/>
-
-                    <!--another expense row-->
-                    <LinearLayout
-                        android:layout_width = "match_parent"
-                        android:layout_height = "wrap_content"
-                        android:orientation = "vertical"
-                        android:paddingTop = "12dp"
-                        android:paddingBottom = "12dp">
-
-                        <LinearLayout
-                            android:layout_width = "match_parent"
-                            android:layout_height = "wrap_content"
-                            android:orientation = "horizontal">
-
-                            <TextView
-                                android:layout_width = "0dp"
-                                android:layout_height = "wrap_content"
-                                android:layout_weight = "1"
-                                android:text = "Comic Warehouse"
-                                android:textSize = "16sp"
-                                android:textStyle = "bold"
-                                android:textColor = "#333333"/>
-
-                            <TextView
-                                android:layout_width = "wrap_content"
-                                android:layout_height = "wrap_content"
-                                android:text = "Delete"
-                                android:textSize = "14sp"
-                                android:textColor = "#E64A19"
-                                android:clickable = "true"
-                                android:focusable = "true"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            android:text = "Entertainment -> 12 Aug"
-                            android:textSize = "12sp"
-                            android:textStyle = "italic"
-                            android:textColor = "#888888"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width = "match_parent"
-                        android:layout_height = "1dp"
-                        android:background = "#EEEEEE"/>
-
-                    <!--another expense row-->
-                    <LinearLayout
-                        android:layout_width = "match_parent"
-                        android:layout_height = "wrap_content"
-                        android:orientation = "vertical"
-                        android:paddingTop = "12dp"
-                        android:paddingBottom = "12dp">
-
-                        <LinearLayout
-                            android:layout_width = "match_parent"
-                            android:layout_height = "wrap_content"
-                            android:orientation = "horizontal">
-
-                            <TextView
-                                android:layout_width = "0dp"
-                                android:layout_height = "wrap_content"
-                                android:layout_weight = "1"
-                                android:text = "Typo"
-                                android:textSize = "16sp"
-                                android:textStyle = "bold"
-                                android:textColor = "#333333"/>
-
-                            <TextView
-                                android:layout_width = "wrap_content"
-                                android:layout_height = "wrap_content"
-                                android:text = "Delete"
-                                android:textSize = "14sp"
-                                android:textColor = "#E64A19"
-                                android:clickable = "true"
-                                android:focusable = "true"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            android:text = "Groceries -> 14 Aug"
-                            android:textSize = "12sp"
-                            android:textStyle = "italic"
-                            android:textColor = "#888888"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
+                    android:paddingEnd = "20dp"/>
 
             </LinearLayout>
 
