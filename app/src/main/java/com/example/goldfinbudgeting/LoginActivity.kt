@@ -38,12 +38,13 @@ class LoginActivity : AppCompatActivity() {
                 //give message to fill in fields
                 Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
             }
-            //check against the saved account. starts as 1 / 1 until they change it on profile
-            else if (email == AccountStore.email(this) && password == AccountStore.password(this))
+            // Check username + password against the Room users table via AccountStore.
+            // Default seeded account is still 1 / 1 until changed on the profile screen.
+            else if (AccountStore.authenticate(this, email, password))
             {
                 Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show()
 
-                //open and run home screen with correct email and password
+                // Open the home screen after a successful Room login.
                 val intent = Intent(this, HomeActivity::class.java)
 
                 startActivity(intent)

@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -46,6 +47,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 
+    // Room local database (POE Part 2)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     //for scrolling
     implementation("androidx.cardview:cardview:1.0.0")

@@ -51,19 +51,22 @@ class ConfirmEnvelopeActivity : AppCompatActivity() {
             finish()
         }
 
-        //do the add or delete after they say yes
+        // Do the add or delete after they say yes.
+        // Both paths go through EnvelopeTempMemory, which now persists to Room.
         yesButton.setOnClickListener {
             if (action == "delete") {
                 if (index >= 0 && index < EnvelopeTempMemory.envelopes.size) {
                     val envelope = EnvelopeTempMemory.envelopes[index]
 
+                    // Deletes the matching category row from the Room database.
                     EnvelopeTempMemory.deleteEnvelope(envelope)
 
                     Toast.makeText(this, "Deleted ${envelope.name}", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 if (name.isNotBlank()) {
-                    EnvelopeTempMemory.envelopes.add(Envelope(name, min, max, 0.0, dateCreated))
+                    // Inserts a new category / envelope into Room 
+                    EnvelopeTempMemory.addEnvelope(Envelope(name, min, max, 0.0, dateCreated))
 
                     Toast.makeText(this, "Added $name", Toast.LENGTH_SHORT).show()
                 }

@@ -1,95 +1,117 @@
 package com.example.goldfinbudgeting
 
+import android.content.Context
+import android.util.Log
+import com.example.goldfinbudgeting.data.DatabaseProvider
+import com.example.goldfinbudgeting.data.EntityMappers
+import com.example.goldfinbudgeting.data.GoldfinDatabase
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-//stores expense info temporarily in memory. will replace when using local database
+// ExpenseTempMemory used to keep expenses in a mutableList in RAM
+// It now reads / writes the Room expenses table so data survives app restarts
 object ExpenseTempMemory {
+    private const val TAG = "ExpenseTempMemory"
+
+    // Date helpers used by the expenses screens for display and parsing.
     private val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.US)
     private val shortDateFormat = SimpleDateFormat("d MMM", Locale.US)
     private val monthFormat = SimpleDateFormat("MMMM yyyy", Locale.US)
 
-    val categories = listOf(
-        "General",
-        "Subscriptions",
-        "Games",
-        "Groceries",
-        "Takeouts"
-    )
+    // Cached Room database reference after bind() / first use
+    @Volatile
+    private var database: GoldfinDatabase? = null
 
-    val expenses = mutableListOf(
+    // Application context so we can open Room even when Activities recreate
+    @Volatile
+    private var appContext: Context? = null
 
-        //August 2026 starter list from the hard coded expenses screen
-        Expense("Call of Duty 3", 1000.00, "Games", dateOn(2026, Calendar.AUGUST, 5)),
-        Expense("McDonalds", 200.00, "Takeouts", dateOn(2026, Calendar.AUGUST, 8)),
-        Expense("Spiderman: Brand New Day", 150.00, "Games", dateOn(2026, Calendar.AUGUST, 10)),
-        Expense("Astron Energy", 500.00, "Groceries", dateOn(2026, Calendar.AUGUST, 12)),
-        Expense("Netflix Subscription", 100.00, "Subscriptions", dateOn(2026, Calendar.AUGUST, 1)),
-        Expense("Kauai", 200.00, "Takeouts", dateOn(2026, Calendar.AUGUST, 15)),
-        Expense("Comic Warehouse", 250.00, "Games", dateOn(2026, Calendar.AUGUST, 18)),
-        Expense("Typo", 300.00, "Groceries", dateOn(2026, Calendar.AUGUST, 20)),
+    // Returns the Room database, opening it through DatabaseProvider if needed
+    private fun db(context: Context? = appContext): GoldfinDatabase {
+        database?.let { return it }
+        val ctx = context ?: appContext
+            ?: throw IllegalStateException("ExpenseTempMemory used before GoldfinApp initialised Room")
+        return DatabaseProvider.get(ctx).also { database = it }
+    }
 
-        //sample expenses for other months so the month picker shows a different list
-        Expense("Disney+", 99.00, "Subscriptions", dateOn(2026, Calendar.JULY, 1)),
-        Expense("Checkers", 850.00, "Groceries", dateOn(2026, Calendar.JULY, 7)),
-        Expense("Nandos", 180.00, "Takeouts", dateOn(2026, Calendar.JULY, 14)),
-        Expense("Steam Sale", 450.00, "Games", dateOn(2026, Calendar.JULY, 21)),
+    // Called from GoldfinApp.onCreate so stores are ready before LoginActivity
+    fun bind(context: Context) {
+        appContext = context.applicationContext
+        database = DatabaseProvider.get(context)
+    }
 
-        Expense("Spotify", 79.00, "Subscriptions", dateOn(2026, Calendar.JUNE, 1)),
-        Expense("Woolworths", 620.00, "Groceries", dateOn(2026, Calendar.JUNE, 9)),
-        Expense("Uber Eats", 240.00, "Takeouts", dateOn(2026, Calendar.JUNE, 16)),
+    // Category names for the expense picker: defaults plus any names already in Room
+    val categories: List<String>
+        get() {
+            val fromDb = db().categoryDao().getAll().map { it.name }
+            val defaults = listOf(
+                "General",
+                "Subscriptions",
+                "Games",
+                "Groceries",
+                "Takeouts"
+            )
+            // distinct() avoids showing the same category twice.
+            return (defaults + fromDb).distinct()
+        }
 
-        Expense("Showmax", 99.00, "Subscriptions", dateOn(2026, Calendar.MAY, 1)),
-        Expense("Engen", 480.00, "Groceries", dateOn(2026, Calendar.MAY, 11)),
-        Expense("Steers", 160.00, "Takeouts", dateOn(2026, Calendar.MAY, 22))
-    )
+    // Live list of all expenses from Room. Not a cached mutable list anymore
+    val expenses: List<Expense>
+        get() = db().expenseDao().getAll().map(EntityMappers::toExpense)
 
+    // Insert a new expense. id is forced to 0 so Room auto-generates a primary key
     fun addExpense(expense: Expense) {
-        expenses.add(0, expense)
+        val id = db().expenseDao().insert(EntityMappers.toExpenseEntity(expense.copy(id = 0)))
+        Log.d(TAG, "Inserted expense id=$id name=${expense.name}")
     }
 
+    // Update the expense at a list index by keeping the existing Room id
     fun updateExpense(index: Int, expense: Expense): Boolean {
-        if (index < 0 || index >= expenses.size) {
+        val current = expenses
+        if (index < 0 || index >= current.size) {
             return false
         }
-
-        expenses[index] = expense
-
+        val existingId = current[index].id
+        db().expenseDao().update(EntityMappers.toExpenseEntity(expense.copy(id = existingId)))
+        Log.d(TAG, "Updated expense id=$existingId name=${expense.name}")
         return true
     }
 
+    // Delete the expense currently shown at that index in the Room-backed list
     fun deleteExpense(index: Int): Boolean {
-        if (index < 0 || index >= expenses.size) {
+        val current = expenses
+        if (index < 0 || index >= current.size) {
             return false
         }
-
-        expenses.removeAt(index)
-
+        val entity = EntityMappers.toExpenseEntity(current[index])
+        db().expenseDao().delete(entity)
+        Log.d(TAG, "Deleted expense id=${entity.id} name=${entity.name}")
         return true
     }
 
+    // Short date for list subtitles, like "5 Aug"
     fun formatShortDate(millis: Long): String {
         return shortDateFormat.format(Date(millis))
     }
 
+    // Text under the expense name: "Games - 5 Aug"
     fun expenseSubtitle(expense: Expense): String {
         return "${expense.category} -> ${formatShortDate(expense.dateCreated)}"
     }
 
-    //only expenses whose created date is in that month
+    // Filter to expenses whose created date falls in the given calendar month
     fun expensesInMonth(year: Int, month: Int): List<Expense> {
         return expenses.filter { expense ->
             val calendar = Calendar.getInstance()
-
             calendar.timeInMillis = expense.dateCreated
-
             calendar.get(Calendar.YEAR) == year && calendar.get(Calendar.MONTH) == month
         }
     }
 
-    //month list, optionally narrowed by category, search, and/or a custom date range
+    // Builds the list shown on the Expenses screen
+    // Can use a custom date range, or fall back to the selected month
     fun expensesForScreen(
         year: Int,
         month: Int,
@@ -98,6 +120,7 @@ object ExpenseTempMemory {
         rangeStartMillis: Long? = null,
         rangeEndMillis: Long? = null
     ): List<Expense> {
+        // Prefer an explicit from/to range when the user picked one
         val baseList = if (rangeStartMillis != null && rangeEndMillis != null) {
             expensesInRange(rangeStartMillis, rangeEndMillis)
         } else {
@@ -113,11 +136,11 @@ object ExpenseTempMemory {
         }
 
         val query = searchQuery?.trim().orEmpty()
-
         if (query.isBlank()) {
             return byCategory
         }
 
+        // Search matches name, category, or description
         return byCategory.filter { expense ->
             expense.name.contains(query, ignoreCase = true) ||
                 expense.category.contains(query, ignoreCase = true) ||
@@ -125,15 +148,22 @@ object ExpenseTempMemory {
         }
     }
 
+    // Uses Room getBetween for a user-selectable period
     fun expensesInRange(startMillis: Long, endMillis: Long): List<Expense> {
         val start = startOfDay(startMillis)
         val end = endOfDay(endMillis)
-
-        return expenses.filter { expense ->
-            expense.dateCreated in start..end
-        }
+        return db().expenseDao().getBetween(start, end).map(EntityMappers::toExpense)
     }
 
+    // Category totals for a period via Room GROUP BY
+    fun totalsByCategoryInRange(startMillis: Long, endMillis: Long): Map<String, Double> {
+        val start = startOfDay(startMillis)
+        val end = endOfDay(endMillis)
+        return db().expenseDao().totalsByCategory(start, end)
+            .associate { it.categoryName to it.total }
+    }
+
+    // Sum of amounts for whatever the Expenses screen is currently filtering
     fun totalForScreen(
         year: Int,
         month: Int,
@@ -152,31 +182,29 @@ object ExpenseTempMemory {
         ).sumOf { it.amount }
     }
 
+    // Start of the calendar day for inclusive range queries
     fun startOfDay(millis: Long): Long {
         val calendar = Calendar.getInstance()
-
         calendar.timeInMillis = millis
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
-
         return calendar.timeInMillis
     }
 
+    // End of the calendar day for inclusive range queries
     fun endOfDay(millis: Long): Long {
         val calendar = Calendar.getInstance()
-
         calendar.timeInMillis = millis
         calendar.set(Calendar.HOUR_OF_DAY, 23)
         calendar.set(Calendar.MINUTE, 59)
         calendar.set(Calendar.SECOND, 59)
         calendar.set(Calendar.MILLISECOND, 999)
-
         return calendar.timeInMillis
     }
 
-    //months shown in the expenses dropdown. Figma months plus any month that has an expense
+    // Months shown in the expenses dropdown
     fun filterMonths(): List<Pair<Int, Int>> {
         val months = linkedSetOf(
             2026 to Calendar.AUGUST,
@@ -187,36 +215,37 @@ object ExpenseTempMemory {
 
         expenses.forEach { expense ->
             val calendar = Calendar.getInstance()
-
             calendar.timeInMillis = expense.dateCreated
-
             months.add(calendar.get(Calendar.YEAR) to calendar.get(Calendar.MONTH))
         }
 
+        // Newest months first
         return months.sortedWith(
             compareByDescending<Pair<Int, Int>> { it.first }
                 .thenByDescending { it.second }
         )
     }
 
+    // Human-readable month title for buttons / headers, like "August 2026"
     fun monthTitle(year: Int, month: Int): String {
         val calendar = Calendar.getInstance()
-
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, 1)
-
         return monthFormat.format(calendar.time)
     }
 
+    // Rand formatting for totals and list amounts
     fun formatAmount(amount: Double): String {
         return "R " + String.format(Locale.US, "%,.2f", amount)
     }
 
+    // Full date string for edit fields, like "2026/08/05"
     fun formatDate(millis: Long): String {
         return dateFormat.format(Date(millis))
     }
 
+    // Parse a typed date back to millis; falls back to "now" if the text is invalid
     fun parseDate(text: String): Long {
         return try {
             dateFormat.parse(text)?.time ?: System.currentTimeMillis()
@@ -225,12 +254,11 @@ object ExpenseTempMemory {
         }
     }
 
+    // Build millis for a specific calendar day (used by seed data and date pickers)
     fun dateOn(year: Int, month: Int, day: Int): Long {
         val calendar = Calendar.getInstance()
-
         calendar.clear()
         calendar.set(year, month, day)
-
         return calendar.timeInMillis
     }
 }
