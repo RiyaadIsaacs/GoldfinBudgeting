@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.goldfinbudgeting.data.DatabaseProvider
 import com.example.goldfinbudgeting.data.EntityMappers
 import com.example.goldfinbudgeting.data.GoldfinDatabase
+import com.example.goldfinbudgeting.data.MonthlyGoalEntity
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -260,5 +261,24 @@ object ExpenseTempMemory {
         calendar.clear()
         calendar.set(year, month, day)
         return calendar.timeInMillis
+    }
+
+    // Monthly spending goals for one calendar month, or null if the user has not set any
+    fun monthlyGoals(year: Int, month: Int): Pair<Double, Double>? {
+        val goal = db().monthlyGoalDao().get(year, month) ?: return null
+        return goal.minGoal to goal.maxGoal
+    }
+
+    // Save or replace the min / max spending goals for one month
+    fun setMonthlyGoals(year: Int, month: Int, minGoal: Double, maxGoal: Double) {
+        db().monthlyGoalDao().upsert(
+            MonthlyGoalEntity(
+                year = year,
+                month = month,
+                minGoal = minGoal,
+                maxGoal = maxGoal
+            )
+        )
+        Log.d(TAG, "Saved monthly goals year=$year month=$month min=$minGoal max=$maxGoal")
     }
 }

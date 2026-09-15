@@ -233,6 +233,117 @@
 
                         </LinearLayout>
 
+                        <!--monthly min / max spending goals for the selected month-->
+                        <LinearLayout
+                            android:id="@+id/monthlyGoalsSection"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="vertical"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:id="@+id/monthlyGoalsText"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Tap to set monthly goals"
+                                    android:textSize="13sp"
+                                    android:textColor="#666666"/>
+
+                                <TextView
+                                    android:id="@+id/editMonthlyGoalsButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Edit goals"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#C9A200"
+                                    android:clickable="true"
+                                    android:focusable="true"/>
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/monthlyGoalsSpentText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:textSize="13sp"
+                                android:textColor="#666666"/>
+
+                            <!--same style progress bar as envelope cards-->
+                            <FrameLayout
+                                android:id="@+id/monthlyGoalsProgress"
+                                android:layout_width="match_parent"
+                                android:layout_height="20dp"
+                                android:layout_marginTop="8dp"
+                                android:visibility="gone">
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="10dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="@drawable/rounded_track_gray"/>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="10dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:orientation="horizontal"
+                                    android:weightSum="100">
+
+                                    <View
+                                        android:id="@+id/monthlyGoalsFillBar"
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="0"
+                                        android:background="@drawable/rounded_fill_gold"/>
+
+                                    <View
+                                        android:id="@+id/monthlyGoalsFillSpacer"
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="100"/>
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal"
+                                    android:weightSum="100">
+
+                                    <View
+                                        android:id="@+id/monthlyGoalsMarkerBefore"
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="0"/>
+
+                                    <View
+                                        android:layout_width="2dp"
+                                        android:layout_height="match_parent"
+                                        android:background="#000000"/>
+
+                                    <View
+                                        android:id="@+id/monthlyGoalsMarkerAfter"
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="100"/>
+
+                                </LinearLayout>
+
+                            </FrameLayout>
+
+                        </LinearLayout>
+
                         <!--gold divider-->
                         <View
                             android:layout_width="match_parent"

@@ -142,5 +142,18 @@ object DatabaseProvider {
             expenseDao.insertAll(expenses)
             Log.d(TAG, "Seeded ${expenses.size} expenses")
         }
+
+        // Sample monthly min / max spending goals
+        if (db.monthlyGoalDao().get(2026, Calendar.AUGUST) == null) {
+            db.monthlyGoalDao().upsert(
+                MonthlyGoalEntity(
+                    year = 2026,
+                    month = Calendar.AUGUST,
+                    minGoal = 2000.00,
+                    maxGoal = 4000.00
+                )
+            )
+            Log.d(TAG, "Seeded August 2026 monthly goals")
+        }
     }
 }

@@ -9,9 +9,10 @@ import androidx.room.RoomDatabase
     entities = [
         UserEntity::class,
         CategoryEntity::class,
-        ExpenseEntity::class
+        ExpenseEntity::class,
+        MonthlyGoalEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class GoldfinDatabase : RoomDatabase() {
@@ -25,4 +26,7 @@ abstract class GoldfinDatabase : RoomDatabase() {
 
     // Access the expenses table.
     abstract fun expenseDao(): ExpenseDao
+
+    // Access monthly min / max spending goals.
+    abstract fun monthlyGoalDao(): MonthlyGoalDao
 }

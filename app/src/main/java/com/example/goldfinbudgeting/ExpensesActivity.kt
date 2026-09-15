@@ -7,20 +7,24 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import java.util.Calendar
+import java.util.Locale
 
 class ExpensesActivity : AppCompatActivity() {
 
@@ -114,6 +118,18 @@ class ExpensesActivity : AppCompatActivity() {
 
         clearDateRangeButton.setOnClickListener {
             clearDateRange()
+        }
+
+        //open the monthly goals dialog from the goals row or Edit goals
+        val monthlyGoalsSection = findViewById<LinearLayout>(R.id.monthlyGoalsSection)
+        val editMonthlyGoalsButton = findViewById<TextView>(R.id.editMonthlyGoalsButton)
+
+        monthlyGoalsSection.setOnClickListener {
+            showMonthlyGoalsDialog()
+        }
+
+        editMonthlyGoalsButton.setOnClickListener {
+            showMonthlyGoalsDialog()
         }
 
         //open side menu
@@ -399,6 +415,8 @@ class ExpensesActivity : AppCompatActivity() {
 
         expensesTotalText.text = ExpenseTempMemory.formatAmount(total)
 
+        refreshMonthlyGoalsUi()
+
         expenseListContainer.removeAllViews()
 
         filtered.forEachIndexed { index, expense ->
@@ -449,6 +467,106 @@ class ExpensesActivity : AppCompatActivity() {
             }
 
             expenseListContainer.addView(row)
+        }
+    }
+
+    private fun showMonthlyGoalsDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_monthly_goals, null)
+        val minGoalEditText = dialogView.findViewById<EditText>(R.id.minGoalEditText)
+        val maxGoalEditText = dialogView.findViewById<EditText>(R.id.maxGoalEditText)
+
+        val existing = ExpenseTempMemory.monthlyGoals(selectedYear, selectedMonth)
+
+        if (existing != null) {
+            minGoalEditText.setText(String.format(Locale.US, "%.2f", existing.first))
+            maxGoalEditText.setText(String.format(Locale.US, "%.2f", existing.second))
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Monthly goals · ${ExpenseTempMemory.monthTitle(selectedYear, selectedMonth)}")
+            .setView(dialogView)
+            .setPositiveButton("Save") { _, _ ->
+                val minGoal = minGoalEditText.text.toString().toDoubleOrNull()
+                val maxGoal = maxGoalEditText.text.toString().toDoubleOrNull()
+
+                if (minGoal == null || maxGoal == null || minGoal < 0.0 || maxGoal <= 0.0) {
+                    Toast.makeText(this, "Please enter valid min and max goals", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                if (minGoal > maxGoal) {
+                    Toast.makeText(this, "Minimum cannot be higher than maximum", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                ExpenseTempMemory.setMonthlyGoals(selectedYear, selectedMonth, minGoal, maxGoal)
+                Toast.makeText(this, "Monthly goals saved", Toast.LENGTH_SHORT).show()
+                refreshMonthlyGoalsUi()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun refreshMonthlyGoalsUi() {
+        val monthlyGoalsText = findViewById<TextView>(R.id.monthlyGoalsText)
+        val monthlyGoalsSpentText = findViewById<TextView>(R.id.monthlyGoalsSpentText)
+        val monthlyGoalsProgress = findViewById<FrameLayout>(R.id.monthlyGoalsProgress)
+        val fillBar = findViewById<View>(R.id.monthlyGoalsFillBar)
+        val fillSpacer = findViewById<View>(R.id.monthlyGoalsFillSpacer)
+        val markerBefore = findViewById<View>(R.id.monthlyGoalsMarkerBefore)
+        val markerAfter = findViewById<View>(R.id.monthlyGoalsMarkerAfter)
+
+        //goals are always measured against the full selected month, not search / category filters
+        val monthSpent = ExpenseTempMemory.expensesInMonth(selectedYear, selectedMonth).sumOf { it.amount }
+        val goals = ExpenseTempMemory.monthlyGoals(selectedYear, selectedMonth)
+
+        monthlyGoalsSpentText.text = "Spent this month: ${ExpenseTempMemory.formatAmount(monthSpent)}"
+
+        if (goals == null) {
+            monthlyGoalsText.text = "Tap to set monthly goals"
+            monthlyGoalsProgress.visibility = View.GONE
+            return
+        }
+
+        val minGoal = goals.first
+        val maxGoal = goals.second
+
+        monthlyGoalsText.text =
+            "${ExpenseTempMemory.formatAmount(minGoal)} Min / ${ExpenseTempMemory.formatAmount(maxGoal)} Max"
+        monthlyGoalsProgress.visibility = View.VISIBLE
+
+        val fillPercent = if (maxGoal > 0) {
+            ((monthSpent / maxGoal) * 100).coerceAtMost(100.0)
+        } else {
+            0.0
+        }
+
+        val markerPercent = if (maxGoal > 0) {
+            ((minGoal / maxGoal) * 100).coerceIn(0.0, 100.0)
+        } else {
+            0.0
+        }
+
+        val fillParams = fillBar.layoutParams as LinearLayout.LayoutParams
+        fillParams.weight = fillPercent.toFloat()
+        fillBar.layoutParams = fillParams
+
+        val spacerParams = fillSpacer.layoutParams as LinearLayout.LayoutParams
+        spacerParams.weight = (100 - fillPercent).toFloat()
+        fillSpacer.layoutParams = spacerParams
+
+        val beforeParams = markerBefore.layoutParams as LinearLayout.LayoutParams
+        beforeParams.weight = markerPercent.toFloat()
+        markerBefore.layoutParams = beforeParams
+
+        val afterParams = markerAfter.layoutParams as LinearLayout.LayoutParams
+        afterParams.weight = (100 - markerPercent).toFloat()
+        markerAfter.layoutParams = afterParams
+
+        if (maxGoal > 0 && monthSpent >= maxGoal) {
+            fillBar.setBackgroundResource(R.drawable.rounded_fill_red)
+        } else {
+            fillBar.setBackgroundResource(R.drawable.rounded_fill_gold)
         }
     }
 }
