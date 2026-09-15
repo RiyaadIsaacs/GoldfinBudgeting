@@ -28,7 +28,7 @@ class EditExpensesActivity : AppCompatActivity() {
     private var receiptPath: String? = null
 
     //null means the form is creating a new expense
-    private var editingIndex: Int? = null
+    private var editingExpenseId: Long? = null
 
     //keep edit list on the same month as the main expenses screen
     private var selectedYear = 2026
@@ -190,10 +190,17 @@ class EditExpensesActivity : AppCompatActivity() {
         }
 
         //if the main screen asked to edit a specific expense, load it now
-        val expenseIndex = intent.getIntExtra("expense_index", -1)
+        val expenseId = intent.getLongExtra("expense_id", -1L)
 
-        if (expenseIndex >= 0) {
-            loadExpenseIntoForm(expenseIndex)
+        if (expenseId > 0L) {
+            loadExpenseIntoForm(expenseId)
+        } else {
+            //older callers may still send a list index
+            val expenseIndex = intent.getIntExtra("expense_index", -1)
+
+            if (expenseIndex >= 0 && expenseIndex < ExpenseTempMemory.expenses.size) {
+                loadExpenseIntoForm(ExpenseTempMemory.expenses[expenseIndex].id)
+            }
         }
 
         refreshEditableExpenseList()
@@ -243,10 +250,10 @@ class EditExpensesActivity : AppCompatActivity() {
             receiptPath = receiptPath
         )
 
-        val currentEditIndex = editingIndex
+        val currentEditId = editingExpenseId
 
-        if (currentEditIndex != null) {
-            if (!ExpenseTempMemory.updateExpense(currentEditIndex, expense)) {
+        if (currentEditId != null) {
+            if (!ExpenseTempMemory.updateExpenseById(currentEditId, expense)) {
                 Toast.makeText(this, "Could not update that expense", Toast.LENGTH_SHORT).show()
 
                 return
@@ -274,12 +281,8 @@ class EditExpensesActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun loadExpenseIntoForm(index: Int) {
-        if (index < 0 || index >= ExpenseTempMemory.expenses.size) {
-            return
-        }
-
-        val expense = ExpenseTempMemory.expenses[index]
+    private fun loadExpenseIntoForm(expenseId: Long) {
+        val expense = ExpenseTempMemory.expenseById(expenseId) ?: return
         val entryNameEditText = findViewById<EditText>(R.id.entryNameEditText)
         val amountEditText = findViewById<EditText>(R.id.amountEditText)
         val dateEditText = findViewById<EditText>(R.id.dateEditText)
@@ -289,7 +292,7 @@ class EditExpensesActivity : AppCompatActivity() {
         val categoryText = findViewById<TextView>(R.id.categoryText)
         val addButton = findViewById<TextView>(R.id.addButton)
 
-        editingIndex = index
+        editingExpenseId = expense.id
         selectedCategory = expense.category
         receiptPath = expense.receiptPath
 
@@ -318,7 +321,7 @@ class EditExpensesActivity : AppCompatActivity() {
         val categoryText = findViewById<TextView>(R.id.categoryText)
         val addButton = findViewById<TextView>(R.id.addButton)
 
-        editingIndex = null
+        editingExpenseId = null
         selectedCategory = "General"
         receiptPath = null
 
@@ -356,13 +359,11 @@ class EditExpensesActivity : AppCompatActivity() {
         container.removeAllViews()
 
         //only show expenses for the month opened from the main screen
-        val monthExpenses = ExpenseTempMemory.expenses.mapIndexed { index, expense ->
-            index to expense
-        }.filter { (_, expense) ->
+        val monthExpenses = ExpenseTempMemory.expenses.filter { expense ->
             expenseIsInSelectedMonth(expense)
         }
 
-        monthExpenses.forEachIndexed { rowIndex, (index, expense) ->
+        monthExpenses.forEachIndexed { rowIndex, expense ->
             val row = layoutInflater.inflate(R.layout.item_edit_expense_row, container, false)
 
             val nameText = row.findViewById<TextView>(R.id.editExpenseNameText)
@@ -390,35 +391,32 @@ class EditExpensesActivity : AppCompatActivity() {
             }
 
             val startEdit = View.OnClickListener {
-                loadExpenseIntoForm(index)
+                loadExpenseIntoForm(expense.id)
             }
 
             row.setOnClickListener(startEdit)
             editButton.setOnClickListener(startEdit)
 
             deleteButton.setOnClickListener {
-                confirmDeleteExpense(index, expense.name)
+                confirmDeleteExpense(expense.id, expense.name)
             }
 
             container.addView(row)
         }
     }
 
-    private fun confirmDeleteExpense(index: Int, name: String) {
+    private fun confirmDeleteExpense(expenseId: Long, name: String) {
         AlertDialog.Builder(this)
             .setTitle("Delete expense")
             .setMessage("Are you sure you wish to delete \"$name\"?")
             .setPositiveButton("Delete") { _, _ ->
-                val wasEditingThis = editingIndex == index
+                val wasEditingThis = editingExpenseId == expenseId
 
-                if (ExpenseTempMemory.deleteExpense(index)) {
+                if (ExpenseTempMemory.deleteExpenseById(expenseId)) {
                     Toast.makeText(this, "Deleted $name", Toast.LENGTH_SHORT).show()
 
                     if (wasEditingThis) {
                         clearFormForNewExpense()
-                    } else if (editingIndex != null && editingIndex!! > index) {
-                        //indexes after the deleted row shift down by one
-                        editingIndex = editingIndex!! - 1
                     }
 
                     refreshEditableExpenseList()

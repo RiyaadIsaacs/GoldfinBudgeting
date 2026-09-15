@@ -38,6 +38,10 @@ interface ExpenseDao {
     @Query("SELECT * FROM expenses ORDER BY dateCreated DESC, id DESC")
     fun getAll(): List<ExpenseEntity>
 
+    // One expense by primary key
+    @Query("SELECT * FROM expenses WHERE id = :id LIMIT 1")
+    fun getById(id: Long): ExpenseEntity?
+
     // Expenses whose dateCreated falls inside a user-selected period
     @Query(
         "SELECT * FROM expenses WHERE dateCreated BETWEEN :startMillis AND :endMillis " +

@@ -447,19 +447,13 @@ class ExpensesActivity : AppCompatActivity() {
 
             //tap a row to fix mistakes on the edit expenses screen
             row.setOnClickListener {
-                val expenseIndex = ExpenseTempMemory.expenses.indexOf(expense)
-
-                if (expenseIndex < 0) {
-                    return@setOnClickListener
-                }
-
                 val calendar = Calendar.getInstance()
 
                 calendar.timeInMillis = expense.dateCreated
 
                 val intent = Intent(this, EditExpensesActivity::class.java)
 
-                intent.putExtra("expense_index", expenseIndex)
+                intent.putExtra("expense_id", expense.id)
                 intent.putExtra("filter_year", calendar.get(Calendar.YEAR))
                 intent.putExtra("filter_month", calendar.get(Calendar.MONTH))
 

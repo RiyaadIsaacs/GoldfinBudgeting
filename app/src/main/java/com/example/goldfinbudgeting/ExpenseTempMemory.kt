@@ -74,9 +74,16 @@ object ExpenseTempMemory {
         if (index < 0 || index >= current.size) {
             return false
         }
-        val existingId = current[index].id
-        db().expenseDao().update(EntityMappers.toExpenseEntity(expense.copy(id = existingId)))
-        Log.d(TAG, "Updated expense id=$existingId name=${expense.name}")
+        return updateExpenseById(current[index].id, expense)
+    }
+
+    // Update by Room id so edits stay correct even if the list order changes
+    fun updateExpenseById(id: Long, expense: Expense): Boolean {
+        if (id <= 0L || db().expenseDao().getById(id) == null) {
+            return false
+        }
+        db().expenseDao().update(EntityMappers.toExpenseEntity(expense.copy(id = id)))
+        Log.d(TAG, "Updated expense id=$id name=${expense.name}")
         return true
     }
 
@@ -86,10 +93,20 @@ object ExpenseTempMemory {
         if (index < 0 || index >= current.size) {
             return false
         }
-        val entity = EntityMappers.toExpenseEntity(current[index])
+        return deleteExpenseById(current[index].id)
+    }
+
+    // Delete by Room id
+    fun deleteExpenseById(id: Long): Boolean {
+        val entity = db().expenseDao().getById(id) ?: return false
         db().expenseDao().delete(entity)
         Log.d(TAG, "Deleted expense id=${entity.id} name=${entity.name}")
         return true
+    }
+
+    // Load one expense by Room id, or null if it was deleted
+    fun expenseById(id: Long): Expense? {
+        return db().expenseDao().getById(id)?.let(EntityMappers::toExpense)
     }
 
     // Short date for list subtitles, like "5 Aug"
