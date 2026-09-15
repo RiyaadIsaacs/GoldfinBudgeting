@@ -6,20 +6,12 @@ import com.example.goldfinbudgeting.data.DatabaseProvider
 import com.example.goldfinbudgeting.data.EntityMappers
 import com.example.goldfinbudgeting.data.GoldfinDatabase
 import com.example.goldfinbudgeting.data.MonthlyGoalEntity
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 // ExpenseTempMemory used to keep expenses in a mutableList in RAM
 // It now reads / writes the Room expenses table so data survives app restarts
 object ExpenseTempMemory {
     private const val TAG = "ExpenseTempMemory"
-
-    // Date helpers used by the expenses screens for display and parsing.
-    private val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.US)
-    private val shortDateFormat = SimpleDateFormat("d MMM", Locale.US)
-    private val monthFormat = SimpleDateFormat("MMMM yyyy", Locale.US)
 
     // Cached Room database reference after bind() / first use
     @Volatile
@@ -111,21 +103,17 @@ object ExpenseTempMemory {
 
     // Short date for list subtitles, like "5 Aug"
     fun formatShortDate(millis: Long): String {
-        return shortDateFormat.format(Date(millis))
+        return ExpenseLogic.formatShortDate(millis)
     }
 
     // Text under the expense name: "Games - 5 Aug"
     fun expenseSubtitle(expense: Expense): String {
-        return "${expense.category} -> ${formatShortDate(expense.dateCreated)}"
+        return ExpenseLogic.expenseSubtitle(expense)
     }
 
     // Filter to expenses whose created date falls in the given calendar month
     fun expensesInMonth(year: Int, month: Int): List<Expense> {
-        return expenses.filter { expense ->
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = expense.dateCreated
-            calendar.get(Calendar.YEAR) == year && calendar.get(Calendar.MONTH) == month
-        }
+        return ExpenseLogic.expensesInMonth(expenses, year, month)
     }
 
     // Builds the list shown on the Expenses screen
@@ -138,45 +126,28 @@ object ExpenseTempMemory {
         rangeStartMillis: Long? = null,
         rangeEndMillis: Long? = null
     ): List<Expense> {
-        // Prefer an explicit from/to range when the user picked one
-        val baseList = if (rangeStartMillis != null && rangeEndMillis != null) {
-            expensesInRange(rangeStartMillis, rangeEndMillis)
-        } else {
-            expensesInMonth(year, month)
-        }
-
-        val byCategory = if (category.isNullOrBlank()) {
-            baseList
-        } else {
-            baseList.filter { expense ->
-                expense.category.equals(category, ignoreCase = true)
-            }
-        }
-
-        val query = searchQuery?.trim().orEmpty()
-        if (query.isBlank()) {
-            return byCategory
-        }
-
-        // Search matches name, category, or description
-        return byCategory.filter { expense ->
-            expense.name.contains(query, ignoreCase = true) ||
-                expense.category.contains(query, ignoreCase = true) ||
-                expense.description.contains(query, ignoreCase = true)
-        }
+        return ExpenseLogic.expensesForScreen(
+            expenses = expenses,
+            year = year,
+            month = month,
+            category = category,
+            searchQuery = searchQuery,
+            rangeStartMillis = rangeStartMillis,
+            rangeEndMillis = rangeEndMillis
+        )
     }
 
     // Uses Room getBetween for a user-selectable period
     fun expensesInRange(startMillis: Long, endMillis: Long): List<Expense> {
-        val start = startOfDay(startMillis)
-        val end = endOfDay(endMillis)
+        val start = ExpenseLogic.startOfDay(startMillis)
+        val end = ExpenseLogic.endOfDay(endMillis)
         return db().expenseDao().getBetween(start, end).map(EntityMappers::toExpense)
     }
 
     // Category totals for a period via Room GROUP BY
     fun totalsByCategoryInRange(startMillis: Long, endMillis: Long): Map<String, Double> {
-        val start = startOfDay(startMillis)
-        val end = endOfDay(endMillis)
+        val start = ExpenseLogic.startOfDay(startMillis)
+        val end = ExpenseLogic.endOfDay(endMillis)
         return db().expenseDao().totalsByCategory(start, end)
             .associate { it.categoryName to it.total }
     }
@@ -190,36 +161,26 @@ object ExpenseTempMemory {
         rangeStartMillis: Long? = null,
         rangeEndMillis: Long? = null
     ): Double {
-        return expensesForScreen(
-            year,
-            month,
-            category,
-            searchQuery,
-            rangeStartMillis,
-            rangeEndMillis
-        ).sumOf { it.amount }
+        return ExpenseLogic.totalAmount(
+            expensesForScreen(
+                year,
+                month,
+                category,
+                searchQuery,
+                rangeStartMillis,
+                rangeEndMillis
+            )
+        )
     }
 
     // Start of the calendar day for inclusive range queries
     fun startOfDay(millis: Long): Long {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = millis
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-        return calendar.timeInMillis
+        return ExpenseLogic.startOfDay(millis)
     }
 
     // End of the calendar day for inclusive range queries
     fun endOfDay(millis: Long): Long {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = millis
-        calendar.set(Calendar.HOUR_OF_DAY, 23)
-        calendar.set(Calendar.MINUTE, 59)
-        calendar.set(Calendar.SECOND, 59)
-        calendar.set(Calendar.MILLISECOND, 999)
-        return calendar.timeInMillis
+        return ExpenseLogic.endOfDay(millis)
     }
 
     // Months shown in the expenses dropdown
@@ -246,38 +207,27 @@ object ExpenseTempMemory {
 
     // Human-readable month title for buttons / headers, like "August 2026"
     fun monthTitle(year: Int, month: Int): String {
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.YEAR, year)
-        calendar.set(Calendar.MONTH, month)
-        calendar.set(Calendar.DAY_OF_MONTH, 1)
-        return monthFormat.format(calendar.time)
+        return ExpenseLogic.monthTitle(year, month)
     }
 
     // Rand formatting for totals and list amounts
     fun formatAmount(amount: Double): String {
-        return "R " + String.format(Locale.US, "%,.2f", amount)
+        return ExpenseLogic.formatAmount(amount)
     }
 
     // Full date string for edit fields, like "2026/08/05"
     fun formatDate(millis: Long): String {
-        return dateFormat.format(Date(millis))
+        return ExpenseLogic.formatDate(millis)
     }
 
     // Parse a typed date back to millis; falls back to "now" if the text is invalid
     fun parseDate(text: String): Long {
-        return try {
-            dateFormat.parse(text)?.time ?: System.currentTimeMillis()
-        } catch (_: Exception) {
-            System.currentTimeMillis()
-        }
+        return ExpenseLogic.parseDate(text)
     }
 
     // Build millis for a specific calendar day (used by seed data and date pickers)
     fun dateOn(year: Int, month: Int, day: Int): Long {
-        val calendar = Calendar.getInstance()
-        calendar.clear()
-        calendar.set(year, month, day)
-        return calendar.timeInMillis
+        return ExpenseLogic.dateOn(year, month, day)
     }
 
     // Monthly spending goals for one calendar month, or null if the user has not set any

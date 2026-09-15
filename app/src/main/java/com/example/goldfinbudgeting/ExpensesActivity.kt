@@ -483,13 +483,10 @@ class ExpensesActivity : AppCompatActivity() {
                 val minGoal = minGoalEditText.text.toString().toDoubleOrNull()
                 val maxGoal = maxGoalEditText.text.toString().toDoubleOrNull()
 
-                if (minGoal == null || maxGoal == null || minGoal < 0.0 || maxGoal <= 0.0) {
+                if (minGoal == null || maxGoal == null ||
+                    !ExpenseLogic.areMonthlyGoalsValid(minGoal, maxGoal)
+                ) {
                     Toast.makeText(this, "Please enter valid min and max goals", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
-
-                if (minGoal > maxGoal) {
-                    Toast.makeText(this, "Minimum cannot be higher than maximum", Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
 
@@ -529,11 +526,7 @@ class ExpensesActivity : AppCompatActivity() {
             "${ExpenseTempMemory.formatAmount(minGoal)} Min / ${ExpenseTempMemory.formatAmount(maxGoal)} Max"
         monthlyGoalsProgress.visibility = View.VISIBLE
 
-        val fillPercent = if (maxGoal > 0) {
-            ((monthSpent / maxGoal) * 100).coerceAtMost(100.0)
-        } else {
-            0.0
-        }
+        val fillPercent = ExpenseLogic.progressFillPercent(monthSpent, maxGoal)
 
         val markerPercent = if (maxGoal > 0) {
             ((minGoal / maxGoal) * 100).coerceIn(0.0, 100.0)
