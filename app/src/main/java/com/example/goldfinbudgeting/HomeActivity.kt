@@ -13,8 +13,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 //recycler view
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.Calendar
 
 class HomeActivity : AppCompatActivity() {
+
+    // Total of all expenses in the current calendar month
+    private var moneySpentThisMonth: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +58,9 @@ class HomeActivity : AppCompatActivity() {
         //setup envelope list with adapter
         envelopeRecyclerView.layoutManager = LinearLayoutManager(this)
         envelopeRecyclerView.adapter = EnvelopeAdapter(EnvelopeTempMemory.envelopes)
+
+        // Show the monthly total 
+        refreshHomeTotals()
 
         //open side menu
         menuIcon.setOnClickListener {
@@ -99,7 +106,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    //refresh evelope list when screen is visible
+    //refresh envelope list and monthly total when screen is visible again
     override fun onResume() {
         super.onResume()
 
@@ -107,5 +114,21 @@ class HomeActivity : AppCompatActivity() {
 
         //adapter
         envelopeRecyclerView.adapter = EnvelopeAdapter(EnvelopeTempMemory.envelopes)
+
+        // Recalculate after returning from expenses / envelopes screens
+        refreshHomeTotals()
+    }
+
+    // Sum expenses for the current calendar month and push the value into the home card
+    private fun refreshHomeTotals() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+
+        moneySpentThisMonth = ExpenseTempMemory.expensesInMonth(year, month)
+            .sumOf { expense -> expense.amount }
+
+        val totalSpentThisMonthText = findViewById<TextView>(R.id.totalSpentThisMonthText)
+        totalSpentThisMonthText.text = ExpenseTempMemory.formatAmount(moneySpentThisMonth)
     }
 }
