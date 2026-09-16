@@ -7,14 +7,14 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 
-// Simple result type for "total spent per category in a date range"
+// Simple result type for total spent per category in date range
 // Room fills categoryName and total from the SELECT aliases below
 data class CategoryTotal(
     val categoryName: String,
     val total: Double
 )
 
-//list expenses in a period + category totals in a period
+//list expenses in a period and category totals in a period
 @Dao
 interface ExpenseDao {
 
@@ -26,7 +26,7 @@ interface ExpenseDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insertAll(expenses: List<ExpenseEntity>)
 
-    // Update an existing expense row (must include the correct id)
+    // Update an existing expense row. must include the correct id
     @Update
     fun update(expense: ExpenseEntity)
 
@@ -34,7 +34,7 @@ interface ExpenseDao {
     @Delete
     fun delete(expense: ExpenseEntity)
 
-    // All expenses, newest first — used by ExpenseTempMemory.expenses
+    // All expenses, newest first - used by ExpenseTempMemory.expenses
     @Query("SELECT * FROM expenses ORDER BY dateCreated DESC, id DESC")
     fun getAll(): List<ExpenseEntity>
 
@@ -57,7 +57,8 @@ interface ExpenseDao {
     )
     fun totalsByCategory(startMillis: Long, endMillis: Long): List<CategoryTotal>
 
-    // Lifetime total spent in one category (used to fill Envelope.spent on the UI)
+    // Lifetime total spent in one category
+    // used to fill Envelope.spent on the UI
     @Query(
         "SELECT COALESCE(SUM(amount), 0) FROM expenses WHERE categoryName = :categoryName"
     )
@@ -70,7 +71,7 @@ interface ExpenseDao {
     )
     fun sumForCategoryBetween(categoryName: String, startMillis: Long, endMillis: Long): Double
 
-    // Row count — used to seed sample expenses only when the table is empty
+    // Row count - used to seed sample expenses only when the table is empty
     @Query("SELECT COUNT(*) FROM expenses")
     fun count(): Int
 }

@@ -16,17 +16,17 @@ import androidx.room.RoomDatabase
     exportSchema = false
 )
 abstract class GoldfinDatabase : RoomDatabase() {
-    // Room generates the real implementations at compile time via KSP.
+    // Room generates the real implementations at compile time via KSP
 
-    // Access the users table.
+    // Access the users table
     abstract fun userDao(): UserDao
 
-    // Access the categories / envelopes table.
+    // Access the categories / envelopes table
     abstract fun categoryDao(): CategoryDao
 
-    // Access the expenses table.
+    // Access the expenses table
     abstract fun expenseDao(): ExpenseDao
 
-    // Access monthly min / max spending goals.
+    // Access monthly min / max spending goals
     abstract fun monthlyGoalDao(): MonthlyGoalDao
 }

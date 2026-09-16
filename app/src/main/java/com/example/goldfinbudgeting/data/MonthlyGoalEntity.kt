@@ -11,7 +11,7 @@ data class MonthlyGoalEntity(
     // Calendar year, e.g. 2026
     val year: Int,
 
-    // Calendar.MONTH value (0 = January ... 11 = December)
+    // Calendar.MONTH value. like 0 = January to 11 = December
     val month: Int,
 
     // Minimum monthly spending goal

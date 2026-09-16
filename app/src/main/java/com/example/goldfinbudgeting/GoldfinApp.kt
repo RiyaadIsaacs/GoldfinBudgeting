@@ -9,9 +9,11 @@ import com.example.goldfinbudgeting.data.DatabaseProvider
 class GoldfinApp : Application() {
     override fun onCreate() {
         super.onCreate()
+
         // Open (or create) the local Room database and seed demo data if needed
         Log.d("GoldfinApp", "Initialising Room database")
         DatabaseProvider.get(this)
+
         // Give the expense / envelope stores an Application context so they can reach Room
         ExpenseTempMemory.bind(this)
         EnvelopeTempMemory.bind(this)

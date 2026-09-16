@@ -29,12 +29,12 @@ object EnvelopeTempMemory {
     // Returns the shared Room database, creating it if needed
     private fun db(context: Context? = appContext): GoldfinDatabase {
         database?.let { return it }
-        val ctx = context ?: appContext
-            ?: throw IllegalStateException("EnvelopeTempMemory used before GoldfinApp initialised Room")
+        val ctx = context ?: appContext?: throw IllegalStateException("EnvelopeTempMemory used before GoldfinApp initialised Room")
+
         return DatabaseProvider.get(ctx).also { database = it }
     }
 
-    // Called from GoldfinApp so categories are available before any Activity opens
+    // Called from GoldfinApp so categories are available before any activity opens
     fun bind(context: Context) {
         appContext = context.applicationContext
         database = DatabaseProvider.get(context)
@@ -63,10 +63,11 @@ object EnvelopeTempMemory {
         val entity = if (envelope.id != 0L) {
             EntityMappers.toCategoryEntity(envelope)
         } else {
-            db().categoryDao().getByName(envelope.name)
-                ?: EntityMappers.toCategoryEntity(envelope)
+            db().categoryDao().getByName(envelope.name) ?: EntityMappers.toCategoryEntity(envelope)
         }
+
         db().categoryDao().delete(entity)
+
         Log.d(TAG, "Deleted category id=${entity.id} name=${entity.name}")
     }
 
@@ -100,7 +101,7 @@ object EnvelopeTempMemory {
         )
     }
 
-    // Human-readable month title, e.g. "August 2026"
+    // Human-readable month title, like August 2026
     fun monthTitle(year: Int, month: Int): String {
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.YEAR, year)

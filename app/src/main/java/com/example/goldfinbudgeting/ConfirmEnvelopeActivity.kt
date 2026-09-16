@@ -51,8 +51,8 @@ class ConfirmEnvelopeActivity : AppCompatActivity() {
             finish()
         }
 
-        // Do the add or delete after they say yes.
-        // Both paths go through EnvelopeTempMemory, which now persists to Room.
+        // Do the add or delete after they say yes
+        // Both paths go through EnvelopeTempMemory, which now persists to Room
         yesButton.setOnClickListener {
             if (action == "delete") {
                 if (index >= 0 && index < EnvelopeTempMemory.envelopes.size) {

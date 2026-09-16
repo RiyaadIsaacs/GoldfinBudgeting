@@ -101,12 +101,12 @@ object ExpenseTempMemory {
         return db().expenseDao().getById(id)?.let(EntityMappers::toExpense)
     }
 
-    // Short date for list subtitles, like "5 Aug"
+    // Short date for list subtitles, like 5 Aug
     fun formatShortDate(millis: Long): String {
         return ExpenseLogic.formatShortDate(millis)
     }
 
-    // Text under the expense name: "Games - 5 Aug"
+    // Text under the expense name like Games - 5 Aug
     fun expenseSubtitle(expense: Expense): String {
         return ExpenseLogic.expenseSubtitle(expense)
     }
@@ -205,7 +205,7 @@ object ExpenseTempMemory {
         )
     }
 
-    // Human-readable month title for buttons / headers, like "August 2026"
+    // Human-readable month title for buttons / headers, like August 2026
     fun monthTitle(year: Int, month: Int): String {
         return ExpenseLogic.monthTitle(year, month)
     }
@@ -215,12 +215,12 @@ object ExpenseTempMemory {
         return ExpenseLogic.formatAmount(amount)
     }
 
-    // Full date string for edit fields, like "2026/08/05"
+    // Full date string for edit fields, like 2026/08/05
     fun formatDate(millis: Long): String {
         return ExpenseLogic.formatDate(millis)
     }
 
-    // Parse a typed date back to millis; falls back to "now" if the text is invalid
+    // Parse a typed date back to millis; falls back to now if the text is invalid
     fun parseDate(text: String): Long {
         return ExpenseLogic.parseDate(text)
     }

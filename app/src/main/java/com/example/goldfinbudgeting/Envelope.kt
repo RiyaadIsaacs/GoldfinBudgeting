@@ -1,19 +1,23 @@
 package com.example.goldfinbudgeting
 
-// UI model for one envelope / budget category card.
-// Not a Room @Entity — Room stores this as CategoryEntity (without spent).
-// spent is calculated from expenses so the progress bars stay accurate.
+//UI model for one envelope/budget category card
+//spent is calculated from expenses so progress bars stay accurate
 data class Envelope(
-    // Category name shown on the card.
+    //category name on card
     val name: String,
-    // Minimum spending goal for this category.
+
+    //minimum spending goal for category
     val min: Double,
-    // Maximum spending goal for this category.
+
+    //maximum spending goal for category
     val max: Double,
-    // How much has been spent so far (summed from matching expenses, not stored in Room).
+
+    //how much has been spent
     val spent: Double,
-    // When the envelope was created (epoch millis) — used for month filtering.
+
+    //when envelope was created. used for month filtering
     val dateCreated: Long,
-    // Room row id. 0 means "not saved yet" when adding a new envelope.
+
+    //room row id. 0 means not saved yet when adding a new envelope
     val id: Long = 0
 )

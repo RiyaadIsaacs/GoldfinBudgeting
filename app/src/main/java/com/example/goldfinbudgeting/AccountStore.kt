@@ -17,10 +17,13 @@ object AccountStore {
     private fun currentUser(context: Context): UserEntity {
         val dao = userDao(context)
         val remembered = prefsUsername(context)
+
         if (remembered != null) {
             dao.findByUsername(remembered)?.let { return it }
         }
+
         dao.findByUsername("1")?.let { return it }
+
         // Should keep login safe
         val id = dao.insert(UserEntity(username = "1", password = "1"))
         Log.d(TAG, "Created fallback user id=$id")
@@ -42,8 +45,10 @@ object AccountStore {
         val trimmed = email.trim()
         val dao = userDao(context)
         val current = currentUser(context)
+
         dao.update(current.copy(username = trimmed))
-        // Remember which username to load next time.
+
+        // Remember which username to load next time
         rememberUsername(context, trimmed)
         Log.d(TAG, "Updated username to $trimmed for user id=${current.id}")
     }
@@ -51,33 +56,35 @@ object AccountStore {
     // Updates the password in Room when the user changes it on the profile screen
     fun setPassword(context: Context, password: String) {
         val user = currentUser(context)
+
         userDao(context).update(user.copy(password = password))
+
         Log.d(TAG, "Updated password for user id=${user.id}")
     }
 
     // Login check used by LoginActivity 
     fun authenticate(context: Context, username: String, password: String): Boolean {
         val match = userDao(context).authenticate(username.trim(), password)
+
         if (match != null) {
             rememberUsername(context, match.username)
+
             Log.d(TAG, "Login success for ${match.username}")
+
             return true
         }
+
         Log.d(TAG, "Login failed for $username")
+
         return false
     }
 
     // SharedPreferences file also used by ProfileActivity for non-login profile fields
-    private fun prefs(context: Context) =
-        context.getSharedPreferences("goldfin_profile", Context.MODE_PRIVATE)
+    private fun prefs(context: Context) = context.getSharedPreferences("goldfin_profile", Context.MODE_PRIVATE)
 
     // Remembered username so we know which Room user is active after login
-    private fun prefsUsername(context: Context): String? {
-        return prefs(context).getString("login_username", null)
-    }
+    private fun prefsUsername(context: Context): String? { return prefs(context).getString("login_username", null)}
 
     // Saves the active username locally
-    private fun rememberUsername(context: Context, username: String) {
-        prefs(context).edit().putString("login_username", username).apply()
-    }
+    private fun rememberUsername(context: Context, username: String) {prefs(context).edit().putString("login_username", username).apply()}
 }

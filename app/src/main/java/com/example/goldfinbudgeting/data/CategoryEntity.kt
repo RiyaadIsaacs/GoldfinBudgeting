@@ -3,7 +3,7 @@ package com.example.goldfinbudgeting.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-// CategoryEntity maps to the "categories" table
+// CategoryEntity maps to the categories table
 // In this app, categories are the same as envelopes 
 @Entity(tableName = "categories")
 data class CategoryEntity(
@@ -11,7 +11,7 @@ data class CategoryEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
-    // Display name, like "Groceries". expenses link to this via categoryName string
+    // Display name, like Groceries. expenses link to this via categoryName string
     val name: String,
 
     // Minimum monthly spending goal for this category

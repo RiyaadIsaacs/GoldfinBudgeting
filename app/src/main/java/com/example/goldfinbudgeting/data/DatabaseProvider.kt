@@ -20,11 +20,11 @@ object DatabaseProvider {
 
     // Returns the shared database, creating it the first time if it is needed
     fun get(context: Context): GoldfinDatabase {
-        // Double-checked locking: fast path if already built, otherwise build once safely.
+        // Double-checked locking: fast path if already built, otherwise build once safely
         return instance ?: synchronized(this) {
             instance ?: buildDatabase(context.applicationContext).also { db ->
                 instance = db
-                // Only insert starter rows when tables are empty.
+                // Only insert starter rows when tables are empty
                 seedIfNeeded(db)
                 Log.d(TAG, "Room database ready")
             }
@@ -36,9 +36,9 @@ object DatabaseProvider {
         Log.d(TAG, "Opening Room database: $DB_NAME")
         return Room.databaseBuilder(context, GoldfinDatabase::class.java, DB_NAME)
             // Activities still call stores on the main thread in this prototype,
-            // so Room is allowed to run queries on the UI thread.
+            // so Room is allowed to run queries on the UI thread
             .allowMainThreadQueries()
-            // If the schema version changes without a Migration, wipe and recreate tables.
+            // If the schema version changes without a Migration, wipe and recreate tables
             .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
     }
@@ -58,7 +58,7 @@ object DatabaseProvider {
         val categoryDao = db.categoryDao()
         val expenseDao = db.expenseDao()
 
-        // Default test login used across the group: username 1 / password 1.
+        // Default test login used across the group: username 1 / password 1
         if (userDao.count() == 0) {
             val userId = userDao.insert(UserEntity(username = "1", password = "1"))
             Log.d(TAG, "Seeded default user id=$userId (username=1)")
@@ -127,6 +127,7 @@ object DatabaseProvider {
                 expense("Kauai", 200.00, "Takeouts", dateOn(2026, Calendar.AUGUST, 15)),
                 expense("Comic Warehouse", 250.00, "Games", dateOn(2026, Calendar.AUGUST, 18)),
                 expense("Typo", 300.00, "Groceries", dateOn(2026, Calendar.AUGUST, 20)),
+
                 // Other months so the period picker is useful in demos
                 expense("Disney+", 99.00, "Subscriptions", dateOn(2026, Calendar.JULY, 1)),
                 expense("Checkers", 850.00, "Groceries", dateOn(2026, Calendar.JULY, 7)),

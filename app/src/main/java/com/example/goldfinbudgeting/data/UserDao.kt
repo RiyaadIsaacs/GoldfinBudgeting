@@ -16,11 +16,11 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(user: UserEntity): Long
 
-    // Look up one user by username (used when loading the current account)
+    // Look up one user by username. used when loading the current account
     @Query("SELECT * FROM users WHERE username = :username LIMIT 1")
     fun findByUsername(username: String): UserEntity?
 
-    // Login check: both username and password must match a row
+    // Login check. both username and password must match a row
     @Query("SELECT * FROM users WHERE username = :username AND password = :password LIMIT 1")
     fun authenticate(username: String, password: String): UserEntity?
 
@@ -28,7 +28,7 @@ interface UserDao {
     @Update
     fun update(user: UserEntity)
 
-    // How many users exist — used by DatabaseProvider to decide whether to seed the default 1/1 user
+    // How many users exist, used by DatabaseProvider to decide whether to seed the default 1/1 user
     @Query("SELECT COUNT(*) FROM users")
     fun count(): Int
 }

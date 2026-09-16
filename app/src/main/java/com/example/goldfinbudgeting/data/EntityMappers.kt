@@ -11,19 +11,22 @@ object EntityMappers {
         return Expense(
             name = entity.name,
             amount = entity.amount,
-            // Entity field is categoryName; UI model field is category.
+
+            // Entity field is categoryName. UI model field is category
             category = entity.categoryName,
             dateCreated = entity.dateCreated,
             description = entity.description,
             startTime = entity.startTime,
             endTime = entity.endTime,
             receiptPath = entity.receiptPath,
-            // Keep the database id so update / delete can target the correct row.
+
+            // Keep the database id so update / delete can target the correct row
             id = entity.id
         )
     }
 
-    // UI Expense model -> Room expense row ready to insert or update
+    // UI Expense model
+    // Room expense row ready to insert or update
     fun toExpenseEntity(expense: Expense): ExpenseEntity {
         return ExpenseEntity(
             id = expense.id,
