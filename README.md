@@ -29,6 +29,9 @@
 1. Open the project in Android Studio and run on an emulator or device.
 2. Log in with username `1` and password `1` 
 3. Explore Home, Expenses, Envelopes, and Profile.
+4. Logout and create new account
+5. Observe now cleared data
+6. Add expenses/envelopes as you see fit
 
 ---
 
