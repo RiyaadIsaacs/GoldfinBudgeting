@@ -11,6 +11,7 @@
     <!--same as edit envelopes screen-->
     <LinearLayout
         android:id="@+id/main"
+        
         android:layout_width = "match_parent"
         android:layout_height = "match_parent"
         android:orientation = "vertical"
@@ -28,6 +29,7 @@
 
             <TextView
                 android:id = "@+id/menuIcon"
+
                 android:layout_width = "wrap_content"
                 android:layout_height = "wrap_content"
                 android:text = "☰"
@@ -47,6 +49,7 @@
 
             <TextView
                 android:id = "@+id/logOutButton"
+
                 android:layout_width = "wrap_content"
                 android:layout_height = "wrap_content"
                 android:text = "Log Out"
@@ -71,6 +74,7 @@
 
             <TextView
                 android:id = "@+id/cancelButton"
+
                 android:layout_width = "0dp"
                 android:layout_height = "wrap_content"
                 android:layout_weight = "1"
@@ -79,10 +83,11 @@
                 android:textStyle = "bold"
                 android:textColor = "#C9A200"
                 android:clickable = "true"
-                android:focusable = "true" />
+                android:focusable = "true"/>
 
             <TextView
                 android:id = "@+id/addButton"
+
                 android:layout_width = "0dp"
                 android:layout_height = "wrap_content"
                 android:layout_weight = "1"
@@ -92,7 +97,7 @@
                 android:textStyle = "bold"
                 android:textColor = "#C9A200"
                 android:clickable = "true"
-                android:focusable ="true" />
+                android:focusable ="true"/>
 
         </LinearLayout>
 
@@ -125,6 +130,7 @@
 
                     <EditText
                         android:id = "@+id/entryNameEditText"
+
                         android:layout_width = "match_parent"
                         android:layout_height = "48dp"
                         android:layout_marginTop = "6dp"
@@ -145,6 +151,7 @@
 
                     <EditText
                         android:id = "@+id/amountEditText"
+
                         android:layout_width = "match_parent"
                         android:layout_height = "48dp"
                         android:layout_marginTop = "6dp"
@@ -166,6 +173,7 @@
 
                     <LinearLayout
                         android:id = "@+id/datePickerRow"
+
                         android:layout_width = "match_parent"
                         android:layout_height = "48dp"
                         android:layout_marginTop = "6dp"
@@ -180,6 +188,7 @@
 
                         <EditText
                             android:id = "@+id/dateEditText"
+
                             android:layout_width = "0dp"
                             android:layout_height = "match_parent"
                             android:layout_weight = "1"
@@ -192,9 +201,10 @@
 
                         <TextView
                             android:id = "@+id/calendarButton"
+
                             android:layout_width = "wrap_content"
                             android:layout_height = "wrap_content"
-                            android:text = "📅"
+                            android:text = "⌄"
                             android:textSize = "18sp"
                             android:clickable = "true"
                             android:focusable = "true"/>
@@ -224,6 +234,7 @@
 
                             <EditText
                                 android:id = "@+id/startTimeEditText"
+
                                 android:layout_width = "match_parent"
                                 android:layout_height = "48dp"
                                 android:layout_marginTop = "6dp"
@@ -249,6 +260,7 @@
 
                             <EditText
                                 android:id = "@+id/endTimeEditText"
+
                                 android:layout_width = "match_parent"
                                 android:layout_height = "48dp"
                                 android:layout_marginTop = "6dp"
@@ -271,6 +283,7 @@
 
                     <EditText
                         android:id = "@+id/descriptionEditText"
+
                         android:layout_width = "match_parent"
                         android:layout_height = "48dp"
                         android:layout_marginTop = "6dp"
@@ -291,6 +304,7 @@
 
                     <LinearLayout
                         android:id = "@+id/categoryPickerRow"
+
                         android:layout_width = "match_parent"
                         android:layout_height = "48dp"
                         android:layout_marginTop = "6dp"
@@ -305,6 +319,7 @@
 
                         <TextView
                             android:id = "@+id/categoryText"
+
                             android:layout_width = "0dp"
                             android:layout_height = "wrap_content"
                             android:layout_weight = "1"
@@ -314,6 +329,7 @@
 
                         <TextView
                             android:id = "@+id/categoryIcon"
+
                             android:layout_width = "wrap_content"
                             android:layout_height = "wrap_content"
                             android:text = "▾"
@@ -332,6 +348,7 @@
 
                     <FrameLayout
                         android:id = "@+id/receiptPhotoButton"
+
                         android:layout_width = "80dp"
                         android:layout_height = "80dp"
                         android:layout_marginTop = "6dp"
@@ -341,6 +358,7 @@
 
                         <ImageView
                             android:id = "@+id/receiptImage"
+
                             android:layout_width = "match_parent"
                             android:layout_height = "match_parent"
                             android:scaleType = "centerCrop"
@@ -349,6 +367,7 @@
 
                         <LinearLayout
                             android:id = "@+id/receiptPlaceholder"
+
                             android:layout_width = "match_parent"
                             android:layout_height = "match_parent"
                             android:orientation = "vertical"
@@ -379,6 +398,7 @@
                 <!--expense list section. filled in code so users can edit or delete-->
                 <LinearLayout
                     android:id = "@+id/editExpenseListContainer"
+
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
                     android:orientation = "vertical"
@@ -399,6 +419,7 @@
 
             <TextView
                 android:id = "@+id/profileTab"
+
                 android:layout_width = "0dp"
                 android:layout_height = "match_parent"
                 android:layout_weight = "1"
@@ -411,6 +432,7 @@
 
             <TextView
                 android:id = "@+id/homeTab"
+
                 android:layout_width = "0dp"
                 android:layout_height = "match_parent"
                 android:layout_weight = "1"
@@ -423,6 +445,7 @@
 
             <TextView
                 android:id = "@+id/expensesTab"
+
                 android:layout_width = "0dp"
                 android:layout_height = "match_parent"
                 android:layout_weight = "1"
@@ -467,6 +490,7 @@
 
             <TextView
                 android:id = "@+id/closeDrawerButton"
+
                 android:layout_width = "wrap_content"
                 android:layout_height = "wrap_content"
                 android:text = "X"
@@ -479,6 +503,7 @@
 
         <TextView
             android:id = "@+id/envelopesMenuItem"
+
             android:layout_width = "match_parent"
             android:layout_height = "48dp"
             android:gravity = "center"
