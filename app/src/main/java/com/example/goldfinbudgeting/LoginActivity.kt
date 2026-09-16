@@ -25,26 +25,37 @@ class LoginActivity : AppCompatActivity() {
         //find sign in button
         val signInButton = findViewById<Button>(R.id.signInButton)
 
-        //listen for when user clicks button to sign in
+        //find New User button (opens the create account screen)
+        val newUserButton = findViewById<Button>(R.id.newUserButton)
+
+        // New User
+        // opens the create account page
+        newUserButton.setOnClickListener {
+            val intent = Intent(this, CreateAccountActivity::class.java)
+
+            startActivity(intent)
+        }
+
+        // Sign In
+        // checks email and password then opens Home if they match
         signInButton.setOnClickListener {
 
             val email = emailEditText.text.toString().trim()
 
             val password = passwordEditText.text.toString().trim()
 
-            //check if field were filled before signing in and going to home screen
+            // check if fields were filled before signing in
             if (email.isEmpty() || password.isEmpty())
             {
-                //give message to fill in fields
                 Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
             }
-            // Check username + password against the Room users table via AccountStore.
-            // Default seeded account is still 1 / 1 until changed on the profile screen.
+            // check email and password against the Room users table
+            // default demo account is still 1 and 1 until changed on profile
             else if (AccountStore.authenticate(this, email, password))
             {
                 Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show()
 
-                // Open the home screen after a successful Room login.
+                // open the home screen after a successful login
                 val intent = Intent(this, HomeActivity::class.java)
 
                 startActivity(intent)

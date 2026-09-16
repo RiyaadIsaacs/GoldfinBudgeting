@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+<!--
+    Gold button background
+    Uses a selector so the button looks slightly darker while pressed
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--crete gold effect with gradient instead of solid colour-->
-    <gradient
-        android:startColor="#FFD500"
-        android:endColor="#C99400"
-        android:angle="270"/>
+    <!-- finger is down on the button -->
+    <item
+        android:state_pressed="true"
+        android:drawable="@drawable/rounded_button_gold_pressed"/>
 
-    <corners android:radius="30dp"/>
+    <!-- normal look when not pressed -->
+    <item android:drawable="@drawable/rounded_button_gold_normal"/>
 
-</shape>
+</selector>

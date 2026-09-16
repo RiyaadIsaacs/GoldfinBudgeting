@@ -8,7 +8,7 @@ import java.util.Calendar
 // DatabaseProvider creates and shares one GoldfinDatabase instance for the whole app
 // Using a singleton avoids opening many database connections
 object DatabaseProvider {
-    // Tag used in Logcat so we can prove Room is opening / seeding
+    // Tag used in Logcat so we can prove Room is opening and seeding
     private const val TAG = "GoldfinDatabase"
 
     // File name of the SQLite database stored in the app's private data folder
@@ -24,14 +24,14 @@ object DatabaseProvider {
         return instance ?: synchronized(this) {
             instance ?: buildDatabase(context.applicationContext).also { db ->
                 instance = db
-                // Only insert starter rows when tables are empty
+                // Only insert starter rows for the demo account (email 1)
                 seedIfNeeded(db)
                 Log.d(TAG, "Room database ready")
             }
         }
     }
 
-    // Builds the Room database 
+    // Builds the Room database
     private fun buildDatabase(context: Context): GoldfinDatabase {
         Log.d(TAG, "Opening Room database: $DB_NAME")
         return Room.databaseBuilder(context, GoldfinDatabase::class.java, DB_NAME)
@@ -51,47 +51,56 @@ object DatabaseProvider {
         return calendar.timeInMillis
     }
 
-    // Inserts starter data only when each table has zero rows
-    // This keeps the old demo experience after switching from in-memory lists to Room
+    // Inserts starter data only for the demo account username "1"
+    // New accounts created with New User start empty on purpose
     private fun seedIfNeeded(db: GoldfinDatabase) {
         val userDao = db.userDao()
         val categoryDao = db.categoryDao()
         val expenseDao = db.expenseDao()
 
-        // Default test login used across the group: username 1 / password 1
-        if (userDao.count() == 0) {
+        // Demo user
+        // email 1 and password 1
+        val demoUser = userDao.findByUsername("1") ?: run {
             val userId = userDao.insert(UserEntity(username = "1", password = "1"))
             Log.d(TAG, "Seeded default user id=$userId (username=1)")
+            userDao.findByUsername("1") ?: UserEntity(id = userId, username = "1", password = "1")
         }
+        val demoUserId = demoUser.id
 
-        // Sample envelopes / categories with min and max goals
-        if (categoryDao.count() == 0) {
+        // Demo envelopes
+        // only added for account 1. other users get none of this
+        if (categoryDao.countForUser(demoUserId) == 0) {
             val categories = listOf(
                 CategoryEntity(
+                    userId = demoUserId,
                     name = "Subscriptions",
                     minGoal = 800.00,
                     maxGoal = 1000.00,
                     dateCreated = dateOn(2026, Calendar.AUGUST, 1)
                 ),
                 CategoryEntity(
+                    userId = demoUserId,
                     name = "Groceries",
                     minGoal = 1500.00,
                     maxGoal = 2000.00,
                     dateCreated = dateOn(2026, Calendar.AUGUST, 1)
                 ),
                 CategoryEntity(
+                    userId = demoUserId,
                     name = "Takeouts",
                     minGoal = 600.00,
                     maxGoal = 1000.00,
                     dateCreated = dateOn(2026, Calendar.AUGUST, 1)
                 ),
                 CategoryEntity(
+                    userId = demoUserId,
                     name = "Games",
                     minGoal = 600.00,
                     maxGoal = 2000.00,
                     dateCreated = dateOn(2026, Calendar.AUGUST, 1)
                 ),
                 CategoryEntity(
+                    userId = demoUserId,
                     name = "Car",
                     minGoal = 4000.00,
                     maxGoal = 10000.00,
@@ -99,11 +108,12 @@ object DatabaseProvider {
                 )
             )
             categoryDao.insertAll(categories)
-            Log.d(TAG, "Seeded ${categories.size} categories")
+            Log.d(TAG, "Seeded ${categories.size} categories for demo user id=$demoUserId")
         }
 
-        // Sample expenses across several months so month / period filters have data to show
-        if (expenseDao.count() == 0) {
+        // Demo expenses
+        // sample spending across months also only for account 1
+        if (expenseDao.countForUser(demoUserId) == 0) {
             // Local helper so we use named fields and do not pass values into the id parameter by mistake
             fun expense(
                 name: String,
@@ -111,6 +121,7 @@ object DatabaseProvider {
                 category: String,
                 dateCreated: Long
             ) = ExpenseEntity(
+                userId = demoUserId,
                 name = name,
                 amount = amount,
                 categoryName = category,
@@ -141,20 +152,22 @@ object DatabaseProvider {
                 expense("Steers", 160.00, "Takeouts", dateOn(2026, Calendar.MAY, 22))
             )
             expenseDao.insertAll(expenses)
-            Log.d(TAG, "Seeded ${expenses.size} expenses")
+            Log.d(TAG, "Seeded ${expenses.size} expenses for demo user id=$demoUserId")
         }
 
-        // Sample monthly min / max spending goals
-        if (db.monthlyGoalDao().get(2026, Calendar.AUGUST) == null) {
+        // Demo monthly goals
+        // August 2026 min and max goals for account 1 only
+        if (db.monthlyGoalDao().get(demoUserId, 2026, Calendar.AUGUST) == null) {
             db.monthlyGoalDao().upsert(
                 MonthlyGoalEntity(
+                    userId = demoUserId,
                     year = 2026,
                     month = Calendar.AUGUST,
                     minGoal = 2000.00,
                     maxGoal = 4000.00
                 )
             )
-            Log.d(TAG, "Seeded August 2026 monthly goals")
+            Log.d(TAG, "Seeded August 2026 monthly goals for demo user id=$demoUserId")
         }
     }
 }

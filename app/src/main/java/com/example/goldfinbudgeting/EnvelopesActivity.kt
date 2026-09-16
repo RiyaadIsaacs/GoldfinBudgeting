@@ -25,7 +25,7 @@ import java.util.Calendar
 
 class EnvelopesActivity : AppCompatActivity() {
 
-    //start on August 2026 so the starter envelopes still show
+    //start on August 2026 so the starter envelopes still show for demo account 1
     private var selectedYear = 2026
     private var selectedMonth = Calendar.AUGUST
 
@@ -42,6 +42,13 @@ class EnvelopesActivity : AppCompatActivity() {
 
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        //new accounts have no August 2026 demo data, so open on the current month
+        if (!AccountStore.isDemoAccount(this)) {
+            val now = Calendar.getInstance()
+            selectedYear = now.get(Calendar.YEAR)
+            selectedMonth = now.get(Calendar.MONTH)
         }
 
         applyFilterFromIntent(intent)
@@ -118,7 +125,8 @@ class EnvelopesActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        //open the month dropdown instead of a calendar
+        // Month filter
+        // tap the gold month chip to pick a month from the list
         monthFilterButton.setOnClickListener {
             showMonthDropdown(monthFilterButton)
         }
@@ -147,12 +155,17 @@ class EnvelopesActivity : AppCompatActivity() {
         refreshEnvelopeList()
     }
 
-    //Figma-style month list under the gold chip
+    // Month dropdown
+    // builds a small white list under the gold chip
     private fun showMonthDropdown(anchor: View) {
+        // inflate the white dropdown panel
         val popupView = layoutInflater.inflate(R.layout.popup_month_dropdown, null)
         val monthList = popupView.findViewById<LinearLayout>(R.id.monthDropdownList)
+
+        // months to show for this account
         val months = EnvelopeTempMemory.filterMonths()
 
+        // popup window that floats under the chip
         val popup = PopupWindow(
             popupView,
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -162,14 +175,16 @@ class EnvelopesActivity : AppCompatActivity() {
 
         popup.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         popup.elevation = 8f
+        // tapping outside the list closes it
         popup.isOutsideTouchable = true
 
+        // add one gray row per month
         months.forEachIndexed { index, monthPair ->
             val row = layoutInflater.inflate(R.layout.item_month_dropdown, monthList, false) as TextView
 
             row.text = EnvelopeTempMemory.monthTitle(monthPair.first, monthPair.second)
 
-            //last row has no gap so the panel stays 179dp for the 4 Figma months
+            // last row has no bottom gap
             if (index == months.lastIndex) {
                 val params = row.layoutParams as ViewGroup.MarginLayoutParams
 
@@ -177,6 +192,7 @@ class EnvelopesActivity : AppCompatActivity() {
                 row.layoutParams = params
             }
 
+            // tapping a month updates the filter and refreshes the list
             row.setOnClickListener {
                 selectedYear = monthPair.first
                 selectedMonth = monthPair.second
@@ -188,6 +204,7 @@ class EnvelopesActivity : AppCompatActivity() {
             monthList.addView(row)
         }
 
+        // show the dropdown just below the gold chip
         popup.showAsDropDown(anchor, 0, 8)
     }
 

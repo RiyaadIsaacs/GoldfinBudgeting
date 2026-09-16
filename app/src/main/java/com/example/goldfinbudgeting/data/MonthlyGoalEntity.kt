@@ -2,12 +2,15 @@ package com.example.goldfinbudgeting.data
 
 import androidx.room.Entity
 
-// One min / max spending goal pair for a calendar month
+// One min / max spending goal pair for a calendar month, per account
 @Entity(
     tableName = "monthly_goals",
-    primaryKeys = ["year", "month"]
+    primaryKeys = ["userId", "year", "month"]
 )
 data class MonthlyGoalEntity(
+    // Which login account owns these goals
+    val userId: Long,
+
     // Calendar year, e.g. 2026
     val year: Int,
 

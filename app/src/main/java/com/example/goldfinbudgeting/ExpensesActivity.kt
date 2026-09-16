@@ -28,7 +28,7 @@ import java.util.Locale
 
 class ExpensesActivity : AppCompatActivity() {
 
-    //start on August 2026 so the starter expenses still show
+    //start on August 2026 so the starter expenses still show for demo account 1
     private var selectedYear = 2026
     private var selectedMonth = Calendar.AUGUST
 
@@ -57,6 +57,13 @@ class ExpensesActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
 
             insets
+        }
+
+        //new accounts have no August 2026 demo data, so open on the current month
+        if (!AccountStore.isDemoAccount(this)) {
+            val now = Calendar.getInstance()
+            selectedYear = now.get(Calendar.YEAR)
+            selectedMonth = now.get(Calendar.MONTH)
         }
 
         applyFilterFromIntent(intent)

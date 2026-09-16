@@ -27,9 +27,10 @@ object EntityMappers {
 
     // UI Expense model
     // Room expense row ready to insert or update
-    fun toExpenseEntity(expense: Expense): ExpenseEntity {
+    fun toExpenseEntity(expense: Expense, userId: Long = 0): ExpenseEntity {
         return ExpenseEntity(
             id = expense.id,
+            userId = userId,
             name = expense.name,
             amount = expense.amount,
             categoryName = expense.category,
@@ -41,7 +42,7 @@ object EntityMappers {
         )
     }
 
-    // Room category row + calculated spent amount 
+    // Room category row + calculated spent amount
     // spent is passed in because it is not stored in the categories table
     fun toEnvelope(entity: CategoryEntity, spent: Double): Envelope {
         return Envelope(
@@ -54,10 +55,11 @@ object EntityMappers {
         )
     }
 
-    // UI Envelope model - Room category row 
-    fun toCategoryEntity(envelope: Envelope): CategoryEntity {
+    // UI Envelope model - Room category row
+    fun toCategoryEntity(envelope: Envelope, userId: Long = 0): CategoryEntity {
         return CategoryEntity(
             id = envelope.id,
+            userId = userId,
             name = envelope.name,
             minGoal = envelope.min,
             maxGoal = envelope.max,

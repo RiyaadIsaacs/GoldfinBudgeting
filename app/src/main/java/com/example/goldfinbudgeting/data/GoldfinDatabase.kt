@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
         ExpenseEntity::class,
         MonthlyGoalEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class GoldfinDatabase : RoomDatabase() {

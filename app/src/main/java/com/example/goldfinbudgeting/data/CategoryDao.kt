@@ -23,19 +23,19 @@ interface CategoryDao {
     @Update
     fun update(category: CategoryEntity)
 
-    // Delete a category row 
+    // Delete a category row
     @Delete
     fun delete(category: CategoryEntity)
 
-    // All categories, newest first — drives Home / Envelopes lists
-    @Query("SELECT * FROM categories ORDER BY dateCreated DESC, id DESC")
-    fun getAll(): List<CategoryEntity>
+    // All categories for one account, newest first
+    @Query("SELECT * FROM categories WHERE userId = :userId ORDER BY dateCreated DESC, id DESC")
+    fun getAllForUser(userId: Long): List<CategoryEntity>
 
-    // Find one category by its display name
-    @Query("SELECT * FROM categories WHERE name = :name LIMIT 1")
-    fun getByName(name: String): CategoryEntity?
+    // Find one category by display name for that account
+    @Query("SELECT * FROM categories WHERE userId = :userId AND name = :name LIMIT 1")
+    fun getByName(userId: Long, name: String): CategoryEntity?
 
-    // Row count — used to seed sample envelopes only when the table is empty
-    @Query("SELECT COUNT(*) FROM categories")
-    fun count(): Int
+    // Row count for one account — used when seeding demo data for user 1 only
+    @Query("SELECT COUNT(*) FROM categories WHERE userId = :userId")
+    fun countForUser(userId: Long): Int
 }

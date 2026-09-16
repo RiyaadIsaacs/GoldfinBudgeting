@@ -10,15 +10,15 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-// It now reads / writes Room categories and calculates spent from expenses
-// Public APIs stayed similar so Home / Envelopes / Edit screens keep working
+// It now reads and writes Room categories and calculates spent from expenses
+// Public APIs stayed similar so Home Envelopes and Edit screens keep working
 object EnvelopeTempMemory {
     private const val TAG = "EnvelopeTempMemory"
 
     private val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.US)
     private val monthFormat = SimpleDateFormat("MMMM yyyy", Locale.US)
 
-    // Cached Room database after bind() / first use
+    // Cached Room database after bind or first use
     @Volatile
     private var database: GoldfinDatabase? = null
 
@@ -26,12 +26,23 @@ object EnvelopeTempMemory {
     @Volatile
     private var appContext: Context? = null
 
-    // Returns the shared Room database, creating it if needed
+    // Returns the shared Room database creating it if needed
     private fun db(context: Context? = appContext): GoldfinDatabase {
         database?.let { return it }
         val ctx = context ?: appContext?: throw IllegalStateException("EnvelopeTempMemory used before GoldfinApp initialised Room")
 
         return DatabaseProvider.get(ctx).also { database = it }
+    }
+
+    // Per user helpers
+    // every envelope read and write uses the signed in accounts id
+    private fun requireContext(): Context {
+        return appContext
+            ?: throw IllegalStateException("EnvelopeTempMemory used before GoldfinApp initialised Room")
+    }
+
+    private fun userId(): Long {
+        return AccountStore.currentUserId(requireContext())
     }
 
     // Called from GoldfinApp so categories are available before any activity opens
@@ -40,35 +51,38 @@ object EnvelopeTempMemory {
         database = DatabaseProvider.get(context)
     }
 
-    // Live list of envelopes from Room
-    // spent is calculated with SUM(amount) for matching expense category names
+    // Live list of envelopes from Room for the current account
+    // spent is calculated with SUM amount for matching expense category names
     val envelopes: List<Envelope>
         get() {
+            val uid = userId()
             val expenseDao = db().expenseDao()
-            return db().categoryDao().getAll().map { entity ->
-                val spent = expenseDao.sumForCategory(entity.name)
+            return db().categoryDao().getAllForUser(uid).map { entity ->
+                val spent = expenseDao.sumForCategory(uid, entity.name)
                 EntityMappers.toEnvelope(entity, spent)
             }
         }
 
-    // Insert a new category / envelope. id 0 lets Room auto-generate the primary key
+    // Insert a new envelope. id 0 lets Room auto generate the primary key
     fun addEnvelope(envelope: Envelope) {
-        val id = db().categoryDao().insert(EntityMappers.toCategoryEntity(envelope.copy(id = 0)))
-        Log.d(TAG, "Inserted category id=$id name=${envelope.name}")
+        val uid = userId()
+        val id = db().categoryDao().insert(EntityMappers.toCategoryEntity(envelope.copy(id = 0), uid))
+        Log.d(TAG, "Inserted category id=$id name=${envelope.name} userId=$uid")
     }
 
     // Delete one envelope from Room
     // Prefer the Room id when present; otherwise look the category up by name
     fun deleteEnvelope(envelope: Envelope) {
+        val uid = userId()
         val entity = if (envelope.id != 0L) {
-            EntityMappers.toCategoryEntity(envelope)
+            EntityMappers.toCategoryEntity(envelope, uid)
         } else {
-            db().categoryDao().getByName(envelope.name) ?: EntityMappers.toCategoryEntity(envelope)
+            db().categoryDao().getByName(uid, envelope.name) ?: EntityMappers.toCategoryEntity(envelope, uid)
         }
 
         db().categoryDao().delete(entity)
 
-        Log.d(TAG, "Deleted category id=${entity.id} name=${entity.name}")
+        Log.d(TAG, "Deleted category id=${entity.id} name=${entity.name} userId=$uid")
     }
 
     // Only envelopes whose created date is in that calendar month
@@ -80,19 +94,28 @@ object EnvelopeTempMemory {
         }
     }
 
-    // Months for the envelopes dropdown: fixed demo months plus months that have envelopes
+    // Months for the envelopes dropdown
+    // Demo months stay for account 1; other accounts only see months they have data for
     fun filterMonths(): List<Pair<Int, Int>> {
-        val months = linkedSetOf(
-            2026 to Calendar.AUGUST,
-            2026 to Calendar.JULY,
-            2026 to Calendar.JUNE,
-            2026 to Calendar.MAY
-        )
+        val months = linkedSetOf<Pair<Int, Int>>()
+
+        if (AccountStore.isDemoAccount(requireContext())) {
+            months.add(2026 to Calendar.AUGUST)
+            months.add(2026 to Calendar.JULY)
+            months.add(2026 to Calendar.JUNE)
+            months.add(2026 to Calendar.MAY)
+        }
 
         envelopes.forEach { envelope ->
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = envelope.dateCreated
             months.add(calendar.get(Calendar.YEAR) to calendar.get(Calendar.MONTH))
+        }
+
+        // If a new account has no envelopes yet, still show the current month
+        if (months.isEmpty()) {
+            val now = Calendar.getInstance()
+            months.add(now.get(Calendar.YEAR) to now.get(Calendar.MONTH))
         }
 
         return months.sortedWith(
@@ -124,7 +147,7 @@ object EnvelopeTempMemory {
         }
     }
 
-    // Build millis for a specific day 
+    // Build millis for a specific day
     fun dateOn(year: Int, month: Int, day: Int): Long {
         val calendar = Calendar.getInstance()
         calendar.clear()

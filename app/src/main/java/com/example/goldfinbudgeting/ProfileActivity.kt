@@ -155,7 +155,8 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
-        //start the change password popups
+        // Change Password
+        // opens the first popup asking for the current password
         findViewById<TextView>(R.id.changePasswordButton).setOnClickListener {
             showCurrentPasswordPopup()
         }
@@ -178,6 +179,8 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    // Step 1
+    // ask for the current password. Confirm continues. Cancel aborts
     private fun showCurrentPasswordPopup() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_current_password, null)
         val currentPasswordEditText = dialogView.findViewById<EditText>(R.id.currentPasswordEditText)
@@ -186,15 +189,18 @@ class ProfileActivity : AppCompatActivity() {
             .setView(dialogView)
             .setPositiveButton("Confirm", null)
             .setNegativeButton("Cancel") { popup, _ ->
+                // Cancel closes the popup and stops the password change
                 popup.dismiss()
             }
             .create()
 
+        // set Confirm here so a wrong password does not auto close the dialog
         dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val typedPassword = currentPasswordEditText.text.toString()
 
                 if (typedPassword == AccountStore.password(this)) {
+                    // correct so close this popup and open the new password popup
                     dialog.dismiss()
 
                     showNewPasswordPopup()
@@ -207,6 +213,8 @@ class ProfileActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    // Step 2
+    // ask for new password and confirm password. save only if they match
     private fun showNewPasswordPopup() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_new_password, null)
         val newPasswordEditText = dialogView.findViewById<EditText>(R.id.newPasswordEditText)
@@ -216,6 +224,7 @@ class ProfileActivity : AppCompatActivity() {
             .setView(dialogView)
             .setPositiveButton("Confirm", null)
             .setNegativeButton("Cancel") { popup, _ ->
+                // Cancel aborts the whole password change
                 popup.dismiss()
             }
             .create()
@@ -230,6 +239,7 @@ class ProfileActivity : AppCompatActivity() {
                 } else if (newPassword != confirmPassword) {
                     Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
                 } else {
+                    // both match so update the password stored in Room
                     AccountStore.setPassword(this, newPassword)
 
                     dialog.dismiss()

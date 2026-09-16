@@ -12,17 +12,20 @@ data class ExpenseEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
-    // Short title shown in the expenses list 
+    // Which login account owns this expense
+    val userId: Long,
+
+    // Short title shown in the expenses list
     val name: String,
 
     // Money spent for this entry
     val amount: Double,
 
-    // Category / envelope name this expense belongs to 
+    // Category / envelope name this expense belongs to
     // Kept as string so existing Activities do not need a big rewrite
     val categoryName: String,
 
-    // Date of the expense as epoch milliseconds 
+    // Date of the expense as epoch milliseconds
     val dateCreated: Long,
 
     // Optional longer notes about the purchase
