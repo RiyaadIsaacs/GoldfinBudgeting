@@ -90,12 +90,19 @@ class HomeActivity : AppCompatActivity() {
 
         //find envelopes in the drawer
         val envelopesMenuItem = findViewById<TextView>(R.id.envelopesMenuItem)
+        val badgesMenuItem = findViewById<TextView>(R.id.badgesMenuItem)
 
         //open envelopes screen
         envelopesMenuItem.setOnClickListener {
             val intent = Intent(this, EnvelopesActivity::class.java)
 
             startActivity(intent)
+        }
+
+        //open badges screen
+        badgesMenuItem.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            startActivity(Intent(this, BadgesActivity::class.java))
         }
     }
 
