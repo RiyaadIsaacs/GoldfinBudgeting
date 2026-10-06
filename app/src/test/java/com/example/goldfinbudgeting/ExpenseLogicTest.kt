@@ -126,6 +126,26 @@ class ExpenseLogicTest {
     }
 
     @Test
+    fun goalStanding_comparesSpentToMinAndMax() {
+        assertEquals(
+            ExpenseLogic.GoalStanding.WITHIN_GOALS,
+            ExpenseLogic.goalStanding(2500.0, 2000.0, 4000.0)
+        )
+        assertEquals(
+            ExpenseLogic.GoalStanding.BELOW_MINIMUM,
+            ExpenseLogic.goalStanding(500.0, 2000.0, 4000.0)
+        )
+        assertEquals(
+            ExpenseLogic.GoalStanding.ABOVE_MAXIMUM,
+            ExpenseLogic.goalStanding(4500.0, 2000.0, 4000.0)
+        )
+        assertEquals(
+            ExpenseLogic.GoalStanding.NO_GOALS,
+            ExpenseLogic.goalStanding(100.0, 0.0, 0.0)
+        )
+    }
+
+    @Test
     fun progressFillPercent_capsAtOneHundred() {
         assertEquals(50.0, ExpenseLogic.progressFillPercent(2000.0, 4000.0), 0.001)
         assertEquals(100.0, ExpenseLogic.progressFillPercent(5000.0, 4000.0), 0.001)

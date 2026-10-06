@@ -190,6 +190,22 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/viewSpendingGraphButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="View spending graph"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/rounded_button_gold"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
                 <!--teal card holding expenses list. hard coded, needs to be changed-->
                 <LinearLayout
                     android:layout_width="match_parent"

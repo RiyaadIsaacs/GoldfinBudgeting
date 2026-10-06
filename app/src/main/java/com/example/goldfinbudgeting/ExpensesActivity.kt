@@ -175,6 +175,13 @@ class ExpensesActivity : AppCompatActivity() {
             showMonthDropdown(monthFilterButton)
         }
 
+        findViewById<TextView>(R.id.viewSpendingGraphButton).setOnClickListener {
+            val intent = Intent(this, SpendingActivity::class.java)
+            intent.putExtra("filter_year", selectedYear)
+            intent.putExtra("filter_month", selectedMonth)
+            startActivity(intent)
+        }
+
         //open edit expenses screen for the month currently on screen
         editExpensesButton.setOnClickListener {
             val intent = Intent(this, EditExpensesActivity::class.java)

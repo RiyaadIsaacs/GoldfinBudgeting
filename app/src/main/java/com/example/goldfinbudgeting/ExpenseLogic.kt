@@ -139,4 +139,25 @@ object ExpenseLogic {
         }
         return ((spent / maxGoal) * 100).coerceAtMost(100.0)
     }
+
+    enum class GoalStanding {
+        NO_GOALS,
+        BELOW_MINIMUM,
+        WITHIN_GOALS,
+        ABOVE_MAXIMUM
+    }
+
+    // How spending sits against a min / max pair
+    fun goalStanding(spent: Double, minGoal: Double, maxGoal: Double): GoalStanding {
+        if (minGoal <= 0.0 && maxGoal <= 0.0) {
+            return GoalStanding.NO_GOALS
+        }
+        if (maxGoal > 0.0 && spent > maxGoal) {
+            return GoalStanding.ABOVE_MAXIMUM
+        }
+        if (minGoal > 0.0 && spent < minGoal) {
+            return GoalStanding.BELOW_MINIMUM
+        }
+        return GoalStanding.WITHIN_GOALS
+    }
 }
