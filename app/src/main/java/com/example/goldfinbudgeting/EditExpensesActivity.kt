@@ -87,6 +87,16 @@ class EditExpensesActivity : AppCompatActivity() {
         //find add/save button
         val addButton = findViewById<TextView>(R.id.addButton)
 
+        //find AI assistant
+        val aiAssistantMenuItem = findViewById<TextView>(R.id.aiAssistantMenuItem)
+
+        //open AI assistant screen
+        aiAssistantMenuItem.setOnClickListener {
+            val intent = Intent(this, AIAssistantActivity::class.java)
+
+            startActivity(intent)
+        }
+
         //form fields
         val entryNameEditText = findViewById<EditText>(R.id.entryNameEditText)
         val amountEditText = findViewById<EditText>(R.id.amountEditText)

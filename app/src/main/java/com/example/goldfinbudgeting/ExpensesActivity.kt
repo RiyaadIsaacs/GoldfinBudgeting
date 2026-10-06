@@ -100,6 +100,16 @@ class ExpensesActivity : AppCompatActivity() {
         val rangeEndButton = findViewById<TextView>(R.id.rangeEndButton)
         val clearDateRangeButton = findViewById<TextView>(R.id.clearDateRangeButton)
 
+        //find AI assistant
+        val aiAssistantMenuItem = findViewById<TextView>(R.id.aiAssistantMenuItem)
+
+        //open AI assistant screen
+        aiAssistantMenuItem.setOnClickListener {
+            val intent = Intent(this, AIAssistantActivity::class.java)
+
+            startActivity(intent)
+        }
+
         setupCategoryChips()
         updateDateRangeButtons()
 
@@ -586,4 +596,6 @@ class ExpensesActivity : AppCompatActivity() {
             fillBar.setBackgroundResource(R.drawable.rounded_fill_gold)
         }
     }
+
+
 }

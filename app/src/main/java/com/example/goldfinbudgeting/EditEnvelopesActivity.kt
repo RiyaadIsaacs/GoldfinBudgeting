@@ -78,6 +78,16 @@ class EditEnvelopesActivity : AppCompatActivity() {
         //find envelope list under the form
         val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
 
+        //find AI assistant
+        val aiAssistantMenuItem = findViewById<TextView>(R.id.aiAssistantMenuItem)
+
+        //open AI assistant screen
+        aiAssistantMenuItem.setOnClickListener {
+            val intent = Intent(this, AIAssistantActivity::class.java)
+
+            startActivity(intent)
+        }
+
         //show the same cards as home and envelopes, with Delete like the hardcoded ones
         envelopeRecyclerView.layoutManager = LinearLayoutManager(this)
         refreshEnvelopeList(envelopeRecyclerView)

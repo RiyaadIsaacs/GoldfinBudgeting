@@ -55,6 +55,16 @@ class HomeActivity : AppCompatActivity() {
         //find envelope list
         val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
 
+        //find AI assistant
+        val aiAssistantMenuItem = findViewById<TextView>(R.id.aiAssistantMenuItem)
+
+        //open AI assistant screen
+        aiAssistantMenuItem.setOnClickListener {
+            val intent = Intent(this, AIAssistantActivity::class.java)
+
+            startActivity(intent)
+        }
+
         //setup envelope list with adapter
         envelopeRecyclerView.layoutManager = LinearLayoutManager(this)
         envelopeRecyclerView.adapter = EnvelopeAdapter(EnvelopeTempMemory.envelopes)
