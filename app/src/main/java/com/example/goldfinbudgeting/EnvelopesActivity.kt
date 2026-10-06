@@ -121,23 +121,19 @@ class EnvelopesActivity : AppCompatActivity() {
             finish()
         }
 
-        //close active screen and go home screen when user clicks
+        //go straight to home, even if other screens were opened after it
         homeTab.setOnClickListener {
-            finish()
+            NavHighlight.openBottomTab(this, NavScreen.HOME)
         }
 
         //open expenses screen when user clicks
         expensesTab.setOnClickListener {
-            val intent = Intent(this, ExpensesActivity::class.java)
-
-            startActivity(intent)
+            NavHighlight.openBottomTab(this, NavScreen.EXPENSES)
         }
 
-        //open profile screen when user clicks
+        //open profile screen from the right
         profileTab.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java)
-
-            startActivity(intent)
+            NavHighlight.openBottomTab(this, NavScreen.PROFILE)
         }
 
         // Month filter

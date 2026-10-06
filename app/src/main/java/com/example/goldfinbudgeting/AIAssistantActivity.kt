@@ -94,6 +94,18 @@ class AIAssistantActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        //open badges screen from the drawer
+        findViewById<TextView>(R.id.badgesMenuItem).setOnClickListener {
+            startActivity(Intent(this, BadgesActivity::class.java))
+        }
+
+        //close the drawer when this screen's own row is tapped
+        findViewById<TextView>(R.id.aiAssistantMenuItem).setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.NONE)
+
         //send message when button tapped
         sendButton.setOnClickListener {
 
@@ -116,5 +128,10 @@ class AIAssistantActivity : AppCompatActivity() {
                 messageRecyclerView.scrollToPosition(messages.size - 1)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.NONE)
     }
 }

@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version = "1.0" encoding = "utf-8"?>
 
 <!--same as the home screen xml but though the summary amount. uses recycleview-->
 
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android = "http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
     android:id = "@+id/drawerLayout"
     android:layout_width = "match_parent"
     android:layout_height = "match_parent">
@@ -113,7 +113,7 @@
 
             <!--envelope cards. scrolls on own. not using scrollview-->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/envelopeRecyclerView"
+                android:id = "@+id/envelopeRecyclerView"
 
                 android:layout_width = "match_parent"
                 android:layout_height = "0dp"
@@ -231,6 +231,7 @@
         </FrameLayout>
 
         <TextView
+            android:id = "@+id/accountsMenuItem"
             android:layout_width = "match_parent"
             android:layout_height = "48dp"
             android:layout_marginTop = "1dp"
@@ -260,19 +261,6 @@
                 android:clickable = "true"
                 android:focusable = "true"/>
 
-            <TextView
-                android:id="@+id/aiAssistantMenuItem"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="1dp"
-                android:gravity="center"
-                android:text="AI Assistant"
-                android:textSize="16sp"
-                android:textColor="#333333"
-                android:background="#EDE5F7"
-                android:clickable="true"
-                android:focusable="true"/>
-
             <View
                 android:id = "@+id/badgesNotificationDot"
                 android:layout_width = "10dp"
@@ -283,6 +271,20 @@
                 android:visibility = "gone"/>
 
         </FrameLayout>
+
+        <TextView
+            android:id = "@+id/aiAssistantMenuItem"
+
+            android:layout_width = "match_parent"
+            android:layout_height = "48dp"
+            android:layout_marginTop = "1dp"
+            android:gravity = "center"
+            android:text = "AI Assistant"
+            android:textSize = "16sp"
+            android:textColor = "#333333"
+            android:background = "#EDE5F7"
+            android:clickable = "true"
+            android:focusable = "true"/>
 
     </LinearLayout>
 

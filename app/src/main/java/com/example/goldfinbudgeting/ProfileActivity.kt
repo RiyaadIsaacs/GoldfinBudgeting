@@ -1,7 +1,9 @@
 package com.example.goldfinbudgeting
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -30,6 +32,20 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Profile is the left tab. It comes in from the left and leaves to the left.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(
+                Activity.OVERRIDE_TRANSITION_OPEN,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
+            overrideActivityTransition(
+                Activity.OVERRIDE_TRANSITION_CLOSE,
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
+        }
 
         enableEdgeToEdge()
 
@@ -112,16 +128,14 @@ class ProfileActivity : AppCompatActivity() {
             finish()
         }
 
-        //close profile screen and go back to home
+        //go straight to home, even if other screens were opened after it
         homeTab.setOnClickListener {
-            finish()
+            NavHighlight.openBottomTab(this, NavScreen.HOME)
         }
 
         //open expenses screen
         expensesTab.setOnClickListener {
-            val intent = Intent(this, ExpensesActivity::class.java)
-
-            startActivity(intent)
+            NavHighlight.openBottomTab(this, NavScreen.EXPENSES)
         }
 
         //open envelopes screen
@@ -133,6 +147,11 @@ class ProfileActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.badgesMenuItem).setOnClickListener {
             startActivity(Intent(this, BadgesActivity::class.java))
+        }
+
+        //open AI assistant screen
+        findViewById<TextView>(R.id.aiAssistantMenuItem).setOnClickListener {
+            startActivity(Intent(this, AIAssistantActivity::class.java))
         }
 
         //save display name and update the heading

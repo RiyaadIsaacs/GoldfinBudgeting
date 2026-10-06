@@ -1,6 +1,8 @@
 package com.example.goldfinbudgeting
 
 import android.app.Activity
+import android.app.ActivityOptions
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.view.View
@@ -58,6 +60,41 @@ object NavHighlight {
     fun apply(activity: Activity, bottom: NavScreen, drawer: NavScreen = NavScreen.NONE) {
         applyBottomTabs(activity, bottom)
         applyDrawer(activity, drawer)
+    }
+
+    // Bottom tabs jump straight to that screen. Home stays underneath, so
+    // Home, Expenses, then Profile, then Home does not stop on Expenses.
+    // Profile is the left tab, so it enters from the left and leaves to the left.
+    fun openBottomTab(activity: Activity, screen: NavScreen) {
+        val destination = when (screen) {
+            NavScreen.HOME -> HomeActivity::class.java
+            NavScreen.PROFILE -> ProfileActivity::class.java
+            NavScreen.EXPENSES -> ExpensesActivity::class.java
+            else -> return
+        }
+
+        if (activity.javaClass == destination) return
+
+        val intent = Intent(activity, destination)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        when {
+            screen == NavScreen.PROFILE -> {
+                startWithSlide(activity, intent, R.anim.slide_in_left, R.anim.slide_out_right)
+            }
+            activity is ProfileActivity -> {
+                startWithSlide(activity, intent, R.anim.slide_in_right, R.anim.slide_out_left)
+            }
+            else -> activity.startActivity(intent)
+        }
+    }
+
+    // enterAnim is the screen coming in. exitAnim is the screen leaving.
+    private fun startWithSlide(activity: Activity, intent: Intent, enterAnim: Int, exitAnim: Int) {
+        val options = ActivityOptions.makeCustomAnimation(activity, enterAnim, exitAnim)
+        activity.startActivity(intent, options.toBundle())
+        @Suppress("DEPRECATION")
+        activity.overridePendingTransition(enterAnim, exitAnim)
     }
 
     fun updateBadgesDot(activity: Activity) {

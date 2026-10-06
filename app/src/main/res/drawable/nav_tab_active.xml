@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version = "1.0" encoding = "utf-8"?>
 
 <!-- gold gradient used for the active bottom tab and active drawer item -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+<shape xmlns:android = "http://schemas.android.com/apk/res/android"
+    android:shape = "rectangle">
 
     <gradient
-        android:angle="270"
-        android:startColor="#FFD500"
-        android:centerColor="#E0A800"
-        android:centerY="0.45"
-        android:endColor="#6B5200"/>
+        android:angle = "270"
+        android:startColor = "#FFD500"
+        android:centerColor = "#E0A800"
+        android:centerY = "0.45"
+        android:endColor = "#6B5200"/>
 
 </shape>

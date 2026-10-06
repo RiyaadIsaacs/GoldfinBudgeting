@@ -111,23 +111,19 @@ class EditEnvelopesActivity : AppCompatActivity() {
             finish()
         }
 
-        //close current active screen and go hoome
+        //go straight to home, even if other screens were opened after it
         homeTab.setOnClickListener {
-            finish()
+            NavHighlight.openBottomTab(this, NavScreen.HOME)
         }
 
         //open expenses screen
         expensesTab.setOnClickListener {
-            val intent = Intent(this, ExpensesActivity::class.java)
-
-            startActivity(intent)
+            NavHighlight.openBottomTab(this, NavScreen.EXPENSES)
         }
 
-        //open profile screen
+        //open profile screen from the right
         profileTab.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java)
-
-            startActivity(intent)
+            NavHighlight.openBottomTab(this, NavScreen.PROFILE)
         }
 
         //open envelopes screen

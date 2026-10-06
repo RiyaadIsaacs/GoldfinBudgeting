@@ -1,112 +1,112 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version = "1.0" encoding = "utf-8"?>
 
 <!--ai assistant screen-->
 <androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawerLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    android:id = "@+id/drawerLayout"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent">
 
     <LinearLayout
-        android:id="@+id/main"
+        android:id = "@+id/main"
 
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#EEEEEE">
+        android:layout_width = "match_parent"
+        android:layout_height = "match_parent"
+        android:orientation = "vertical"
+        android:background = "#EEEEEE">
 
         <!--top bar of screen-->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:background="#F5F5F5">
+            android:layout_width = "match_parent"
+            android:layout_height = "56dp"
+            android:orientation = "horizontal"
+            android:gravity = "center_vertical"
+            android:paddingStart = "16dp"
+            android:paddingEnd = "16dp"
+            android:background = "#F5F5F5">
 
             <TextView
-                android:id="@+id/menuIcon"
+                android:id = "@+id/menuIcon"
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="☰"
-                android:textSize="24sp"
-                android:textColor="#333333"
-                android:clickable="true"
-                android:focusable="true"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="AI Assistant"
-                android:textSize="18sp"
-                android:textColor="#333333"/>
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:text = "☰"
+                android:textSize = "24sp"
+                android:textColor = "#333333"
+                android:clickable = "true"
+                android:focusable = "true"/>
 
             <TextView
-                android:id="@+id/logOutButton"
+                android:layout_width = "0dp"
+                android:layout_height = "wrap_content"
+                android:layout_weight = "1"
+                android:gravity = "center"
+                android:text = "AI Assistant"
+                android:textSize = "18sp"
+                android:textColor = "#333333"/>
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Log Out"
-                android:textSize="14sp"
-                android:textColor="#333333"
-                android:clickable="true"
-                android:focusable="true"/>
+            <TextView
+                android:id = "@+id/logOutButton"
+
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:text = "Log Out"
+                android:textSize = "14sp"
+                android:textColor = "#333333"
+                android:clickable = "true"
+                android:focusable = "true"/>
 
         </LinearLayout>
 
         <!--chat messages-->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/messageRecyclerView"
+            android:id = "@+id/messageRecyclerView"
 
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"/>
+            android:layout_width = "match_parent"
+            android:layout_height = "0dp"
+            android:layout_weight = "1"
+            android:clipToPadding = "false"
+            android:paddingTop = "8dp"
+            android:paddingBottom = "8dp"/>
 
         <!--message input row-->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:background="#F5F5F5">
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:orientation = "horizontal"
+            android:gravity = "center_vertical"
+            android:padding = "12dp"
+            android:background = "#F5F5F5">
 
             <EditText
-                android:id="@+id/messageEditText"
+                android:id = "@+id/messageEditText"
 
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:hint="Type a message..."
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:background="@drawable/rounded_input_field"
-                android:textSize="14sp"/>
+                android:layout_width = "0dp"
+                android:layout_height = "48dp"
+                android:layout_weight = "1"
+                android:layout_marginEnd = "8dp"
+                android:hint = "Type a message..."
+                android:paddingStart = "16dp"
+                android:paddingEnd = "16dp"
+                android:background = "@drawable/rounded_input_field"
+                android:textSize = "14sp"/>
 
             <TextView
-                android:id="@+id/sendButton"
+                android:id = "@+id/sendButton"
 
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:text="Send"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/rounded_button_gold"
-                android:clickable="true"
-                android:focusable="true"/>
+                android:layout_width = "wrap_content"
+                android:layout_height = "48dp"
+                android:gravity = "center"
+                android:paddingStart = "20dp"
+                android:paddingEnd = "20dp"
+                android:text = "Send"
+                android:textSize = "14sp"
+                android:textStyle = "bold"
+                android:textColor = "#FFFFFF"
+                android:background = "@drawable/rounded_button_gold"
+                android:clickable = "true"
+                android:focusable = "true"/>
 
         </LinearLayout>
 
@@ -114,93 +114,122 @@
 
     <!--side drawer menu like from burger icon-->
     <LinearLayout
-        android:layout_width="260dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:orientation="vertical"
-        android:background="#F5F0FA">
+        android:layout_width = "260dp"
+        android:layout_height = "match_parent"
+        android:layout_gravity = "start"
+        android:orientation = "vertical"
+        android:background = "#F5F0FA">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:background="#D8D0E0">
+            android:layout_width = "match_parent"
+            android:layout_height = "56dp"
+            android:orientation = "horizontal"
+            android:gravity = "center_vertical"
+            android:paddingStart = "16dp"
+            android:paddingEnd = "16dp"
+            android:background = "#D8D0E0">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="GoldFin"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#C9A200"/>
+                android:layout_width = "0dp"
+                android:layout_height = "wrap_content"
+                android:layout_weight = "1"
+                android:gravity = "center"
+                android:text = "GoldFin"
+                android:textSize = "20sp"
+                android:textStyle = "bold"
+                android:textColor = "#C9A200"/>
 
             <TextView
-                android:id="@+id/closeDrawerButton"
+                android:id = "@+id/closeDrawerButton"
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="X"
-                android:textSize="20sp"
-                android:textColor="#555555"
-                android:clickable="true"
-                android:focusable="true"/>
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:text = "X"
+                android:textSize = "20sp"
+                android:textColor = "#555555"
+                android:clickable = "true"
+                android:focusable = "true"/>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/envelopesMenuItem"
+        <FrameLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "48dp"
+            android:background = "#E6DDF5">
 
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:gravity="center"
-            android:text="Envelopes"
-            android:textSize="16sp"
-            android:textColor="#4B0082"
-            android:background="#E6DDF5"
-            android:clickable="true"
-            android:focusable="true"/>
+            <TextView
+                android:id = "@+id/envelopesMenuItem"
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="1dp"
-            android:gravity="center"
-            android:text="Accounts"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:background="#EDE5F7"
-            android:clickable="true"
-            android:focusable="true"/>
+                android:layout_width = "match_parent"
+                android:layout_height = "match_parent"
+                android:gravity = "center"
+                android:text = "Envelopes"
+                android:textSize = "16sp"
+                android:textColor = "#333333"
+                android:background = "@android:color/transparent"
+                android:clickable = "true"
+                android:focusable = "true"/>
+
+        </FrameLayout>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="1dp"
-            android:gravity="center"
-            android:text="Badges"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:background="#E6DDF5"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:id = "@+id/accountsMenuItem"
+
+            android:layout_width = "match_parent"
+            android:layout_height = "48dp"
+            android:layout_marginTop = "1dp"
+            android:gravity = "center"
+            android:text = "Accounts"
+            android:textSize = "16sp"
+            android:textColor = "#333333"
+            android:background = "#EDE5F7"
+            android:clickable = "true"
+            android:focusable = "true"/>
+
+        <FrameLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "48dp"
+            android:layout_marginTop = "1dp"
+            android:background = "#E6DDF5">
+
+            <TextView
+                android:id = "@+id/badgesMenuItem"
+
+                android:layout_width = "match_parent"
+                android:layout_height = "match_parent"
+                android:gravity = "center"
+                android:text = "Badges"
+                android:textSize = "16sp"
+                android:textColor = "#333333"
+                android:background = "@android:color/transparent"
+                android:clickable = "true"
+                android:focusable = "true"/>
+
+            <View
+                android:id = "@+id/badgesNotificationDot"
+
+                android:layout_width = "10dp"
+                android:layout_height = "10dp"
+                android:layout_gravity = "end|center_vertical"
+                android:layout_marginEnd = "24dp"
+                android:background = "@drawable/notification_dot"
+                android:visibility = "gone"/>
+
+        </FrameLayout>
 
         <TextView
-            android:id="@+id/aiAssistantMenuItem"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="1dp"
-            android:gravity="center"
-            android:text="AI Assistant"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:background="#EDE5F7"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:id = "@+id/aiAssistantMenuItem"
+
+            android:layout_width = "match_parent"
+            android:layout_height = "48dp"
+            android:layout_marginTop = "1dp"
+            android:gravity = "center"
+            android:text = "AI Assistant"
+            android:textSize = "16sp"
+            android:textColor = "#333333"
+            android:background = "#EDE5F7"
+            android:clickable = "true"
+            android:focusable = "true"/>
 
     </LinearLayout>
 

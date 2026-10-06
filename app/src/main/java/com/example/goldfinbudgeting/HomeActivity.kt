@@ -93,16 +93,12 @@ class HomeActivity : AppCompatActivity() {
 
         //open expenses screen
         expensesTab.setOnClickListener {
-            val intent = Intent(this, ExpensesActivity::class.java)
-
-            startActivity(intent)
+            NavHighlight.openBottomTab(this, NavScreen.EXPENSES)
         }
 
-        //open profile screen
+        //open profile screen from the right
         profileTab.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java)
-
-            startActivity(intent)
+            NavHighlight.openBottomTab(this, NavScreen.PROFILE)
         }
 
         //find envelopes in the drawer

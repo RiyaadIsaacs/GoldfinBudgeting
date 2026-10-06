@@ -58,22 +58,23 @@ class BadgesActivity : AppCompatActivity() {
         }
 
         homeTab.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            startActivity(intent)
-            finish()
+            NavHighlight.openBottomTab(this, NavScreen.HOME)
         }
 
         expensesTab.setOnClickListener {
-            startActivity(Intent(this, ExpensesActivity::class.java))
+            NavHighlight.openBottomTab(this, NavScreen.EXPENSES)
         }
 
         profileTab.setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
+            NavHighlight.openBottomTab(this, NavScreen.PROFILE)
         }
 
         envelopesMenuItem.setOnClickListener {
             startActivity(Intent(this, EnvelopesActivity::class.java))
+        }
+
+        findViewById<TextView>(R.id.aiAssistantMenuItem).setOnClickListener {
+            startActivity(Intent(this, AIAssistantActivity::class.java))
         }
 
         NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.BADGES)
