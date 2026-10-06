@@ -106,7 +106,7 @@ class AIAssistantActivity : AppCompatActivity() {
 
         NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.NONE)
 
-        //send message when button tapped
+        //send message when button tapped. wait for ollama response
         sendButton.setOnClickListener {
 
             val text = messageEditText.text.toString()
@@ -120,18 +120,38 @@ class AIAssistantActivity : AppCompatActivity() {
 
                 messageEditText.text.clear()
 
-                //placeholder reply until ollam is connected
-                messages.add(Message("AI assistant in development.", false))
+                //shown while llama3 is writing reply
+                messages.add(Message("Thinking...", false))
 
                 adapter.notifyItemInserted(messages.size - 1)
 
                 messageRecyclerView.scrollToPosition(messages.size - 1)
+
+                //ask ollama and replace Thinking with reply
+                OllamaClient.ask(messages) { reply ->
+
+                    if (messages.isNotEmpty() && messages.last().text == "Thinking...") {
+                        val thinkingIndex = messages.lastIndex
+
+                        messages.removeAt(thinkingIndex)
+
+                        adapter.notifyItemRemoved(thinkingIndex)
+                    }
+
+                    messages.add(Message(reply, false))
+
+                    adapter.notifyItemInserted(messages.size - 1)
+
+                    messageRecyclerView.scrollToPosition(messages.size - 1)
+                }
             }
         }
     }
 
     override fun onResume() {
+
         super.onResume()
+
         NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.NONE)
     }
 }
