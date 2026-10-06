@@ -87,6 +87,7 @@ class SpendingActivity : AppCompatActivity() {
                     }
                 }
                 refreshGraph()
+                refreshPastMonth()
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -124,7 +125,10 @@ class SpendingActivity : AppCompatActivity() {
         val detail = findViewById<TextView>(R.id.pastMonthDetail)
         val range = findViewById<GoalRangeView>(R.id.pastMonthRange)
 
+        // Month before the period on screen, so goals set while browsing still show here
         val calendar = Calendar.getInstance()
+        calendar.timeInMillis = rangeStartMillis
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
         calendar.add(Calendar.MONTH, -1)
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)

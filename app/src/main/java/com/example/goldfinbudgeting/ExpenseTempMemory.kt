@@ -202,35 +202,11 @@ object ExpenseTempMemory {
         return ExpenseLogic.endOfDay(millis)
     }
 
-    // Months shown in the expenses dropdown
-    // Demo months stay for account 1; other accounts only see months they have data for
+    // Months shown in the expenses dropdown: January through December 2026.
     fun filterMonths(): List<Pair<Int, Int>> {
-        val months = linkedSetOf<Pair<Int, Int>>()
-
-        if (AccountStore.isDemoAccount(requireContext())) {
-            months.add(2026 to Calendar.AUGUST)
-            months.add(2026 to Calendar.JULY)
-            months.add(2026 to Calendar.JUNE)
-            months.add(2026 to Calendar.MAY)
+        return (Calendar.DECEMBER downTo Calendar.JANUARY).map { month ->
+            2026 to month
         }
-
-        expenses.forEach { expense ->
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = expense.dateCreated
-            months.add(calendar.get(Calendar.YEAR) to calendar.get(Calendar.MONTH))
-        }
-
-        // If a new account has no expenses yet, still show the current month
-        if (months.isEmpty()) {
-            val now = Calendar.getInstance()
-            months.add(now.get(Calendar.YEAR) to now.get(Calendar.MONTH))
-        }
-
-        // Newest months first
-        return months.sortedWith(
-            compareByDescending<Pair<Int, Int>> { it.first }
-                .thenByDescending { it.second }
-        )
     }
 
     // Human readable month title for buttons and headers like August 2026
@@ -258,16 +234,19 @@ object ExpenseTempMemory {
         return ExpenseLogic.dateOn(year, month, day)
     }
 
-    // Monthly spending goals for one calendar month or null if the user has not set any
+    // Monthly spending goals for one calendar month.
+    // Months without their own row reuse the goals already saved for another month.
     fun monthlyGoals(year: Int, month: Int): Pair<Double, Double>? {
-        val goal = db().monthlyGoalDao().get(userId(), year, month) ?: return null
+        val goal = resolveMonthlyGoals(year, month) ?: return null
         return goal.minGoal to goal.maxGoal
     }
 
-    // Save or replace the min and max spending goals for one month
+    // Save the min and max for this month, and copy them onto other months that have none yet
     fun setMonthlyGoals(year: Int, month: Int, minGoal: Double, maxGoal: Double) {
         val uid = userId()
-        db().monthlyGoalDao().upsert(
+        val dao = db().monthlyGoalDao()
+
+        dao.upsert(
             MonthlyGoalEntity(
                 userId = uid,
                 year = year,
@@ -276,6 +255,27 @@ object ExpenseTempMemory {
                 maxGoal = maxGoal
             )
         )
+
+        filterMonths().forEach { (otherYear, otherMonth) ->
+            if (dao.get(uid, otherYear, otherMonth) == null) {
+                dao.upsert(
+                    MonthlyGoalEntity(
+                        userId = uid,
+                        year = otherYear,
+                        month = otherMonth,
+                        minGoal = minGoal,
+                        maxGoal = maxGoal
+                    )
+                )
+            }
+        }
+
         Log.d(TAG, "Saved monthly goals userId=$uid year=$year month=$month min=$minGoal max=$maxGoal")
+    }
+
+    private fun resolveMonthlyGoals(year: Int, month: Int): MonthlyGoalEntity? {
+        val uid = userId()
+        val dao = db().monthlyGoalDao()
+        return dao.get(uid, year, month) ?: dao.latest(uid)
     }
 }

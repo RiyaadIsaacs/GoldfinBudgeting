@@ -330,10 +330,11 @@ class ExpensesActivity : AppCompatActivity() {
         val monthList = popupView.findViewById<LinearLayout>(R.id.monthDropdownList)
         val months = ExpenseTempMemory.filterMonths()
 
+        val popupHeight = (320 * resources.displayMetrics.density).toInt()
         val popup = PopupWindow(
             popupView,
             ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            popupHeight,
             true
         )
 
