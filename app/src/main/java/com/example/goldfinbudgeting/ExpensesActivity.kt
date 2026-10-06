@@ -149,6 +149,11 @@ class ExpensesActivity : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
+        //open badges screen from the drawer
+        findViewById<TextView>(R.id.badgesMenuItem).setOnClickListener {
+            startActivity(Intent(this, BadgesActivity::class.java))
+        }
+
         //go back to login screen
         logOutButton.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
@@ -193,6 +198,7 @@ class ExpensesActivity : AppCompatActivity() {
         }
 
         refreshExpenseList()
+        NavHighlight.apply(this, bottom = NavScreen.EXPENSES, drawer = NavScreen.NONE)
     }
 
     //used after adding an expense so the list jumps to that month
@@ -209,6 +215,7 @@ class ExpensesActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        NavHighlight.apply(this, bottom = NavScreen.EXPENSES, drawer = NavScreen.NONE)
         refreshExpenseList()
     }
 
@@ -491,7 +498,7 @@ class ExpensesActivity : AppCompatActivity() {
             maxGoalEditText.setText(String.format(Locale.US, "%.2f", existing.second))
         }
 
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle("Monthly goals · ${ExpenseTempMemory.monthTitle(selectedYear, selectedMonth)}")
             .setView(dialogView)
             .setPositiveButton("Save") { _, _ ->
@@ -506,11 +513,19 @@ class ExpensesActivity : AppCompatActivity() {
                 }
 
                 ExpenseTempMemory.setMonthlyGoals(selectedYear, selectedMonth, minGoal, maxGoal)
+
+                // first time setting goals gives a small XP reward
+                val xpResult = GamificationStore.onMonthlyGoalsSaved()
+                GamificationStore.showFeedback(this, xpResult)
+
                 Toast.makeText(this, "Monthly goals saved", Toast.LENGTH_SHORT).show()
                 refreshMonthlyGoalsUi()
             }
             .setNegativeButton("Cancel", null)
-            .show()
+            .create()
+
+        GoldButtons.styleAlert(dialog)
+        dialog.show()
     }
 
     private fun refreshMonthlyGoalsUi() {

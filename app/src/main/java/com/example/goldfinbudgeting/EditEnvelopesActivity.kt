@@ -127,6 +127,10 @@ class EditEnvelopesActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        findViewById<TextView>(R.id.badgesMenuItem).setOnClickListener {
+            startActivity(Intent(this, BadgesActivity::class.java))
+        }
+
         // Discard and go back
         cancelButton.setOnClickListener {
             finish()
@@ -178,11 +182,15 @@ class EditEnvelopesActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.NONE)
     }
 
     //refresh list after coming back from the confirm page
     override fun onResume() {
         super.onResume()
+
+        NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.NONE)
 
         val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
 

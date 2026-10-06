@@ -146,6 +146,11 @@ class EditExpensesActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        //open badges screen
+        findViewById<TextView>(R.id.badgesMenuItem).setOnClickListener {
+            startActivity(Intent(this, BadgesActivity::class.java))
+        }
+
         //cancel discards unsaved form changes and goes back. expense data in memory stays intact
         cancelButton.setOnClickListener {
             finish()
@@ -168,7 +173,7 @@ class EditExpensesActivity : AppCompatActivity() {
         //tap the dashed box to attach or view a receipt photo
         receiptPhotoButton.setOnClickListener {
             if (ReceiptViewer.hasReceipt(receiptPath)) {
-                AlertDialog.Builder(this)
+                val dialog = AlertDialog.Builder(this)
                     .setTitle("Receipt photo")
                     .setItems(arrayOf("View photo", "Replace photo")) { _, which ->
                         if (which == 0) {
@@ -178,7 +183,10 @@ class EditExpensesActivity : AppCompatActivity() {
                         }
                     }
                     .setNegativeButton("Cancel", null)
-                    .show()
+                    .create()
+
+                GoldButtons.styleAlert(dialog)
+                dialog.show()
             } else {
                 pickReceiptImage.launch("image/*")
             }
@@ -204,11 +212,13 @@ class EditExpensesActivity : AppCompatActivity() {
         }
 
         refreshEditableExpenseList()
+        NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.NONE)
     }
 
     override fun onResume() {
         super.onResume()
 
+        NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.NONE)
         refreshEditableExpenseList()
     }
 
@@ -264,6 +274,10 @@ class EditExpensesActivity : AppCompatActivity() {
             ExpenseTempMemory.addExpense(expense)
 
             Toast.makeText(this, "Added $name", Toast.LENGTH_SHORT).show()
+
+            // quiet XP for cataloging. toast only on level up or new badge
+            val xpResult = GamificationStore.onExpenseAdded()
+            GamificationStore.showFeedback(this, xpResult)
         }
 
         val calendar = Calendar.getInstance()
@@ -406,7 +420,7 @@ class EditExpensesActivity : AppCompatActivity() {
     }
 
     private fun confirmDeleteExpense(expenseId: Long, name: String) {
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle("Delete expense")
             .setMessage("Are you sure you wish to delete \"$name\"?")
             .setPositiveButton("Delete") { _, _ ->
@@ -423,7 +437,10 @@ class EditExpensesActivity : AppCompatActivity() {
                 }
             }
             .setNegativeButton("Cancel", null)
-            .show()
+            .create()
+
+        GoldButtons.styleAlert(dialog)
+        dialog.show()
     }
 
     private fun showDatePicker(dateEditText: EditText) {
@@ -448,7 +465,7 @@ class EditExpensesActivity : AppCompatActivity() {
         val options = ExpenseTempMemory.categories.toTypedArray()
         val checkedItem = options.indexOf(selectedCategory).coerceAtLeast(0)
 
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle("Choose category")
             .setSingleChoiceItems(options, checkedItem) { dialog, which ->
                 selectedCategory = options[which]
@@ -456,7 +473,10 @@ class EditExpensesActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel", null)
-            .show()
+            .create()
+
+        GoldButtons.styleAlert(dialog)
+        dialog.show()
     }
 
     private fun saveReceiptPhoto(uri: Uri) {

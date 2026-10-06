@@ -71,25 +71,29 @@
             <TextView
                 android:id="@+id/cancelButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="Cancel"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#C9A200"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/rounded_button_gold"
                 android:clickable="true"
                 android:focusable="true"/>
 
             <TextView
                 android:id="@+id/addButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:gravity="end"
+                android:layout_marginStart="12dp"
+                android:gravity="center"
                 android:text="Add"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#C9A200"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/rounded_button_gold"
                 android:clickable="true"
                 android:focusable="true"/>
 
@@ -297,17 +301,24 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/envelopesMenuItem"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:gravity="center"
-            android:text="Envelopes"
-            android:textSize="16sp"
-            android:textColor="#4B0082"
-            android:background="#E6DDF5"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:background="#E6DDF5">
+
+            <TextView
+                android:id="@+id/envelopesMenuItem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Envelopes"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:focusable="true"/>
+
+        </FrameLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -321,17 +332,34 @@
             android:clickable="true"
             android:focusable="true"/>
 
-        <TextView
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="1dp"
-            android:gravity="center"
-            android:text="Badges"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:background="#E6DDF5"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:background="#E6DDF5">
+
+            <TextView
+                android:id="@+id/badgesMenuItem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Badges"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <View
+                android:id="@+id/badgesNotificationDot"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/notification_dot"
+                android:visibility="gone"/>
+
+        </FrameLayout>
 
     </LinearLayout>
 

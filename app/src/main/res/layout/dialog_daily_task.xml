@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- daily task reminder shown when opening the app -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Daily task"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#1E1E1E"/>
+
+    <TextView
+        android:id="@+id/dailyTaskMessageText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Your daily task: Add 1 expense"
+        android:textSize="15sp"
+        android:textColor="#333333"/>
+
+    <TextView
+        android:id="@+id/dailyTaskGotItButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Got it"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_button_gold"
+        android:clickable="true"
+        android:focusable="true"/>
+
+</LinearLayout>

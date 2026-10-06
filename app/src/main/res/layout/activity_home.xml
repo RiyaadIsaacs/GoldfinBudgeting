@@ -138,14 +138,16 @@
                 android:focusable = "true"/>
 
             <TextView
+                android:id = "@+id/homeTab"
                 android:layout_width = "0dp"
                 android:layout_height = "match_parent"
                 android:layout_weight = "1"
                 android:gravity = "center"
                 android:text = "Home"
                 android:textSize = "14sp"
-                android:textStyle = "bold"
-                android:textColor = "#000000"/>
+                android:textColor = "#000000"
+                android:clickable = "true"
+                android:focusable = "true"/>
 
             <TextView
                 android:id = "@+id/expensesTab"
@@ -206,18 +208,24 @@
         </LinearLayout>
 
         <!--envelopes menu item in side menu-->
-        <TextView
-            android:id = "@+id/envelopesMenuItem"
-
+        <FrameLayout
             android:layout_width = "match_parent"
             android:layout_height = "48dp"
-            android:gravity = "center"
-            android:text = "Envelopes"
-            android:textSize = "16sp"
-            android:textColor = "#4B0082"
-            android:background = "#E6DDF5"
-            android:clickable = "true"
-            android:focusable = "true"/>
+            android:background = "#E6DDF5">
+
+            <TextView
+                android:id = "@+id/envelopesMenuItem"
+                android:layout_width = "match_parent"
+                android:layout_height = "match_parent"
+                android:gravity = "center"
+                android:text = "Envelopes"
+                android:textSize = "16sp"
+                android:textColor = "#333333"
+                android:background = "@android:color/transparent"
+                android:clickable = "true"
+                android:focusable = "true"/>
+
+        </FrameLayout>
 
         <!--accounts menu item in side menu-->
         <TextView
@@ -233,17 +241,34 @@
             android:focusable = "true"/>
 
         <!--badges menu item in side menu-->
-        <TextView
+        <FrameLayout
             android:layout_width = "match_parent"
             android:layout_height = "48dp"
             android:layout_marginTop = "1dp"
-            android:gravity = "center"
-            android:text = "Badges"
-            android:textSize = "16sp"
-            android:textColor = "#333333"
-            android:background = "#E6DDF5"
-            android:clickable = "true"
-            android:focusable = "true"/>
+            android:background = "#E6DDF5">
+
+            <TextView
+                android:id = "@+id/badgesMenuItem"
+                android:layout_width = "match_parent"
+                android:layout_height = "match_parent"
+                android:gravity = "center"
+                android:text = "Badges"
+                android:textSize = "16sp"
+                android:textColor = "#333333"
+                android:background = "@android:color/transparent"
+                android:clickable = "true"
+                android:focusable = "true"/>
+
+            <View
+                android:id = "@+id/badgesNotificationDot"
+                android:layout_width = "10dp"
+                android:layout_height = "10dp"
+                android:layout_gravity = "end|center_vertical"
+                android:layout_marginEnd = "24dp"
+                android:background = "@drawable/notification_dot"
+                android:visibility = "gone"/>
+
+        </FrameLayout>
 
     </LinearLayout>
 

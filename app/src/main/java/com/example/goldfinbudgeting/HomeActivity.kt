@@ -97,6 +97,7 @@ class HomeActivity : AppCompatActivity() {
 
         //find envelopes in the drawer
         val envelopesMenuItem = findViewById<TextView>(R.id.envelopesMenuItem)
+        val badgesMenuItem = findViewById<TextView>(R.id.badgesMenuItem)
 
         //open envelopes screen
         envelopesMenuItem.setOnClickListener {
@@ -104,11 +105,21 @@ class HomeActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        //open badges screen
+        badgesMenuItem.setOnClickListener {
+            startActivity(Intent(this, BadgesActivity::class.java))
+        }
+
+        NavHighlight.apply(this, bottom = NavScreen.HOME, drawer = NavScreen.NONE)
+        maybeShowDailyTaskPrompt()
     }
 
     //refresh envelope list and monthly total when screen is visible again
     override fun onResume() {
         super.onResume()
+
+        NavHighlight.apply(this, bottom = NavScreen.HOME, drawer = NavScreen.NONE)
 
         val envelopeRecyclerView = findViewById<RecyclerView>(R.id.envelopeRecyclerView)
 
@@ -117,6 +128,31 @@ class HomeActivity : AppCompatActivity() {
 
         // Recalculate after returning from expenses / envelopes screens
         refreshHomeTotals()
+    }
+
+    // remind them of the daily task once a day if it is not done yet
+    private fun maybeShowDailyTaskPrompt() {
+        if (!GamificationStore.shouldShowDailyPrompt()) {
+            return
+        }
+
+        GamificationStore.markDailyPromptShown()
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_daily_task, null)
+        val messageText = dialogView.findViewById<TextView>(R.id.dailyTaskMessageText)
+        val gotItButton = dialogView.findViewById<TextView>(R.id.dailyTaskGotItButton)
+
+        messageText.text = "Your daily task: ${GamificationStore.dailyGoalLabel()}"
+
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        gotItButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     // Sum expenses for the current calendar month and push the value into the home card

@@ -97,6 +97,11 @@ class EnvelopesActivity : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
+        //open badges screen from the drawer
+        findViewById<TextView>(R.id.badgesMenuItem).setOnClickListener {
+            startActivity(Intent(this, BadgesActivity::class.java))
+        }
+
         //back to login screen when user clicks
         logOutButton.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
@@ -137,6 +142,8 @@ class EnvelopesActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.ENVELOPES)
     }
 
     //used after adding an envelope so the list jumps to that month
@@ -152,6 +159,7 @@ class EnvelopesActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        NavHighlight.apply(this, bottom = NavScreen.NONE, drawer = NavScreen.ENVELOPES)
         refreshEnvelopeList()
     }
 

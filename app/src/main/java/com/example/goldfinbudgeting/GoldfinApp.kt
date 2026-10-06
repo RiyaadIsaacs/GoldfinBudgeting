@@ -17,5 +17,6 @@ class GoldfinApp : Application() {
         // Give the expense / envelope stores an Application context so they can reach Room
         ExpenseTempMemory.bind(this)
         EnvelopeTempMemory.bind(this)
+        GamificationStore.bind(this)
     }
 }

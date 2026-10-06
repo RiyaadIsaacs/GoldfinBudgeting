@@ -131,6 +131,10 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        findViewById<TextView>(R.id.badgesMenuItem).setOnClickListener {
+            startActivity(Intent(this, BadgesActivity::class.java))
+        }
+
         //save display name and update the heading
         findViewById<TextView>(R.id.saveDisplayNameButton).setOnClickListener {
             val name = displayNameEditText.text.toString().trim()
@@ -177,6 +181,13 @@ class ProfileActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.accountSettingsButton).setOnClickListener {
             Toast.makeText(this, "Account Settings coming soon", Toast.LENGTH_SHORT).show()
         }
+
+        NavHighlight.apply(this, bottom = NavScreen.PROFILE, drawer = NavScreen.NONE)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        NavHighlight.apply(this, bottom = NavScreen.PROFILE, drawer = NavScreen.NONE)
     }
 
     // Step 1
@@ -196,6 +207,8 @@ class ProfileActivity : AppCompatActivity() {
 
         // set Confirm here so a wrong password does not auto close the dialog
         dialog.setOnShowListener {
+            GoldButtons.styleShown(dialog)
+
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val typedPassword = currentPasswordEditText.text.toString()
 
@@ -230,6 +243,8 @@ class ProfileActivity : AppCompatActivity() {
             .create()
 
         dialog.setOnShowListener {
+            GoldButtons.styleShown(dialog)
+
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val newPassword = newPasswordEditText.text.toString()
                 val confirmPassword = confirmPasswordEditText.text.toString()

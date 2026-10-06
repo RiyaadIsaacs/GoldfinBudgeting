@@ -32,11 +32,14 @@ object ReceiptViewer {
         receiptViewerImage.setImageURI(null)
         receiptViewerImage.setImageURI(Uri.fromFile(pictureFile))
 
-        AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(context)
             .setTitle("Receipt")
             .setView(dialogView)
             .setPositiveButton("Close", null)
-            .show()
+            .create()
+
+        GoldButtons.styleAlert(dialog)
+        dialog.show()
     }
 
     fun hasReceipt(path: String?): Boolean {

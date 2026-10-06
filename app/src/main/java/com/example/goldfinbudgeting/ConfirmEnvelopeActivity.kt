@@ -65,8 +65,12 @@ class ConfirmEnvelopeActivity : AppCompatActivity() {
                 }
             } else {
                 if (name.isNotBlank()) {
-                    // Inserts a new category / envelope into Room 
+                    // Inserts a new category / envelope into Room
                     EnvelopeTempMemory.addEnvelope(Envelope(name, min, max, 0.0, dateCreated))
+
+                    // quiet XP for creating an envelope
+                    val xpResult = GamificationStore.onEnvelopeAdded()
+                    GamificationStore.showFeedback(this, xpResult)
 
                     Toast.makeText(this, "Added $name", Toast.LENGTH_SHORT).show()
                 }

@@ -166,8 +166,8 @@
                         android:gravity="center"
                         android:text="Save"
                         android:textSize="16sp"
-                        android:textColor="#F5F5F5"
-                        android:background="@drawable/profile_save_button"
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/rounded_button_gold"
                         android:elevation="4dp"
                         android:clickable="true"
                         android:focusable="true"/>
@@ -222,8 +222,8 @@
                             android:gravity="center"
                             android:text="Save"
                             android:textSize="16sp"
-                            android:textColor="#F5F5F5"
-                            android:background="@drawable/profile_save_button"
+                            android:textColor="#FFFFFF"
+                            android:background="@drawable/rounded_button_gold"
                             android:elevation="4dp"
                             android:clickable="true"
                             android:focusable="true"/>
@@ -238,8 +238,8 @@
                         android:gravity="center"
                         android:text="Change Password"
                         android:textSize="16sp"
-                        android:textColor="#F5F5F5"
-                        android:background="@drawable/profile_save_button"
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/rounded_button_gold"
                         android:elevation="4dp"
                         android:clickable="true"
                         android:focusable="true"/>
@@ -281,8 +281,8 @@
                             android:gravity="center"
                             android:text="Save"
                             android:textSize="16sp"
-                            android:textColor="#F5F5F5"
-                            android:background="@drawable/profile_save_button"
+                            android:textColor="#FFFFFF"
+                            android:background="@drawable/rounded_button_gold"
                             android:elevation="4dp"
                             android:clickable="true"
                             android:focusable="true"/>
@@ -371,12 +371,12 @@
 
         </ScrollView>
 
-        <!--bottom tabs from the Figma file: Profile, Home, Expenses-->
+        <!--bottom tabs. default bar matches Expenses. active tab set in code-->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_height="56dp"
             android:orientation="horizontal"
-            android:background="#FFFFFF"
+            android:background="@drawable/rounded_bottom_nav"
             android:elevation="4dp">
 
             <TextView
@@ -387,10 +387,9 @@
                 android:gravity="center"
                 android:text="Profile"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.007"
                 android:textColor="#000000"
-                android:background="@drawable/profile_gold_tab"/>
+                android:clickable="true"
+                android:focusable="true"/>
 
             <TextView
                 android:id="@+id/homeTab"
@@ -400,10 +399,7 @@
                 android:gravity="center"
                 android:text="Home"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.007"
                 android:textColor="#000000"
-                android:background="@drawable/profile_gold_tab"
                 android:clickable="true"
                 android:focusable="true"/>
 
@@ -415,10 +411,7 @@
                 android:gravity="center"
                 android:text="Expenses"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.007"
                 android:textColor="#000000"
-                android:background="@drawable/profile_gold_tab"
                 android:clickable="true"
                 android:focusable="true"/>
 
@@ -465,17 +458,24 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/envelopesMenuItem"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:gravity="center"
-            android:text="Envelopes"
-            android:textSize="16sp"
-            android:textColor="#4B0082"
-            android:background="#E6DDF5"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:background="#E6DDF5">
+
+            <TextView
+                android:id="@+id/envelopesMenuItem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Envelopes"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:focusable="true"/>
+
+        </FrameLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -489,17 +489,34 @@
             android:clickable="true"
             android:focusable="true"/>
 
-        <TextView
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="1dp"
-            android:gravity="center"
-            android:text="Badges"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:background="#E6DDF5"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:background="#E6DDF5">
+
+            <TextView
+                android:id="@+id/badgesMenuItem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Badges"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <View
+                android:id="@+id/badgesNotificationDot"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/notification_dot"
+                android:visibility="gone"/>
+
+        </FrameLayout>
 
     </LinearLayout>
 
