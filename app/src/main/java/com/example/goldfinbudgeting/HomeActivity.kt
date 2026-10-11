@@ -84,6 +84,7 @@ class HomeActivity : AppCompatActivity() {
 
         //go back to log in screen
         logOutButton.setOnClickListener {
+            AccountStore.signOut(this)
             val intent = Intent(this, LoginActivity::class.java)
 
             startActivity(intent)

@@ -2,82 +2,105 @@ package com.example.goldfinbudgeting
 
 import android.content.Context
 import android.util.Log
-import com.example.goldfinbudgeting.data.DatabaseProvider
-import com.example.goldfinbudgeting.data.EntityMappers
-import com.example.goldfinbudgeting.data.GoldfinDatabase
-import com.example.goldfinbudgeting.data.MonthlyGoalEntity
+import com.example.goldfinbudgeting.data.FirebaseProvider
+import com.google.firebase.firestore.DocumentSnapshot
 import java.util.Calendar
+import java.util.concurrent.atomic.AtomicLong
 
-// ExpenseTempMemory used to keep expenses in a mutableList in RAM
-// It now reads and writes the Room expenses table so data survives app restarts
+// ExpenseTempMemory reads/writes Cloud Firestore expenses for the signed-in user
 object ExpenseTempMemory {
     private const val TAG = "ExpenseTempMemory"
 
-    // Cached Room database reference after bind or first use
-    @Volatile
-    private var database: GoldfinDatabase? = null
+    private val idCounter = AtomicLong(System.currentTimeMillis())
 
-    // Application context so we can open Room even when Activities recreate
     @Volatile
     private var appContext: Context? = null
 
-    // Returns the Room database opening it through DatabaseProvider if needed
-    private fun db(context: Context? = appContext): GoldfinDatabase {
-        database?.let { return it }
-        val ctx = context ?: appContext
-            ?: throw IllegalStateException("ExpenseTempMemory used before GoldfinApp initialised Room")
-        return DatabaseProvider.get(ctx).also { database = it }
-    }
-
-    // Per user helpers
-    // every expense read and write uses the signed in accounts id
     private fun requireContext(): Context {
         return appContext
-            ?: throw IllegalStateException("ExpenseTempMemory used before GoldfinApp initialised Room")
+            ?: throw IllegalStateException("ExpenseTempMemory used before GoldfinApp initialised Firebase")
     }
 
-    private fun userId(): Long {
-        return AccountStore.currentUserId(requireContext())
+    private fun userId(): String {
+        val uid = AccountStore.currentUserId(requireContext())
+        if (uid.isBlank()) {
+            throw IllegalStateException("No signed-in Firebase user for expenses")
+        }
+        return uid
     }
 
-    // Called from GoldfinApp.onCreate so stores are ready before LoginActivity
     fun bind(context: Context) {
         appContext = context.applicationContext
-        database = DatabaseProvider.get(context)
     }
 
-    // Category names for the expense picker
-    // Demo account keeps starter category names. other accounts only see General and their envelopes
+    private fun nextId(): Long = idCounter.incrementAndGet()
+
+    private fun snapshotToExpense(doc: DocumentSnapshot): Expense? {
+        if (!doc.exists()) return null
+        val id = doc.getLong("id") ?: doc.id.toLongOrNull() ?: return null
+        return Expense(
+            name = doc.getString("name").orEmpty(),
+            amount = doc.getDouble("amount") ?: 0.0,
+            category = doc.getString("categoryName").orEmpty(),
+            dateCreated = doc.getLong("dateCreated") ?: 0L,
+            description = doc.getString("description").orEmpty(),
+            startTime = doc.getString("startTime").orEmpty(),
+            endTime = doc.getString("endTime").orEmpty(),
+            receiptPath = doc.getString("receiptPath"),
+            id = id
+        )
+    }
+
+    private fun expenseToMap(expense: Expense, uid: String): Map<String, Any?> {
+        return mapOf(
+            "id" to expense.id,
+            "userId" to uid,
+            "name" to expense.name,
+            "amount" to expense.amount,
+            "categoryName" to expense.category,
+            "dateCreated" to expense.dateCreated,
+            "description" to expense.description,
+            "startTime" to expense.startTime,
+            "endTime" to expense.endTime,
+            "receiptPath" to expense.receiptPath
+        )
+    }
+
     val categories: List<String>
         get() {
-            val fromDb = db().categoryDao().getAllForUser(userId()).map { it.name }
+            val uid = userId()
+            val snap = FirebaseProvider.await(FirebaseProvider.categories(uid).get())
+            FirebaseProvider.logRead("categories", uid, snap.size())
+            val fromDb = snap.documents.mapNotNull { it.getString("name") }
             val defaults = if (AccountStore.isDemoAccount(requireContext())) {
-                listOf(
-                    "General",
-                    "Subscriptions",
-                    "Games",
-                    "Groceries",
-                    "Takeouts"
-                )
+                listOf("General", "Subscriptions", "Games", "Groceries", "Takeouts")
             } else {
                 listOf("General")
             }
-            // distinct() avoids showing the same category twice.
             return (defaults + fromDb).distinct()
         }
 
-    // Live list of expenses for the current account
     val expenses: List<Expense>
-        get() = db().expenseDao().getAllForUser(userId()).map(EntityMappers::toExpense)
+        get() {
+            val uid = userId()
+            val snap = FirebaseProvider.await(
+                FirebaseProvider.expenses(uid).orderBy("dateCreated", com.google.firebase.firestore.Query.Direction.DESCENDING).get()
+            )
+            FirebaseProvider.logRead("expenses", uid, snap.size())
+            return snap.documents.mapNotNull { snapshotToExpense(it) }
+        }
 
-    // Insert a new expense. id is forced to 0 so Room auto-generates a primary key
     fun addExpense(expense: Expense) {
         val uid = userId()
-        val id = db().expenseDao().insert(EntityMappers.toExpenseEntity(expense.copy(id = 0), uid))
+        val id = if (expense.id != 0L) expense.id else nextId()
+        val toSave = expense.copy(id = id)
+        FirebaseProvider.await(
+            FirebaseProvider.expenses(uid).document(id.toString()).set(expenseToMap(toSave, uid))
+        )
+        FirebaseProvider.logWrite("insert", "expenses", uid, id.toString())
         Log.d(TAG, "Inserted expense id=$id name=${expense.name} userId=$uid")
     }
 
-    // Update the expense at a list index by keeping the existing Room id
     fun updateExpense(index: Int, expense: Expense): Boolean {
         val current = expenses
         if (index < 0 || index >= current.size) {
@@ -86,18 +109,20 @@ object ExpenseTempMemory {
         return updateExpenseById(current[index].id, expense)
     }
 
-    // Update by Room id so edits stay correct even if the list order changes
     fun updateExpenseById(id: Long, expense: Expense): Boolean {
         val uid = userId()
-        if (id <= 0L || db().expenseDao().getById(uid, id) == null) {
-            return false
-        }
-        db().expenseDao().update(EntityMappers.toExpenseEntity(expense.copy(id = id), uid))
+        if (id <= 0L) return false
+        val existing = FirebaseProvider.await(FirebaseProvider.expenses(uid).document(id.toString()).get())
+        if (!existing.exists()) return false
+        val toSave = expense.copy(id = id)
+        FirebaseProvider.await(
+            FirebaseProvider.expenses(uid).document(id.toString()).set(expenseToMap(toSave, uid))
+        )
+        FirebaseProvider.logWrite("update", "expenses", uid, id.toString())
         Log.d(TAG, "Updated expense id=$id name=${expense.name} userId=$uid")
         return true
     }
 
-    // Delete the expense currently shown at that index in the Room-backed list
     fun deleteExpense(index: Int): Boolean {
         val current = expenses
         if (index < 0 || index >= current.size) {
@@ -106,37 +131,31 @@ object ExpenseTempMemory {
         return deleteExpenseById(current[index].id)
     }
 
-    // Delete by Room id
     fun deleteExpenseById(id: Long): Boolean {
         val uid = userId()
-        val entity = db().expenseDao().getById(uid, id) ?: return false
-        db().expenseDao().delete(entity)
-        Log.d(TAG, "Deleted expense id=${entity.id} name=${entity.name} userId=$uid")
+        val ref = FirebaseProvider.expenses(uid).document(id.toString())
+        val existing = FirebaseProvider.await(ref.get())
+        if (!existing.exists()) return false
+        FirebaseProvider.await(ref.delete())
+        FirebaseProvider.logWrite("delete", "expenses", uid, id.toString())
+        Log.d(TAG, "Deleted expense id=$id userId=$uid")
         return true
     }
 
-    // Load one expense by Room id, or null if it was deleted
     fun expenseById(id: Long): Expense? {
-        return db().expenseDao().getById(userId(), id)?.let(EntityMappers::toExpense)
+        val uid = userId()
+        val doc = FirebaseProvider.await(FirebaseProvider.expenses(uid).document(id.toString()).get())
+        return snapshotToExpense(doc)
     }
 
-    // Short date for list subtitles, like 5 Aug
-    fun formatShortDate(millis: Long): String {
-        return ExpenseLogic.formatShortDate(millis)
-    }
+    fun formatShortDate(millis: Long): String = ExpenseLogic.formatShortDate(millis)
 
-    // Text under the expense name like Games - 5 Aug
-    fun expenseSubtitle(expense: Expense): String {
-        return ExpenseLogic.expenseSubtitle(expense)
-    }
+    fun expenseSubtitle(expense: Expense): String = ExpenseLogic.expenseSubtitle(expense)
 
-    // Filter to expenses whose created date falls in the given calendar month
     fun expensesInMonth(year: Int, month: Int): List<Expense> {
         return ExpenseLogic.expensesInMonth(expenses, year, month)
     }
 
-    // Builds the list shown on the Expenses screen
-    // Can use a custom date range, or fall back to the selected month
     fun expensesForScreen(
         year: Int,
         month: Int,
@@ -156,22 +175,27 @@ object ExpenseTempMemory {
         )
     }
 
-    // Uses Room getBetween for a user-selectable period
     fun expensesInRange(startMillis: Long, endMillis: Long): List<Expense> {
         val start = ExpenseLogic.startOfDay(startMillis)
         val end = ExpenseLogic.endOfDay(endMillis)
-        return db().expenseDao().getBetween(userId(), start, end).map(EntityMappers::toExpense)
+        val uid = userId()
+        val snap = FirebaseProvider.await(
+            FirebaseProvider.expenses(uid)
+                .whereGreaterThanOrEqualTo("dateCreated", start)
+                .whereLessThanOrEqualTo("dateCreated", end)
+                .get()
+        )
+        FirebaseProvider.logRead("expenses(range)", uid, snap.size())
+        return snap.documents.mapNotNull { snapshotToExpense(it) }
+            .sortedByDescending { it.dateCreated }
     }
 
-    // Category totals for a period via Room GROUP BY
     fun totalsByCategoryInRange(startMillis: Long, endMillis: Long): Map<String, Double> {
-        val start = ExpenseLogic.startOfDay(startMillis)
-        val end = ExpenseLogic.endOfDay(endMillis)
-        return db().expenseDao().totalsByCategory(userId(), start, end)
-            .associate { it.categoryName to it.total }
+        return expensesInRange(startMillis, endMillis)
+            .groupBy { it.category }
+            .mapValues { (_, list) -> list.sumOf { it.amount } }
     }
 
-    // Sum of amounts for whatever the Expenses screen is currently filtering
     fun totalForScreen(
         year: Int,
         month: Int,
@@ -181,90 +205,66 @@ object ExpenseTempMemory {
         rangeEndMillis: Long? = null
     ): Double {
         return ExpenseLogic.totalAmount(
-            expensesForScreen(
-                year,
-                month,
-                category,
-                searchQuery,
-                rangeStartMillis,
-                rangeEndMillis
-            )
+            expensesForScreen(year, month, category, searchQuery, rangeStartMillis, rangeEndMillis)
         )
     }
 
-    // Start of the calendar day for inclusive range queries
-    fun startOfDay(millis: Long): Long {
-        return ExpenseLogic.startOfDay(millis)
-    }
+    fun startOfDay(millis: Long): Long = ExpenseLogic.startOfDay(millis)
 
-    // End of the calendar day for inclusive range queries
-    fun endOfDay(millis: Long): Long {
-        return ExpenseLogic.endOfDay(millis)
-    }
+    fun endOfDay(millis: Long): Long = ExpenseLogic.endOfDay(millis)
 
-    // Months shown in the expenses dropdown: January through December 2026.
     fun filterMonths(): List<Pair<Int, Int>> {
         return (Calendar.DECEMBER downTo Calendar.JANUARY).map { month ->
             2026 to month
         }
     }
 
-    // Human readable month title for buttons and headers like August 2026
-    fun monthTitle(year: Int, month: Int): String {
-        return ExpenseLogic.monthTitle(year, month)
-    }
+    fun monthTitle(year: Int, month: Int): String = ExpenseLogic.monthTitle(year, month)
 
-    // Rand formatting for totals and list amounts
-    fun formatAmount(amount: Double): String {
-        return ExpenseLogic.formatAmount(amount)
-    }
+    fun formatAmount(amount: Double): String = ExpenseLogic.formatAmount(amount)
 
-    // Full date string for edit fields like 2026-08-05
-    fun formatDate(millis: Long): String {
-        return ExpenseLogic.formatDate(millis)
-    }
+    fun formatDate(millis: Long): String = ExpenseLogic.formatDate(millis)
 
-    // Parse a typed date back to millis. falls back to now if the text is invalid
-    fun parseDate(text: String): Long {
-        return ExpenseLogic.parseDate(text)
-    }
+    fun parseDate(text: String): Long = ExpenseLogic.parseDate(text)
 
-    // Build millis for a specific calendar day used by seed data and date pickers
-    fun dateOn(year: Int, month: Int, day: Int): Long {
-        return ExpenseLogic.dateOn(year, month, day)
-    }
+    fun dateOn(year: Int, month: Int, day: Int): Long = ExpenseLogic.dateOn(year, month, day)
 
-    // Monthly spending goals for one calendar month.
-    // Months without their own row reuse the goals already saved for another month.
+    data class MonthlyGoal(
+        val year: Int,
+        val month: Int,
+        val minGoal: Double,
+        val maxGoal: Double
+    )
+
     fun monthlyGoals(year: Int, month: Int): Pair<Double, Double>? {
         val goal = resolveMonthlyGoals(year, month) ?: return null
         return goal.minGoal to goal.maxGoal
     }
 
-    // Save the min and max for this month, and copy them onto other months that have none yet
     fun setMonthlyGoals(year: Int, month: Int, minGoal: Double, maxGoal: Double) {
         val uid = userId()
-        val dao = db().monthlyGoalDao()
-
-        dao.upsert(
-            MonthlyGoalEntity(
-                userId = uid,
-                year = year,
-                month = month,
-                minGoal = minGoal,
-                maxGoal = maxGoal
-            )
+        val docId = "${year}_$month"
+        val data = mapOf(
+            "year" to year,
+            "month" to month,
+            "minGoal" to minGoal,
+            "maxGoal" to maxGoal
         )
+        FirebaseProvider.await(FirebaseProvider.monthlyGoals(uid).document(docId).set(data))
+        FirebaseProvider.logWrite("upsert", "monthlyGoals", uid, docId)
 
         filterMonths().forEach { (otherYear, otherMonth) ->
-            if (dao.get(uid, otherYear, otherMonth) == null) {
-                dao.upsert(
-                    MonthlyGoalEntity(
-                        userId = uid,
-                        year = otherYear,
-                        month = otherMonth,
-                        minGoal = minGoal,
-                        maxGoal = maxGoal
+            val otherId = "${otherYear}_$otherMonth"
+            val existing = FirebaseProvider.await(FirebaseProvider.monthlyGoals(uid).document(otherId).get())
+            if (!existing.exists()) {
+                FirebaseProvider.await(
+                    FirebaseProvider.monthlyGoals(uid).document(otherId).set(
+                        mapOf(
+                            "year" to otherYear,
+                            "month" to otherMonth,
+                            "minGoal" to minGoal,
+                            "maxGoal" to maxGoal
+                        )
                     )
                 )
             }
@@ -273,9 +273,30 @@ object ExpenseTempMemory {
         Log.d(TAG, "Saved monthly goals userId=$uid year=$year month=$month min=$minGoal max=$maxGoal")
     }
 
-    private fun resolveMonthlyGoals(year: Int, month: Int): MonthlyGoalEntity? {
+    private fun resolveMonthlyGoals(year: Int, month: Int): MonthlyGoal? {
         val uid = userId()
-        val dao = db().monthlyGoalDao()
-        return dao.get(uid, year, month) ?: dao.latest(uid)
+        val exact = FirebaseProvider.await(
+            FirebaseProvider.monthlyGoals(uid).document("${year}_$month").get()
+        )
+        if (exact.exists()) {
+            return MonthlyGoal(
+                year = year,
+                month = month,
+                minGoal = exact.getDouble("minGoal") ?: 0.0,
+                maxGoal = exact.getDouble("maxGoal") ?: 0.0
+            )
+        }
+        val all = FirebaseProvider.await(FirebaseProvider.monthlyGoals(uid).get())
+        val latest = all.documents.maxByOrNull {
+            val y = it.getLong("year") ?: 0L
+            val m = it.getLong("month") ?: 0L
+            y * 12 + m
+        } ?: return null
+        return MonthlyGoal(
+            year = (latest.getLong("year") ?: 0L).toInt(),
+            month = (latest.getLong("month") ?: 0L).toInt(),
+            minGoal = latest.getDouble("minGoal") ?: 0.0,
+            maxGoal = latest.getDouble("maxGoal") ?: 0.0
+        )
     }
 }

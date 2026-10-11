@@ -2,122 +2,188 @@ package com.example.goldfinbudgeting
 
 import android.content.Context
 import android.util.Log
-import com.example.goldfinbudgeting.data.DatabaseProvider
-import com.example.goldfinbudgeting.data.UserEntity
+import com.example.goldfinbudgeting.data.FirebaseProvider
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
-// AccountStore helpers for login accounts in Room
-// Used by Login Create Account and Profile
+// AccountStore helpers for login via Firebase Authentication (email / password)
 object AccountStore {
     private const val TAG = "AccountStore"
 
-    // shortcut to the users table
-    private fun userDao(context: Context) = DatabaseProvider.get(context).userDao()
+    // Optional demo email
+    private const val DEMO_EMAIL = "demo@goldfin.app"
 
-    // Current account
-    // finds which user is signed in or falls back to demo user 1
-    private fun currentUser(context: Context): UserEntity {
-        val dao = userDao(context)
-        val remembered = prefsUsername(context)
+    // Last password successfully verified in the profile flow (needed for Auth re-authenticate)
+    @Volatile
+    private var verifiedPassword: String? = null
 
-        // prefer the email saved after the last successful login
-        if (remembered != null) {
-            dao.findByUsername(remembered)?.let { return it }
-        }
+    private fun auth() = FirebaseProvider.auth()
 
-        // otherwise use the demo account
-        dao.findByUsername("1")?.let { return it }
-
-        // last resort create the demo account if the table somehow has no user 1
-        val id = dao.insert(UserEntity(username = "1", password = "1"))
-        Log.d(TAG, "Created fallback user id=$id")
-        return dao.findByUsername("1") ?: UserEntity(id = id, username = "1", password = "1")
-    }
-
-    // email of the current account
+    // Email of the signed-in Firebase user (empty if signed out)
     fun email(context: Context): String {
-        return currentUser(context).username
+        return auth().currentUser?.email
+            ?: prefsUsername(context).orEmpty()
     }
 
-    // Room id of the current account so each users data stays separate
-    fun currentUserId(context: Context): Long {
-        return currentUser(context).id
+    // Firebase Auth UID so each user's Firestore data stays separate
+    fun currentUserId(context: Context): String {
+        return auth().currentUser?.uid.orEmpty()
     }
 
-    // true only for the demo login 1 which keeps the sample data
+    // only for the optional demo@goldfin.app account
     fun isDemoAccount(context: Context): Boolean {
-        return email(context) == "1"
+        return email(context).equals(DEMO_EMAIL, ignoreCase = true)
     }
 
-    // password of the current account
+    // Firebase Auth does not allow reading the stored password
     fun password(context: Context): String {
-        return currentUser(context).password
+        return verifiedPassword.orEmpty()
     }
 
-    // Profile updates
-    // change the login email from the profile screen
-    fun setEmail(context: Context, email: String) {
+    // Re-authenticate with the typed current password
+    fun verifyPassword(context: Context, password: String, onComplete: (Boolean) -> Unit) {
+        val user = auth().currentUser
+        val mail = user?.email
+        if (user == null || mail == null) {
+            onComplete(false)
+            return
+        }
+        val credential = EmailAuthProvider.getCredential(mail, password)
+        user.reauthenticate(credential)
+            .addOnSuccessListener {
+                verifiedPassword = password
+                Log.d(TAG, "Password verified for $mail")
+                onComplete(true)
+            }
+            .addOnFailureListener { e ->
+                Log.d(TAG, "Password verify failed: ${e.message}")
+                onComplete(false)
+            }
+    }
+
+    // Change the login email from the profile screen
+    fun setEmail(context: Context, email: String, onComplete: (Boolean) -> Unit = {}) {
         val trimmed = email.trim()
-        val dao = userDao(context)
-        val current = currentUser(context)
-
-        dao.update(current.copy(username = trimmed))
-
-        // keep local memory of who is signed in
-        rememberUsername(context, trimmed)
-        Log.d(TAG, "Updated username to $trimmed for user id=${current.id}")
+        val user = auth().currentUser
+        if (user == null) {
+            onComplete(false)
+            return
+        }
+        user.updateEmail(trimmed)
+            .addOnSuccessListener {
+                rememberUsername(context, trimmed)
+                Log.d(TAG, "Updated email to $trimmed for uid=${user.uid}")
+                onComplete(true)
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Failed to update email: ${e.message}")
+                onComplete(false)
+            }
     }
 
-    // change the login password from the profile Change Password popups
-    fun setPassword(context: Context, password: String) {
-        val user = currentUser(context)
-
-        userDao(context).update(user.copy(password = password))
-
-        Log.d(TAG, "Updated password for user id=${user.id}")
+    // Change the login password after verifyPassword() succeeded in Profile
+    fun setPassword(context: Context, password: String, onComplete: (Boolean) -> Unit = {}) {
+        val user = auth().currentUser
+        if (user == null) {
+            onComplete(false)
+            return
+        }
+        user.updatePassword(password)
+            .addOnSuccessListener {
+                verifiedPassword = password
+                Log.d(TAG, "Updated password for uid=${user.uid}")
+                onComplete(true)
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Failed to update password: ${e.message}")
+                onComplete(false)
+            }
     }
 
-    // Login
-    // returns true if email and password match a row in the users table
-    fun authenticate(context: Context, username: String, password: String): Boolean {
-        val match = userDao(context).authenticate(username.trim(), password)
+    // Login — onComplete(true) if Firebase Auth accepts the email and password
+    fun authenticate(
+        context: Context,
+        username: String,
+        password: String,
+        onComplete: (Boolean) -> Unit
+    ) {
+        val email = username.trim()
+        auth().signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                verifiedPassword = password
+                rememberUsername(context, email)
+                Log.d(TAG, "Login success for $email uid=${auth().currentUser?.uid}")
+                onComplete(true)
+            }
+            .addOnFailureListener { e ->
+                when (e) {
+                    is FirebaseAuthInvalidUserException ->
+                        Log.d(TAG, "Login failed (unknown user): $email")
+                    is FirebaseAuthInvalidCredentialsException ->
+                        Log.d(TAG, "Login failed (bad credentials): $email")
+                    else ->
+                        Log.d(TAG, "Login failed for $email: ${e.message}")
+                }
+                onComplete(false)
+            }
+    }
 
-        if (match != null) {
-            // remember this user so envelopes and expenses load for their account
-            rememberUsername(context, match.username)
-
-            Log.d(TAG, "Login success for ${match.username}")
-
-            return true
+    // Create account — onComplete(null) on success, or an error message on failure
+    fun createAccount(
+        context: Context,
+        username: String,
+        password: String,
+        onComplete: (String?) -> Unit
+    ) {
+        val email = username.trim()
+        if (!email.contains("@")) {
+            onComplete("Please enter a valid email address")
+            return
+        }
+        if (password.length < 6) {
+            onComplete("Password must be at least 6 characters")
+            return
         }
 
-        Log.d(TAG, "Login failed for $username")
-
-        return false
+        auth().createUserWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                // Sign out so they log in explicitly from the login screen
+                auth().signOut()
+                verifiedPassword = null
+                Log.d(TAG, "Created new Auth user email=$email")
+                onComplete(null)
+            }
+            .addOnFailureListener { e ->
+                val message = when (e) {
+                    is FirebaseAuthUserCollisionException -> {
+                        Log.d(TAG, "Create account failed. email already exists: $email")
+                        "That email is already in use. Go back and sign in instead."
+                    }
+                    is FirebaseAuthWeakPasswordException -> {
+                        Log.d(TAG, "Create account failed. weak password for $email")
+                        "Password must be at least 6 characters"
+                    }
+                    else -> {
+                        Log.d(TAG, "Create account failed for $email: ${e.message}")
+                        "Could not create account: ${e.message ?: "unknown error"}"
+                    }
+                }
+                onComplete(message)
+            }
     }
 
-    // Create account
-    // inserts a new user. returns false if that email is already taken
-    // new accounts start with empty envelopes and expenses
-    fun createAccount(context: Context, username: String, password: String): Boolean {
-        val trimmed = username.trim()
-        val dao = userDao(context)
-
-        // stop if someone already registered with this email
-        if (dao.findByUsername(trimmed) != null) {
-            Log.d(TAG, "Create account failed. username already exists: $trimmed")
-            return false
-        }
-
-        val id = dao.insert(UserEntity(username = trimmed, password = password))
-
-        Log.d(TAG, "Created new user id=$id username=$trimmed")
-
-        return true
+    fun signOut(context: Context) {
+        auth().signOut()
+        verifiedPassword = null
+        prefs(context).edit().remove("login_username").apply()
+        Log.d(TAG, "Signed out")
     }
 
-    // SharedPreferences helpers
-    // small local file that remembers which email is active after login
-    private fun prefs(context: Context) = context.getSharedPreferences("goldfin_profile", Context.MODE_PRIVATE)
+    private fun prefs(context: Context) =
+        context.getSharedPreferences("goldfin_profile", Context.MODE_PRIVATE)
 
     private fun prefsUsername(context: Context): String? {
         return prefs(context).getString("login_username", null)

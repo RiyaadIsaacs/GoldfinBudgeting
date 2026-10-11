@@ -18,6 +18,6 @@ data class Envelope(
     //when envelope was created. used for month filtering
     val dateCreated: Long,
 
-    //room row id. 0 means not saved yet when adding a new envelope
+    // Firestore-backed id. 0 means not saved yet when adding a new envelope
     val id: Long = 0
 )

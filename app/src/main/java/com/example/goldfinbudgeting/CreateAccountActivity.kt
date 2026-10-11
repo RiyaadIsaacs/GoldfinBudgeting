@@ -31,28 +31,26 @@ class CreateAccountActivity : AppCompatActivity() {
             // all three fields must be filled in
             if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-            }
             // password and confirm password must match
-            else if (password != confirmPassword) {
+            } else if (password != confirmPassword) {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-            }
-            else {
-                // try to insert the new user into the Room users table
-                val created = AccountStore.createAccount(this, email, password)
+            } else {
+                // Disable button while Firebase Auth runs (async — does crash the UI thread)
+                createAccountButton.isEnabled = false
+                Toast.makeText(this, "Creating account...", Toast.LENGTH_SHORT).show()
 
-                if (created) {
-                    // go back to login so they can sign in with the new details
-                    Toast.makeText(this, "Account created. Please sign in", Toast.LENGTH_SHORT).show()
-                    finish()
-                } else {
-                    // email is already taken
-                    Toast.makeText(this, "That email is already in use", Toast.LENGTH_SHORT).show()
+                AccountStore.createAccount(this, email, password) { error ->
+                    createAccountButton.isEnabled = true
+                    if (error == null) {
+                        Toast.makeText(this, "Account created. Please sign in", Toast.LENGTH_SHORT).show()
+                        finish()
+                    } else {
+                        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }
 
-        // Back
-        // closes this screen and returns to login without saving
         backToLoginButton.setOnClickListener {
             finish()
         }

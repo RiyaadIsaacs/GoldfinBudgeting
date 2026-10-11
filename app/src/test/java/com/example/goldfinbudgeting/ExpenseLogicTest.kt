@@ -1,7 +1,5 @@
 package com.example.goldfinbudgeting
 
-import com.example.goldfinbudgeting.data.EntityMappers
-import com.example.goldfinbudgeting.data.ExpenseEntity
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -153,7 +151,7 @@ class ExpenseLogicTest {
     }
 
     @Test
-    fun entityMappers_roundTripPreservesExpenseFields() {
+    fun expenseModel_preservesFields() {
         val original = Expense(
             name = "Kauai",
             amount = 200.00,
@@ -166,10 +164,8 @@ class ExpenseLogicTest {
             id = 42
         )
 
-        val entity: ExpenseEntity = EntityMappers.toExpenseEntity(original)
-        val mappedBack = EntityMappers.toExpense(entity)
-
-        assertEquals(original, mappedBack)
-        assertEquals("Takeouts", entity.categoryName)
+        assertEquals("Kauai", original.name)
+        assertEquals("Takeouts", original.category)
+        assertEquals(42L, original.id)
     }
 }

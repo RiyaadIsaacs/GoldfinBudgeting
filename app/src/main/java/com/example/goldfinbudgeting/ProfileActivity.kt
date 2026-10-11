@@ -121,6 +121,7 @@ class ProfileActivity : AppCompatActivity() {
 
         //go back to log in screen
         logOutButton.setOnClickListener {
+            AccountStore.signOut(this)
             val intent = Intent(this, LoginActivity::class.java)
 
             startActivity(intent)
@@ -172,9 +173,13 @@ class ProfileActivity : AppCompatActivity() {
             if (email.isEmpty()) {
                 Toast.makeText(this, "Please enter an email", Toast.LENGTH_SHORT).show()
             } else {
-                AccountStore.setEmail(this, email)
-
-                Toast.makeText(this, "Email saved", Toast.LENGTH_SHORT).show()
+                AccountStore.setEmail(this, email) { ok ->
+                    if (ok) {
+                        Toast.makeText(this, "Email saved", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Could not update email", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
@@ -231,13 +236,14 @@ class ProfileActivity : AppCompatActivity() {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val typedPassword = currentPasswordEditText.text.toString()
 
-                if (typedPassword == AccountStore.password(this)) {
-                    // correct so close this popup and open the new password popup
-                    dialog.dismiss()
-
-                    showNewPasswordPopup()
-                } else {
-                    Toast.makeText(this, "Incorrect current password", Toast.LENGTH_SHORT).show()
+                // Firebase Auth cannot read the stored password — re-authenticate instead.
+                AccountStore.verifyPassword(this, typedPassword) { ok ->
+                    if (ok) {
+                        dialog.dismiss()
+                        showNewPasswordPopup()
+                    } else {
+                        Toast.makeText(this, "Incorrect current password", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -273,12 +279,15 @@ class ProfileActivity : AppCompatActivity() {
                 } else if (newPassword != confirmPassword) {
                     Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
                 } else {
-                    // both match so update the password stored in Room
-                    AccountStore.setPassword(this, newPassword)
-
-                    dialog.dismiss()
-
-                    Toast.makeText(this, "Password updated", Toast.LENGTH_SHORT).show()
+                    // both match so update the password in Firebase Auth
+                    AccountStore.setPassword(this, newPassword) { ok ->
+                        if (ok) {
+                            dialog.dismiss()
+                            Toast.makeText(this, "Password updated", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this, "Could not update password", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
         }

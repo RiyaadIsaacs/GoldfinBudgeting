@@ -2,87 +2,116 @@ package com.example.goldfinbudgeting
 
 import android.content.Context
 import android.util.Log
-import com.example.goldfinbudgeting.data.DatabaseProvider
-import com.example.goldfinbudgeting.data.EntityMappers
-import com.example.goldfinbudgeting.data.GoldfinDatabase
+import com.example.goldfinbudgeting.data.FirebaseProvider
+import com.google.firebase.firestore.DocumentSnapshot
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicLong
 
-// It now reads and writes Room categories and calculates spent from expenses
-// Public APIs stayed similar so Home Envelopes and Edit screens keep working
+// EnvelopeTempMemory reads/writes Firestore categories and calculates spent from expenses
 object EnvelopeTempMemory {
     private const val TAG = "EnvelopeTempMemory"
 
     private val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.US)
     private val monthFormat = SimpleDateFormat("MMMM yyyy", Locale.US)
+    private val idCounter = AtomicLong(System.currentTimeMillis())
 
-    // Cached Room database after bind or first use
-    @Volatile
-    private var database: GoldfinDatabase? = null
-
-    // Application context from GoldfinApp
     @Volatile
     private var appContext: Context? = null
 
-    // Returns the shared Room database creating it if needed
-    private fun db(context: Context? = appContext): GoldfinDatabase {
-        database?.let { return it }
-        val ctx = context ?: appContext?: throw IllegalStateException("EnvelopeTempMemory used before GoldfinApp initialised Room")
-
-        return DatabaseProvider.get(ctx).also { database = it }
-    }
-
-    // Per user helpers
-    // every envelope read and write uses the signed in accounts id
     private fun requireContext(): Context {
         return appContext
-            ?: throw IllegalStateException("EnvelopeTempMemory used before GoldfinApp initialised Room")
+            ?: throw IllegalStateException("EnvelopeTempMemory used before GoldfinApp initialised Firebase")
     }
 
-    private fun userId(): Long {
-        return AccountStore.currentUserId(requireContext())
+    private fun userId(): String {
+        val uid = AccountStore.currentUserId(requireContext())
+        if (uid.isBlank()) {
+            throw IllegalStateException("No signed-in Firebase user for envelopes")
+        }
+        return uid
     }
 
     // Called from GoldfinApp so categories are available before any activity opens
     fun bind(context: Context) {
         appContext = context.applicationContext
-        database = DatabaseProvider.get(context)
     }
 
     // Live list of envelopes from Room for the current account
     // spent is calculated with SUM amount for matching expense category names
+    private fun nextId(): Long = idCounter.incrementAndGet()
+
+    private fun snapshotToEnvelope(doc: DocumentSnapshot, spent: Double): Envelope? {
+        if (!doc.exists()) return null
+        val id = doc.getLong("id") ?: doc.id.toLongOrNull() ?: return null
+        return Envelope(
+            name = doc.getString("name").orEmpty(),
+            min = doc.getDouble("minGoal") ?: 0.0,
+            max = doc.getDouble("maxGoal") ?: 0.0,
+            spent = spent,
+            dateCreated = doc.getLong("dateCreated") ?: 0L,
+            id = id
+        )
+    }
+
+    private fun envelopeToMap(envelope: Envelope, uid: String): Map<String, Any?> {
+        return mapOf(
+            "id" to envelope.id,
+            "userId" to uid,
+            "name" to envelope.name,
+            "minGoal" to envelope.min,
+            "maxGoal" to envelope.max,
+            "dateCreated" to envelope.dateCreated
+        )
+    }
+
+    private fun sumForCategory(uid: String, categoryName: String): Double {
+        val snap = FirebaseProvider.await(
+            FirebaseProvider.expenses(uid).whereEqualTo("categoryName", categoryName).get()
+        )
+        return snap.documents.sumOf { it.getDouble("amount") ?: 0.0 }
+    }
+
     val envelopes: List<Envelope>
         get() {
             val uid = userId()
-            val expenseDao = db().expenseDao()
-            return db().categoryDao().getAllForUser(uid).map { entity ->
-                val spent = expenseDao.sumForCategory(uid, entity.name)
-                EntityMappers.toEnvelope(entity, spent)
-            }
+            val snap = FirebaseProvider.await(FirebaseProvider.categories(uid).get())
+            FirebaseProvider.logRead("categories", uid, snap.size())
+            return snap.documents.mapNotNull { doc ->
+                val name = doc.getString("name").orEmpty()
+                val spent = sumForCategory(uid, name)
+                snapshotToEnvelope(doc, spent)
+            }.sortedByDescending { it.dateCreated }
         }
 
-    // Insert a new envelope. id 0 lets Room auto generate the primary key
+    // Insert a new envelope
     fun addEnvelope(envelope: Envelope) {
         val uid = userId()
-        val id = db().categoryDao().insert(EntityMappers.toCategoryEntity(envelope.copy(id = 0), uid))
+        val id = if (envelope.id != 0L) envelope.id else nextId()
+        val toSave = envelope.copy(id = id)
+        FirebaseProvider.await(
+            FirebaseProvider.categories(uid).document(id.toString()).set(envelopeToMap(toSave, uid))
+        )
+        FirebaseProvider.logWrite("insert", "categories", uid, id.toString())
         Log.d(TAG, "Inserted category id=$id name=${envelope.name} userId=$uid")
     }
 
-    // Delete one envelope from Room
-    // Prefer the Room id when present; otherwise look the category up by name
+    // Delete one envelope 
     fun deleteEnvelope(envelope: Envelope) {
         val uid = userId()
-        val entity = if (envelope.id != 0L) {
-            EntityMappers.toCategoryEntity(envelope, uid)
+        val docId = if (envelope.id != 0L) {
+            envelope.id.toString()
         } else {
-            db().categoryDao().getByName(uid, envelope.name) ?: EntityMappers.toCategoryEntity(envelope, uid)
+            val snap = FirebaseProvider.await(
+                FirebaseProvider.categories(uid).whereEqualTo("name", envelope.name).limit(1).get()
+            )
+            snap.documents.firstOrNull()?.id ?: return
         }
-
-        db().categoryDao().delete(entity)
-
-        Log.d(TAG, "Deleted category id=${entity.id} name=${entity.name} userId=$uid")
+        FirebaseProvider.await(FirebaseProvider.categories(uid).document(docId).delete())
+        FirebaseProvider.logWrite("delete", "categories", uid, docId)
+        Log.d(TAG, "Deleted category id=$docId name=${envelope.name} userId=$uid")
     }
 
     // Only envelopes whose created date is in that calendar month
@@ -134,9 +163,7 @@ object EnvelopeTempMemory {
     }
 
     // Format millis as yyyy/MM/dd for edit fields
-    fun formatDate(millis: Long): String {
-        return dateFormat.format(Date(millis))
-    }
+    fun formatDate(millis: Long): String = dateFormat.format(Date(millis))
 
     // Parse typed date text back to millis
     fun parseDate(text: String): Long {

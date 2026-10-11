@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
 }
 
 import java.io.File
@@ -13,7 +13,8 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.goldfinbudgeting"
+        // Must match package_name in app/google-services.json (Firebase)
+        applicationId = "com.goldfin.goldfinbudgeting"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
@@ -50,10 +51,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 
-    // Room local database (POE Part 2)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
+    // Firebase Auth + Firestore (POE Part 3 online database)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 
     //for scrolling
     implementation("androidx.cardview:cardview:1.0.0")
