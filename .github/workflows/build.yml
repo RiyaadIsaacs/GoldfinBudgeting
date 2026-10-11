@@ -54,6 +54,15 @@ jobs:
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
+      # google-services.json is gitignored (contains API keys).
+      # CI uses the example placeholder so the Google Services plugin can run.
+      - name: Provide google-services.json for CI
+        run: |
+          if [ ! -f app/google-services.json ]; then
+            cp app/google-services.json.example app/google-services.json
+            echo "Using google-services.json.example for CI build"
+          fi
+
       # Run Tests Build
       - name: Run gradle tests
         run: ./gradlew test
