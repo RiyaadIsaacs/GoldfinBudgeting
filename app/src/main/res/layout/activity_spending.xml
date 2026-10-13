@@ -126,7 +126,7 @@
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
                     android:layout_marginTop = "4dp"
-                    android:text = "Gold bar is spent. Black mark is the minimum goal. Red mark is the maximum goal."
+                    android:text = "Gold bar is spent. Black line is the minimum goal. Red line is the maximum goal."
                     android:textSize = "12sp"
                     android:textColor = "#888888"/>
 
