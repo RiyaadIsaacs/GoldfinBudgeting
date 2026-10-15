@@ -63,6 +63,10 @@ Android Knowledge, 2023. Navigation Drawer Menu in Android Studio using Kotlin. 
 
 Android Knowledge, 2023. Save Data in Firebase Realtime Database in Android Studio | Admin-Client Module Kotlin | CRUD - 1. [video online] Available at: < https://www.youtube.com/watch?v=gLfmQiFdZXU > [Accessed 12 September 2026].
 
+Android Studio, [s.a.]. Adding Firebase to Android Application. [online] Available at: < https://developer.android.com/studio/gemini/use-a-local-model >[Accessed 12 October 2026].
+
+Asoyan, A., 2025. How to Run Local LLM (AI) in Android Studio. [online] Available at: < https://artemasoyan.medium.com/how-to-run-local-llm-ai-in-android-studio-6bb142ee64ec >[Accessed 10 October 2026].
+
 CodeCraft, 2026. (283) Creating Gradient Drawables in Android Studio | Android UI Design Tutorial. [video online] Available at: < https://youtu.be/-J9zNq7QA1w?si=VNgMjlutJ7JovCYK > [Accessed 03 September 2026].
 
 Codetutor, 2017. RecyclerView - Part 2, Introduction to BaseAdapter. [video online] Available at: < https://youtu.be/2W8XkpmjcMo?si=0TUQ3lBRuIIZYMLl > [Accessed 05 September 2026].
@@ -75,15 +79,19 @@ DevOps Topics, 2026. Github Actions Tutorial |how to automate unit testing using
 
 DJ Malone, 2019. Using Kotlin's listOf and creating a Data Class (Android Studio 2019 Edition, Part 15). [video online] Available at: < https://youtu.be/oFli6rYejUQ?si=Py0-Am6AnSHQOIrl > [Accessed 05 September 2026].
 
+Firebase Documentation, [s.a.]. Add Firebase to your Android project. [online] Available at: <https://firebase.google.com/docs/android/setup >[Accessed 12 October 2026].
+
+Firebase Documentation, [s.a.]. Connect to Firebase. [online] Available at: < https://developer.android.com/studio/write/firebase >[Accessed 12 October 2026].
+
+Firebase, 2023. Getting started with Firebase on Android. [video online] Available at: < https://youtu.be/jbHfJpoOzkI?si=dDqKS1dRAWyxZ8mR > [Accessed 12 October 2026].
+
+Geeks for Geeks, 2025. Adding Firebase to Android Application. [online] Available at: < https://www.geeksforgeeks.org/android/adding-firebase-to-android-app/ >[Accessed 12 October 2026].
+
 Geeks for Geeks, 2025. Basic CI Workflow For Android using GitHub Actions. [online] Available at: < https://www.geeksforgeeks.org/android/basic-ci-workflow-for-android-using-github-actions/> [Accessed 14 September 2026].
 
 GitHub Docs, 2026. Building and testing Java with Gradle. [online] Available at: < https://docs.github.com/en/actions/tutorials/build-and-test-code/java-with-gradle > [Accessed 13 September 2026].
 
-graphemica, [s.a.]. down arrowhead (U+2304). [online] Available at: < https://graphemica.com/%E2%8C%84 > [Accessed 16 September 2026].
-
 Lackner, P., 2023. The FULL Beginner Guide for Room in Android | Local Database Tutorial for Android. [video online] Available at: < https://youtu.be/bOd3wO0uFr8?si=kEoLiaAA_2E3DySE > [Accessed 12 September 2026].
-
-Leberch, 2026. Corporate. [sound recording] Available at: <https://soundcloud.com/waellaschoice/ranger-feat-korusbazokonwaba?in=waellaschoice/sets/portable-presents-ranger >[Accessed 16 September 2026].
 
 Mashkour, M., 2023. View Binding in RECYCLERVIEW ADAPTER in Android Studio | Kotlin. [video online] Available at: < https://youtu.be/N7rFkULNMpY?si=ZJ3gIgLWp8HvQ-IX > [Accessed 04 September 2026].
 
@@ -92,6 +100,10 @@ Master Coding, 2020. Adapters & Model Class | Android Tutorial #27. [video onlin
 Material Design, [s.a.]. Chips. [online] Available at: < https://m2.material.io/components/chips#input-chips > [Accessed 02 September 2026].
 
 Mit, J., 2024. How to Set Up CI CD for Android Using GitHub Actions. [video online] Available at: < https://youtu.be/Fh4UyfqeB4Y?si=eNAMlRAaEBZnAKqR > [Accessed 14 September 2026].
+
+Sandoval, A., 2026. Android Studio + Gemma4: Run Gemma4 Locally with Ollama. [online] Available at: < https://andresand.medium.com/android-studio-gemma4-run-gemma4-locally-with-ollama-30ef29d1908f >[Accessed 10 October 2026].
+
+TechnoFunctionalLearning, 2026. How to Connect Offline AI Ollama Models with Android Studio. [video online] Available at: < https://youtu.be/-gWvQ28T9SI?si=FplRKk1Y8LwniX2I > [Accessed 09 October 2026].
 
 The Independent Institute of Education, 2026. Activity 7: Introduction to ViewModel Student Notes App [OPSC7311]. nt. [online via internal VLE] The Independent Institute of Education. Available at: < https://mystudies.iie.edu.za/content/enforced/86376-OPSC7311_2026_FT_BCGD0701_EMGPSD_Term2_GR01/Guided%20Activity%207%20Introduction%20to%20viewModel%20.pdf > [Accessed Date 06 September 2026].
 
@@ -117,6 +129,7 @@ The Zone, 2021. Android x Kotlin Beginner Tutorial [2021] #6 - Swipe To Delete W
 The Zone, 2021. Android x Kotlin Beginner Tutorial [2021] #7 - Detailed View & Transactions Update. [video online] Available at: < https://youtu.be/t0hQl1G2Yg0?si=SZDQtymJvXso7dBR > [Accessed 07 September 2026].
 
 Toptal Designers, [s.a.]. Trigram for Heaven. [online] Available at: < https://www.toptal.com/designers/htmlarrows/symbols/trigram-for-heaven/ > [Accessed 02 September 2026].
+
 
 ---
 
