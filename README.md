@@ -5,24 +5,39 @@
   
 **Group members:**  
 
-- Riyaad Isaacs — ST10453030
-- Liam Fullard — ST10438878  
-- Ndzalama Khosa — ST10438552
-- Lazjessicah van der Zee — ST10435229  
+- Riyaad Isaacs - ST10453030
+- Liam Fullard - ST10438878  
+- Ndzalama Khosa - ST10438552
+- Lazjessicah van der Zee - ST10435229  
 
 
 
-**Repository:** [https://github.com/[organisation-or-username]/GoldfinBudgeting](https://github.com/[organisation-or-username]/GoldfinBudgeting)  
+**Repository:** [https://github.com/[organisation-or-username]/GoldfinBudgeting](https://github.com/[organisation-or-username]/GoldfinBudgeting) 
+
+---
+
+## How to connect Ollama
+
+1 - Ppen powershell windows
+2-  Type in: ollama pull llama3
+3 - In the same powershell window, type in: ollama serve (if it gives an error that means Ollam is still running in the background. Quit ollama and try again)
+4 - Then run the emulator in Android Studio. Wait for it to finish loading
+5 - When the emulator is done loading, open a second powershell window
+6 - In the second powershell window, type in the following:
+
+      & "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" reverse tcp:11434 tcp:11434
+      
+7 - Keep both powershell windows open when using the emulator
 
 ---
 ### How to try the prototype
 
 1. Open the project in Android Studio and run on an emulator or device.
-2. Log in with username `1` and password `1` 
+2. Create a new account with a new email and password. 
 3. Explore Home, Expenses, Envelopes, and Profile.
-4. Logout and create new account
-5. Observe now cleared data
-6. Add expenses/envelopes as you see fit
+4. Logout when your finished with the app.
+5. Observe expense and envelope entries being saved and present when you log back in.
+6. Add expenses/envelopes as you see fit.
 
 ---
 
