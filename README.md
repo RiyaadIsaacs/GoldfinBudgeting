@@ -23,7 +23,7 @@
 3. In the same powershell window, type in: ollama serve (if it gives an error that means Ollam is still running in the background. Quit ollama and try again).
 4. Then run the emulator in Android Studio. Wait for it to finish loading.
 5. When the emulator is done loading, open a second powershell window.
-6. In the second powershell window, type in the following:
+6. In the second powershell window, copy and paste the following:
 
       & "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" reverse tcp:11434 tcp:11434
       
