@@ -1,8 +1,11 @@
 <resources xmlns:tools = "http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name = "Base.Theme.GoldfinBudgeting" parent = "Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name = "colorPrimary">@color/my_light_primary</item> -->
+    <style name = "Base.Theme.GoldfinBudgeting" parent = "Theme.Material3.Light.NoActionBar">
+        <!-- Layouts use light backgrounds, so typed text stays dark on every device -->
+        <item name = "android:forceDarkAllowed" tools:targetApi = "q">false</item>
+        <item name = "colorOnSurface">#1E1E1E</item>
+        <item name = "android:editTextColor">#1E1E1E</item>
+        <item name = "android:textColorHint">#999999</item>
     </style>
 
     <style name = "Theme.GoldfinBudgeting" parent = "Base.Theme.GoldfinBudgeting" />

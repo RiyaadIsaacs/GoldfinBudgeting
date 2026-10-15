@@ -108,7 +108,7 @@ object AccountStore {
         context: Context,
         username: String,
         password: String,
-        onComplete: (Boolean) -> Unit
+        onComplete: (String?) -> Unit
     ) {
         val email = username.trim()
         auth().signInWithEmailAndPassword(email, password)
@@ -116,18 +116,18 @@ object AccountStore {
                 verifiedPassword = password
                 rememberUsername(context, email)
                 Log.d(TAG, "Login success for $email uid=${auth().currentUser?.uid}")
-                onComplete(true)
+                onComplete(null)
             }
             .addOnFailureListener { e ->
-                when (e) {
-                    is FirebaseAuthInvalidUserException ->
-                        Log.d(TAG, "Login failed (unknown user): $email")
+                Log.d(TAG, "Login failed for $email: ${e.message}")
+                val message = when (e) {
+                    is FirebaseAuthInvalidUserException,
                     is FirebaseAuthInvalidCredentialsException ->
-                        Log.d(TAG, "Login failed (bad credentials): $email")
+                        "Incorrect email or password"
                     else ->
-                        Log.d(TAG, "Login failed for $email: ${e.message}")
+                        e.message ?: "Could not sign in"
                 }
-                onComplete(false)
+                onComplete(message)
             }
     }
 

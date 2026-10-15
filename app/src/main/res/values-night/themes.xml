@@ -1,7 +1,10 @@
 <resources xmlns:tools = "http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name = "Base.Theme.GoldfinBudgeting" parent = "Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name = "colorPrimary">@color/my_dark_primary</item> -->
+    <style name = "Base.Theme.GoldfinBudgeting" parent = "Theme.Material3.Light.NoActionBar">
+        <!-- Same light theme at night, so input text does not turn pale -->
+        <item name = "android:forceDarkAllowed" tools:targetApi = "q">false</item>
+        <item name = "colorOnSurface">#1E1E1E</item>
+        <item name = "android:editTextColor">#1E1E1E</item>
+        <item name = "android:textColorHint">#999999</item>
     </style>
 </resources>

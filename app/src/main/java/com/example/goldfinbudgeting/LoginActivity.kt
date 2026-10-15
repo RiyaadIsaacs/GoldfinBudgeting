@@ -46,13 +46,13 @@ class LoginActivity : AppCompatActivity() {
                 signInButton.isEnabled = false
                 Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show()
 
-                AccountStore.authenticate(this, email, password) { success ->
+                AccountStore.authenticate(this, email, password) { error ->
                     signInButton.isEnabled = true
-                    if (success) {
+                    if (error == null) {
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
                     } else {
-                        Toast.makeText(this, "Incorrect email or password", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
                     }
                 }
             }
