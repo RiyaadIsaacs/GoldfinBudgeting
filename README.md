@@ -18,16 +18,16 @@
 
 ## How to connect Ollama
 
-1 - Ppen powershell windows
-2-  Type in: ollama pull llama3
-3 - In the same powershell window, type in: ollama serve (if it gives an error that means Ollam is still running in the background. Quit ollama and try again)
-4 - Then run the emulator in Android Studio. Wait for it to finish loading
-5 - When the emulator is done loading, open a second powershell window
+1 - Ppen powershell windows.
+2-  Type in: ollama pull llama3.
+3 - In the same powershell window, type in: ollama serve (if it gives an error that means Ollam is still running in the background. Quit ollama and try again).
+4 - Then run the emulator in Android Studio. Wait for it to finish loading.
+5 - When the emulator is done loading, open a second powershell window.
 6 - In the second powershell window, type in the following:
 
       & "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" reverse tcp:11434 tcp:11434
       
-7 - Keep both powershell windows open when using the emulator
+7 - Keep both powershell windows open when using the emulator.
 
 ---
 ### How to try the prototype
