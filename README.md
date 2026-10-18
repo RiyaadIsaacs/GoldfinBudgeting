@@ -124,6 +124,7 @@ Overall using the tools GitHub and GitHub Actions offered gave the team a shared
 
 <img width="80%" alt="AI Assistant" src="https://github.com/user-attachments/assets/da1abcd7-707b-40de-979e-f63e9374cb6a" />
 
+---
 
 ### Conclusion
 In conclusion, this report outlined the purpose of Goldfin, the main design choices made to support that purpose, and the practical use of GitHub for version control alongside the GitHub Actions for testing and building during the development of the app.
