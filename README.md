@@ -101,6 +101,8 @@ Material Design, [s.a.]. Chips. [online] Available at: < https://m2.material.io/
 
 Mit, J., 2024. How to Set Up CI CD for Android Using GitHub Actions. [video online] Available at: < https://youtu.be/Fh4UyfqeB4Y?si=eNAMlRAaEBZnAKqR > [Accessed 14 September 2026].
 
+Neat Roots, 2026. Change App Icon in Android Studio | Stop Using the Default Android Icon! [video online] Available at: < https://youtu.be/jB1tsZ2ZMG8?si=t8IasqcS3hJrZuHS > [Accessed 18 October 2026].
+
 Sandoval, A., 2026. Android Studio + Gemma4: Run Gemma4 Locally with Ollama. [online] Available at: < https://andresand.medium.com/android-studio-gemma4-run-gemma4-locally-with-ollama-30ef29d1908f >[Accessed 10 October 2026].
 
 TechnoFunctionalLearning, 2026. How to Connect Offline AI Ollama Models with Android Studio. [video online] Available at: < https://youtu.be/-gWvQ28T9SI?si=FplRKk1Y8LwniX2I > [Accessed 09 October 2026].
