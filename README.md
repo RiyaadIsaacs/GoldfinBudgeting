@@ -42,7 +42,7 @@
 ---
 ### Unique App Features
 
-1. Daily Challenges: Gamification feature where users get daily saving challenges that give them XP and help them level up towards claiming achievement badges.
+1. Optional Daily Challenges: Gamification feature where users get daily saving challenges that give them XP and help them level up towards claiming achievement badges.
 2. First-Time User Challenges: Gamification feature where new users have to interact with all the main app features in order to earn XP and level up towards claiming achievement badges.
 3. AI App Assistant: An innovative feature where an AI assistant helps new users by answering questions regarding the app's features and where certain features/functions are located and how to navigate to that section.
 
@@ -57,6 +57,51 @@ Part 2 link:
 ---
 
 ## Project Report
+(Word count: 1286)
+
+### Introduction 
+The purpose of the following section is to outline the purpose of our personal budgeting app, GoldFin, highlighting the key design considerations that shaped it, s well as how GitHub and GitHub Actions were utilised during the development of the application.
+
+### Purpose of the App
+The purpose of Goldfin is to provide users with a structured and simple way to track their spendings allocate income and develop better financial awareness and financial habits the app addresses the common difficulty of managing everyday money with clear visibility of where funds go or how close a person is to their own limits the application does this by combining the envelope budgeting approach with color-coded progress bars and graphs so that the user can see their financial status at a glance next.
+
+Goldfin is aimed at individuals partners and families with the primary target audience being young adults who want a simple user-friendly system for daily financial management users will be able to create an account login securely, set monthly minimum and maximum spending goals for different categories called envelopes, and make expense entries with an amount, date optional start and end times, description, category or envelope it belongs to, and an optional photo or receipt that can be attached to the entry. Users can also view spending history, filter it by date or category, view total and category spending reports, search for expenses, edit or delete entries, and monitor progress toward budget limits.
+
+Furthermore, collaborative use is also supported through multi-account linking so partners or family members can share a budgeting plan. The app also features gamification elements involving XP, levels, badges, and optional daily saving challenges, as well as a local AI chatbot to assist users in navigating and becoming familiar with the app's features, all to make the app more engaging and helpful.
+
+### Design Considerations
+The design decisions for GoldFin were guided by the findings from the research conducted during Part 1 where the existing Android applications – Monarch Money,  Goodbudget and Vault22 – were analyzed so that the prototype would present the relevant functionalities and intuitive interface patterns.
+
+The envelope system was chosen as it promotes proactive allocation of income into specific categories a method that the research showed can support mindful spending and awareness. Each envelope has its own minimum and maximum goals set by the user so the user can see whether a category is approaching its limit before the month ends.
+
+Visual progress trackers, color-coded indicators, and a total overview on the home screen were also included as the compared applications showed that users understand their financial position more quickly when key figures appear in colour and on designated screens rather than cluttered into one screen or scattered across multiple. The colour also shows the user at a glance whether their spending is still within their set limits or has reached their max limit.
+
+Additionally, Profile, Home, and Expenses are located on the bottom bar because recording and reviewing spending are the main tasks the user will utilize the most, with Profile being easily accessible if the user wants to change sign in or profile information.
+
+The side menu, accessed through the hamburger icon, holds envelopes, accounts, badges, and the AI assistant which are used when sitting up or checking something rather than logging a purchase. Additionally, the app ensures to keep related actions together such as category limits on the envelope screen, expense entry and receipt attachment on the edit expenses, badges and challenges on the badger screen, and questions about how to use the app on the AI assistant screen. This reduces the number of steps for a common task and keeps each screen from becoming crowded or too scattered, allowing for easy navigation of the app.
+
+Furthermore gamification was included as the app is designed to engage users and help them develop good financial habits through checking in on one's financial state and challenging oneself to spend money sparingly and not only store records. XP, levels, badges and the optional daily saving challenges give users a small sign of progress and sense of achievement and are situated on their own screen so that Home, Envelopes, and Expenses stay focused on the budget.
+
+Another unique feature the app presents is its AI assistant which is there to help users find, navigate, and operate features in the app. It makes the app completely beginner friendly which aligns with the intended young adult target audience who want to start managing their finances. The application is designed for app navigation only so does not give financial advice or analyze transactions. It also runs locally through Ollama rather than through an external AI service so questions about using the app are not sent to a third party chatbot, promoting privacy and security which are essential for budgeting apps.
+
+Furthermore, as for storing user entries, the user's entries are stored in Firebase with Firebase Authentication supporting secure login and Cloud Firestore holding the envelope's expenses and user profile information. Firestore also keeps a local copy of recent data on the device so that the entries can be opened during a short loss of connection and synced again when the device is back online.
+
+Overall, these design choices shaped by the research conducted during Part 1 keep spending limits easy to see, frequent tasks close at hand, and app navigation intuitive.
+
+### GitHub & GitHub Actions Utilisation
+During development, GitHub was used to keep a shared history of the project. Each change was committed with a clear title and a short note, so the other team members could see what had been changed and why. GitHub Actions was also then utilised to run on its own whenever code was pushed or a pull request was opened and ran the expense tests and built the application so that the checks did not have to be started manually.
+
+For the tests with GitHub Actions, it analyzed the expense rules rather than the Android screens and are located in ExpenseLogic which is a plain Kotlin object independent from the Android emulator and/or database. The screens call this object when they filter expenses, add up totals, handle dates, and then check goals. As a result, the same roles could be tested on an ordinary computer without starting an emulator or manually testing the database.
+
+The unit tests check the main behaviors of ExpenseLogic. These include filtering by month and category, searching names and descriptions, selecting a date range, calculating totals, checking goals and spending status, working at progress bar percentages, and turning an expense into the form the app saves.
+
+The above tests were then started from .github/workflows/build.yml where the workflow downloads the repository, installs the Java Development Kit (JDK 17) and the Android platform-tools package, runs the unit tests, and then finally builds the app for testing. This build then creates a debug Android Package, aka an APK, a released APK, and a released app bundle before uploading the files to the workflow run on GitHub. The first run originally failed because the workflow tried to install an old SDK (Software Development Kit) package that no longer existed. This was easily fixed by installing only platform-tools so that the app could be compiled and tests could successfully run.
+
+Overall using the tools GitHub and GitHub Actions offered gave the team a shared record of each change and an automatic check that the expense rules still passed before new work was merged, changed, or added, keeping the project easier to follow, manage, and reduced the changes of a broken build going unnoticed.
+
+### Conclusion
+In conclusion, this report outlined the purpose of Goldfin, the main design choices made to support that purpose, and the practical use of GitHub for version control alongside the GitHub Actions for testing and building during the development of the app.
+
 
 
 ---
