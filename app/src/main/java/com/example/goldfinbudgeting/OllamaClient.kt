@@ -29,6 +29,7 @@ object OllamaClient {
         - Badges shows the XP level, a daily goal to add 1 expense entry, a weekly goal to add 5 expenses entries, and badge tiles. A red dot will show on Badges in the side menu when a badge was achieved but not viewed yet.
         - Log Out is at the top right and returns to the login screen. 
         - On the login screen the user can click New User to create an new account.
+        - User can also view a graph showing their amount spend per envelope that also displays how well the user is doing with staying between their their minimum and maximum goals over a user selected month.
 
         Rules: Answer in 3 sentences or less. Name the exact button or tab to tap and where to find it. If the question is not about using GoldFin, say you only help with navigating the GoldFin app.
     """

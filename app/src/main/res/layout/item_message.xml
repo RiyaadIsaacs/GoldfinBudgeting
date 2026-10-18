@@ -11,6 +11,7 @@
     <!--bubble alignment and color-->
     <TextView
         android:id = "@+id/messageText"
+
         android:layout_width = "wrap_content"
         android:layout_height = "wrap_content"
         android:layout_gravity = "start"

@@ -121,7 +121,7 @@ class AIAssistantActivity : AppCompatActivity() {
                 messageEditText.text.clear()
 
                 //shown while llama3 is writing reply
-                messages.add(Message("Thinking...", false))
+                messages.add(Message("Typing...", false))
 
                 adapter.notifyItemInserted(messages.size - 1)
 
@@ -130,7 +130,7 @@ class AIAssistantActivity : AppCompatActivity() {
                 //ask ollama and replace Thinking with reply
                 OllamaClient.ask(messages) { reply ->
 
-                    if (messages.isNotEmpty() && messages.last().text == "Thinking...") {
+                    if (messages.isNotEmpty() && messages.last().text == "Typing...") {
                         val thinkingIndex = messages.lastIndex
 
                         messages.removeAt(thinkingIndex)
