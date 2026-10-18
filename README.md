@@ -40,7 +40,7 @@
 6. Add expenses/envelopes as you see fit.
 
 ---
-### Unique App Features
+## Unique App Features
 
 1. Optional Daily Challenges: Gamification feature where users get daily saving challenges that give them XP and help them level up towards claiming achievement badges.
 2. First-Time User Challenges: Gamification feature where new users have to interact with all the main app features in order to earn XP and level up towards claiming achievement badges.
@@ -48,11 +48,11 @@
 
 ---
 
-### Video Presentation Links
+## Video Presentation Links
 
-Part 1 Google Drive link: https://drive.google.com/file/d/1Zvu7crRPt1ofTaOTOw9cpOp_B9Ua7-f9/view?usp=sharing
+Part 2 Google Drive link: https://drive.google.com/file/d/1Zvu7crRPt1ofTaOTOw9cpOp_B9Ua7-f9/view?usp=sharing
 
-Part 2 link:
+Part 3 link:
 
 ---
 
@@ -98,6 +98,11 @@ The unit tests check the main behaviors of ExpenseLogic. These include filtering
 The above tests were then started from .github/workflows/build.yml where the workflow downloads the repository, installs the Java Development Kit (JDK 17) and the Android platform-tools package, runs the unit tests, and then finally builds the app for testing. This build then creates a debug Android Package, aka an APK, a released APK, and a released app bundle before uploading the files to the workflow run on GitHub. The first run originally failed because the workflow tried to install an old SDK (Software Development Kit) package that no longer existed. This was easily fixed by installing only platform-tools so that the app could be compiled and tests could successfully run.
 
 Overall using the tools GitHub and GitHub Actions offered gave the team a shared record of each change and an automatic check that the expense rules still passed before new work was merged, changed, or added, keeping the project easier to follow, manage, and reduced the changes of a broken build going unnoticed.
+
+### App Images
+Login Screen: <img width="391" height="877" alt="Screenshot 2026-10-18 165512" src="https://github.com/user-attachments/assets/d3264c12-503b-4ac1-9b84-5c31ce9f50b9" />
+Expense Screen: <img width="392" height="877" alt="Screenshot 2026-10-18 170155" src="https://github.com/user-attachments/assets/7885bbcd-d138-45ca-9092-fc450e6665bf" />
+
 
 ### Conclusion
 In conclusion, this report outlined the purpose of Goldfin, the main design choices made to support that purpose, and the practical use of GitHub for version control alongside the GitHub Actions for testing and building during the development of the app.
