@@ -100,10 +100,8 @@ The above tests were then started from .github/workflows/build.yml where the wor
 Overall using the tools GitHub and GitHub Actions offered gave the team a shared record of each change and an automatic check that the expense rules still passed before new work was merged, changed, or added, keeping the project easier to follow, manage, and reduced the changes of a broken build going unnoticed.
 
 ### App Images
-Login Screen: 
-<img width="50%" alt="Screenshot 2026-10-18 165512" src="https://github.com/user-attachments/assets/d3264c12-503b-4ac1-9b84-5c31ce9f50b9" />
-Expense Screen: 
-<img width="50%" alt="Screenshot 2026-10-18 170155" src="https://github.com/user-attachments/assets/7885bbcd-d138-45ca-9092-fc450e6665bf" />
+<img width="40%" alt="App Icon, Login Screen and Home Screen" src="https://github.com/user-attachments/assets/6fa87529-a95e-4ba0-8d80-63805407997b" />
+
 
 
 ### Conclusion
