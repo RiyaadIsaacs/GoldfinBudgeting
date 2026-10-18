@@ -100,16 +100,29 @@ The above tests were then started from .github/workflows/build.yml where the wor
 Overall using the tools GitHub and GitHub Actions offered gave the team a shared record of each change and an automatic check that the expense rules still passed before new work was merged, changed, or added, keeping the project easier to follow, manage, and reduced the changes of a broken build going unnoticed.
 
 ### App Images
+#### App Icon, Login Screen, and Home Screen
 
-<img width="60%" alt="App Icon, Login Screen and Home Screen" src="https://github.com/user-attachments/assets/6fa87529-a95e-4ba0-8d80-63805407997b" />
+<img width="80%" alt="App Icon, Login Screen and Home Screen" src="https://github.com/user-attachments/assets/6fa87529-a95e-4ba0-8d80-63805407997b" />
 
-<img width="60%" alt="Envelope Screens" src="https://github.com/user-attachments/assets/147e370c-5781-4950-914f-cf9bc6ba1967" />
+---
+#### Envelopes and Edit Envelopes Screens
 
-<img width="60%" alt="GoldFin Expenses Edit, Achievement   Graph " src="https://github.com/user-attachments/assets/5f871e45-0ee4-44b7-8ebe-3d4b39d25f07" />
+<img width="80%" alt="Envelope Screens" src="https://github.com/user-attachments/assets/147e370c-5781-4950-914f-cf9bc6ba1967" />
 
-<img width="60%" alt="Gamification features" src="https://github.com/user-attachments/assets/745c0e66-a86a-4a3a-808f-75e2f69f4039" />
+---
+#### Expenses and Expenses Edit Screens. Plus Achievement Notification and Visual Graph of Monthly Expenses
 
-<img width="60%" alt="AI Assistant" src="https://github.com/user-attachments/assets/da1abcd7-707b-40de-979e-f63e9374cb6a" />
+<img width="80%" alt="GoldFin Expenses Edit, Achievement   Graph " src="https://github.com/user-attachments/assets/5f871e45-0ee4-44b7-8ebe-3d4b39d25f07" />
+
+---
+#### Gamification Features
+
+<img width="80%" alt="Gamification features" src="https://github.com/user-attachments/assets/745c0e66-a86a-4a3a-808f-75e2f69f4039" />
+
+---
+#### AI Assistant Feature
+
+<img width="80%" alt="AI Assistant" src="https://github.com/user-attachments/assets/da1abcd7-707b-40de-979e-f63e9374cb6a" />
 
 
 ### Conclusion
