@@ -40,10 +40,24 @@
 6. Add expenses/envelopes as you see fit.
 
 ---
+### Unique App Features
 
-### Video Presentation Link
+1. Daily Challenges: Gamification feature where users get daily saving challenges that give them XP and help them level up towards claiming achievement badges.
+2. First-Time User Challenges: Gamification feature where new users have to interact with all the main app features in order to earn XP and level up towards claiming achievement badges.
+3. AI App Assistant: An innovative feature where an AI assistant helps new users by answering questions regarding the app's features and where certain features/functions are located and how to navigate to that section.
 
-Google Drive link: https://drive.google.com/file/d/1Zvu7crRPt1ofTaOTOw9cpOp_B9Ua7-f9/view?usp=sharing
+---
+
+### Video Presentation Links
+
+Part 1 Google Drive link: https://drive.google.com/file/d/1Zvu7crRPt1ofTaOTOw9cpOp_B9Ua7-f9/view?usp=sharing
+
+Part 2 link:
+
+---
+
+## Project Report
+
 
 ---
 
