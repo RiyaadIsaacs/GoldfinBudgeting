@@ -171,6 +171,8 @@ Firebase Documentation, [s.a.]. Connect to Firebase. [online] Available at: < ht
 
 Firebase, 2023. Getting started with Firebase on Android. [video online] Available at: < https://youtu.be/jbHfJpoOzkI?si=dDqKS1dRAWyxZ8mR > [Accessed 12 October 2026].
 
+Gaur, H., 2024. Build Bar Charts from Scratch! 🔥🚀 | Canvas | Android | Kotlin. [video online] Available at: < https://youtu.be/UZzxkCYb6t0?si=qJnQuV2fDkoTxubP >[Accessed 05 October 2026].
+
 Geeks for Geeks, 2025. Adding Firebase to Android Application. [online] Available at: < https://www.geeksforgeeks.org/android/adding-firebase-to-android-app/ >[Accessed 12 October 2026].
 
 Geeks for Geeks, 2025. Basic CI Workflow For Android using GitHub Actions. [online] Available at: < https://www.geeksforgeeks.org/android/basic-ci-workflow-for-android-using-github-actions/> [Accessed 14 September 2026].
@@ -178,6 +180,8 @@ Geeks for Geeks, 2025. Basic CI Workflow For Android using GitHub Actions. [onli
 GitHub Docs, 2026. Building and testing Java with Gradle. [online] Available at: < https://docs.github.com/en/actions/tutorials/build-and-test-code/java-with-gradle > [Accessed 13 September 2026].
 
 Lackner, P., 2023. The FULL Beginner Guide for Room in Android | Local Database Tutorial for Android. [video online] Available at: < https://youtu.be/bOd3wO0uFr8?si=kEoLiaAA_2E3DySE > [Accessed 12 September 2026].
+
+Laxmi Kant | KGP Talkie, 2017. MPAndroidChart Tutorial Better Than Android GraphView 13- Stacked Bar Chart Plot in Android. [video online] Available at: < https://youtu.be/xd_meyCAnWI?si=6tCf-r3yTcwEAkQ4 > [Accessed 05 October 2026].
 
 Mashkour, M., 2023. View Binding in RECYCLERVIEW ADAPTER in Android Studio | Kotlin. [video online] Available at: < https://youtu.be/N7rFkULNMpY?si=ZJ3gIgLWp8HvQ-IX > [Accessed 04 September 2026].
 
