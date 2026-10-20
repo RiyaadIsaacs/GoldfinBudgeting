@@ -71,12 +71,11 @@ object ExpenseTempMemory {
             val uid = userId()
             val snap = FirebaseProvider.await(FirebaseProvider.categories(uid).get())
             FirebaseProvider.logRead("categories", uid, snap.size())
-            val fromDb = snap.documents.mapNotNull { it.getString("name") }
-            val defaults = if (AccountStore.isDemoAccount(requireContext())) {
-                listOf("General", "Subscriptions", "Games", "Groceries", "Takeouts")
-            } else {
-                listOf("General")
+            val fromDb = snap.documents.mapNotNull { doc ->
+                doc.getString("name")?.takeIf { it.isNotBlank() }
             }
+            // Same categories as the expense chips, for every account, plus any custom envelopes
+            val defaults = listOf("General", "Subscriptions", "Games", "Groceries", "Takeouts")
             return (defaults + fromDb).distinct()
         }
 
