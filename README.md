@@ -52,7 +52,7 @@
 
 Part 2 Google Drive link: https://drive.google.com/file/d/1Zvu7crRPt1ofTaOTOw9cpOp_B9Ua7-f9/view?usp=sharing
 
-Part 3 link:
+Part 3 Google Drive link: https://drive.google.com/file/d/12ngoBOIPucl-IH6apoFo8RLw8IHTPdSc/view?usp=sharing
 
 ---
 
