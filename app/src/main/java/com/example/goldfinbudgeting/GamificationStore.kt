@@ -10,8 +10,11 @@ data class BadgeInfo(
     val id: String,
     val title: String,
     val description: String,
-    val iconRes: Int
+    val iconRes: Int,
+    val tier: BadgeTier = BadgeTier.GOLD
 )
+
+enum class BadgeTier { IRON, COPPER, BRONZE, SILVER, GOLD }
 
 // Result after awarding XP so the UI can show a short toast if needed
 data class XpAwardResult(
@@ -131,12 +134,12 @@ object GamificationStore {
     // All badges in display order for the grid
     fun allBadges(): List<BadgeInfo> {
         return listOf(
-            BadgeInfo("first_expense", "First Expense", "Add your first expense", R.drawable.ic_badge_stop),
+            BadgeInfo("first_expense", "First Expense", "Add your first expense", R.drawable.ic_badge_stop, BadgeTier.IRON),
             BadgeInfo("first_envelope", "Envelope Maker", "Add your first envelope", R.drawable.ic_badge_clock),
-            BadgeInfo("expenses_5", "Getting Going", "Add 5 expenses", R.drawable.ic_badge_star),
-            BadgeInfo("expenses_20", "Habit Builder", "Add 20 expenses", R.drawable.ic_badge_star),
-            BadgeInfo("expenses_50", "Catalog Pro", "Add 50 expenses", R.drawable.ic_badge_star),
-            BadgeInfo("level_5", "Rising Star", "Reach level 5", R.drawable.ic_badge_star),
+            BadgeInfo("expenses_5", "Getting Going", "Add 5 expenses", R.drawable.ic_badge_star, BadgeTier.COPPER),
+            BadgeInfo("expenses_20", "Habit Builder", "Add 20 expenses", R.drawable.ic_badge_star, BadgeTier.BRONZE),
+            BadgeInfo("expenses_50", "Catalog Pro", "Add 50 expenses", R.drawable.ic_badge_star, BadgeTier.GOLD),
+            BadgeInfo("level_5", "Rising Star", "Reach level 5", R.drawable.ic_badge_star, BadgeTier.SILVER),
             BadgeInfo("level_10", "Budget Boss", "Reach level 10", R.drawable.ic_badge_star),
             BadgeInfo("weekly_warrior", "Weekly Warrior", "Finish a weekly goal", R.drawable.ic_badge_star)
         )

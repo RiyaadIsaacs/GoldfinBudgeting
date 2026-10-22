@@ -167,7 +167,7 @@ class BadgesActivity : AppCompatActivity() {
             val unseen = GamificationStore.isBadgeUnseen(badge.id)
 
             if (unlocked) {
-                background.setBackgroundResource(R.drawable.badge_tile_unlocked)
+                background.setBackgroundResource(badgeTierBackground(badge.tier))
                 icon.setImageResource(badge.iconRes)
                 icon.visibility = View.VISIBLE
             } else {
@@ -181,13 +181,9 @@ class BadgesActivity : AppCompatActivity() {
 
             tile.setOnClickListener {
                 if (unlocked) {
-                    showBadgePopup(badge)
+                    showBadgePopup(badge, unlocked = true)
                 } else {
-                    Toast.makeText(
-                        this,
-                        "Locked: ${badge.title}. ${badge.description}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showBadgePopup(badge, unlocked = false)
                 }
             }
 
@@ -209,7 +205,7 @@ class BadgesActivity : AppCompatActivity() {
     }
 
     // centered popup showcasing an unlocked badge
-    private fun showBadgePopup(badge: BadgeInfo) {
+    private fun showBadgePopup(badge: BadgeInfo, unlocked: Boolean) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_badge_detail, null)
         val icon = dialogView.findViewById<ImageView>(R.id.badgePopupIcon)
         val title = dialogView.findViewById<TextView>(R.id.badgePopupTitle)
@@ -217,8 +213,14 @@ class BadgesActivity : AppCompatActivity() {
         val closeButton = dialogView.findViewById<TextView>(R.id.badgePopupCloseButton)
 
         icon.setImageResource(badge.iconRes)
+        dialogView.findViewById<View>(R.id.badgePopupBackground)
+            .setBackgroundResource(if (unlocked) badgeTierBackground(badge.tier) else R.drawable.badge_tile_unlocked)
         title.text = badge.title
-        requirement.text = "Unlocked by: ${badge.description}\nXP reward: +30"
+        requirement.text = if (unlocked) {
+            "Unlocked by: ${badge.description}\nXP reward: +30"
+        } else {
+            "Locked\nUnlock by: ${badge.description}"
+        }
 
         val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
             .setView(dialogView)
@@ -230,5 +232,13 @@ class BadgesActivity : AppCompatActivity() {
 
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
+    }
+
+    private fun badgeTierBackground(tier: BadgeTier): Int = when (tier) {
+        BadgeTier.IRON -> R.drawable.badge_tile_iron
+        BadgeTier.COPPER -> R.drawable.badge_tile_copper
+        BadgeTier.BRONZE -> R.drawable.badge_tile_bronze
+        BadgeTier.SILVER -> R.drawable.badge_tile_silver
+        BadgeTier.GOLD -> R.drawable.badge_tile_gold
     }
 }

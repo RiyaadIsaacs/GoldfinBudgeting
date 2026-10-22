@@ -16,6 +16,7 @@
         android:layout_gravity = "center_horizontal">
 
         <View
+            android:id = "@+id/badgePopupBackground"
             android:layout_width = "match_parent"
             android:layout_height = "match_parent"
             android:background = "@drawable/badge_tile_unlocked"/>
