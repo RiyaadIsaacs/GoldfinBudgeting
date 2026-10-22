@@ -104,25 +104,35 @@ Overall using the tools GitHub and GitHub Actions offered gave the team a shared
 
 <img width="80%" alt="App Icon, Login Screen and Home Screen" src="https://github.com/user-attachments/assets/6fa87529-a95e-4ba0-8d80-63805407997b" />
 
+Figure 1: Canva, 2026. App Icon, Login Screen and Home Screen. (Canva, 2026).
+
 ---
 #### Envelopes and Edit Envelopes Screens
 
 <img width="80%" alt="Envelope Screens" src="https://github.com/user-attachments/assets/147e370c-5781-4950-914f-cf9bc6ba1967" />
+
+Figure 2: Canva, 2026. Envelope Screens. (Canva, 2026).
 
 ---
 #### Expenses and Expenses Edit Screens. Plus Achievement Notification and Visual Graph of Monthly Expenses
 
 <img width="80%" alt="GoldFin Expenses Edit, Achievement   Graph " src="https://github.com/user-attachments/assets/5f871e45-0ee4-44b7-8ebe-3d4b39d25f07" />
 
+Figure 3: Canva, 2026. GoldFin Expenses Edit, Achievement & Graph. (Canva, 2026).
+
 ---
 #### Gamification Features
 
 <img width="80%" alt="Gamification features" src="https://github.com/user-attachments/assets/745c0e66-a86a-4a3a-808f-75e2f69f4039" />
 
+Figure 4: Canva, 2026. Gamification features. (Canva, 2026).
+
 ---
 #### AI Assistant Feature
 
 <img width="80%" alt="AI Assistant" src="https://github.com/user-attachments/assets/da1abcd7-707b-40de-979e-f63e9374cb6a" />
+
+Figure 5: Canva, 2026. AI Assistant. (Canva, 2026).
 
 ---
 
@@ -133,7 +143,7 @@ In conclusion, this report outlined the purpose of Goldfin, the main design choi
 
 ---
 
-### References
+### References (utilised for development)
 
 Alt-Codes, [s.a.]. Star Symbols Alt Codes. [online] Available at: < https://www.alt-codes.net/star_alt_code.php > [Accessed 02 September 2026].
 
@@ -224,6 +234,22 @@ Toptal Designers, [s.a.]. Trigram for Heaven. [online] Available at: < https://w
 
 
 ---
+
+### Referencing App Images (in report section)
+
+Canva, 2026. AI Assistant. [electronic print] Available at: < https://canva.link/8kyiqy6q6g52ddh >[Accessed 10 October 2026].
+
+Canva, 2026. App Icon, Login Screen and Home Screen. [electronic print] Available at: < https://canva.link/uxy1ec2facekvj0 >[Accessed 10 October 2026].
+
+Canva, 2026. Envelope Screens. [electronic print] Available at: < https://canva.link/bisgcsrum4rsw19 >[Accessed 10 October 2026].
+
+Canva, 2026. Gamification features. [electronic print] Available at: < https://canva.link/c35h4d75head67w >[Accessed 10 October 2026].
+
+Canva, 2026. GoldFin Expenses Edit, Achievement & Graph. [electronic print] Available at: < https://canva.link/ilt36zkq6hl9ukq >[Accessed 10 October 2026].
+
+
+
+
 
 
 
