@@ -3,21 +3,19 @@ package com.example.goldfinbudgeting
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
 
 // Create Account screen
 class CreateAccountActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Let the window resize for the keyboard on real phones.
-        WindowCompat.setDecorFitsSystemWindows(window, true)
-
         setContentView(R.layout.activity_create_account)
 
         // fields and buttons
+        val createAccountScroll = findViewById<ScrollView>(R.id.createAccountScroll)
         val emailEditText = findViewById<EditText>(R.id.emailEditText)
         val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
         val confirmPasswordEditText = findViewById<EditText>(R.id.confirmPasswordEditText)
@@ -26,6 +24,14 @@ class CreateAccountActivity : AppCompatActivity() {
 
         // Create Account
         // checks the fields then saves the new login if everything is valid
+        SoftInputHelper.setupFormScreen(
+            this,
+            createAccountScroll,
+            emailEditText,
+            passwordEditText,
+            confirmPasswordEditText
+        )
+
         createAccountButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString()
