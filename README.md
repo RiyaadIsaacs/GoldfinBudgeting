@@ -29,7 +29,7 @@
 #### Install and Run Android APK File:
 1. Send the .apk file to your Android device.
 2. Open your phone's Files or Downloads app and tap the .apk file.
-3. If prompted by a security popup, go to settings and turn on "Allow from this source" or similar control.
+3. If prompted by a security popup, go to settings and turn on "Allow from this source".
 4. Tap Install. If Play Protect prompts a warning, tap "Install anyway".
 5. Ensure Wi-Fi is connected or data is turned on so that the app can connect to Firebase in order for the login to work.
 6. Tap Open to launch the app from your home screen.
