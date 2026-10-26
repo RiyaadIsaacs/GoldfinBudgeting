@@ -15,8 +15,27 @@
 **Repository:** [https://github.com/[organisation-or-username]/GoldfinBudgeting](https://github.com/[organisation-or-username]/GoldfinBudgeting) 
 
 ---
+### Setup Instructions
 
-## How to connect Ollama
+#### Run Android Studio Emulator:
+1. Clone or download the project zipfile from GitHub.
+2. Open the project in Android Studio and wait for the project to finish loading.
+3. Run the app on the emulator by clicking the play icon at the top right of the screen.
+4. Wait for the Emulator to finish loading and for the App to open automatically or click on the GoldFin app icon to open the app.
+5. Create a new account with a new email and password or sign in with an existing account.
+6. Explore the app's Home, Expenses, Envelopes, Profile, Badges, and AI Assistant pages as well as the Edit Expenses, Edit Envelopes, and Monthly Expenes Graph features.
+7. Logout when your finished with the app.
+
+#### Install and Run Android APK File:
+1. Send the .apk file to your Android device.
+2. Open your phone's Files or Downloads app and tap the .apk file.
+3. If prompted by a security popup, go to settings and turn on "Allow from this source" or similar control.
+4. Tap Install. If Play Protect prompts a warning, tap "Install anyway".
+5. Ensure Wi-Fi is connected or data is turned on so that the app can connect to Firebase in order for the login to work.
+6. Tap Open to launch the app from your home screen.
+
+---
+## How to connect Ollama (AI Assistant Feature (optional))
 
 1. Open powershell windows.
 2. Type in: ollama pull llama3.
@@ -29,15 +48,7 @@
       
 7. Keep both powershell windows open when using the emulator.
 
----
-### How to try the prototype
-
-1. Open the project in Android Studio and run on an emulator or device.
-2. Create a new account with a new email and password. 
-3. Explore Home, Expenses, Envelopes, and Profile.
-4. Logout when your finished with the app.
-5. Observe expense and envelope entries being saved and present when you log back in.
-6. Add expenses/envelopes as you see fit.
+Note: Ollama is optional and is not required to run the application. The budgeting app and all its features function fully without an Ollama connection.
 
 ---
 ## Unique App Features
