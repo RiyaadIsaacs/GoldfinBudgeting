@@ -35,7 +35,7 @@
 6. Tap Open to launch the app from your home screen.
 
 ---
-## How to connect Ollama (AI Assistant Feature (optional))
+### How to connect Ollama (AI Assistant Feature (optional))
 
 1. Open powershell windows.
 2. Type in: ollama pull llama3.
@@ -51,7 +51,7 @@
 Note: Ollama is optional and is not required to run the application. The budgeting app and all its features function fully without an Ollama connection.
 
 ---
-## Unique App Features
+### Unique App Features
 
 1. Optional Daily Challenges: Gamification feature where users get daily saving challenges that give them XP and help them level up towards claiming achievement badges.
 2. First-Time User Challenges: Gamification feature where new users have to interact with all the main app features in order to earn XP and level up towards claiming achievement badges.
@@ -59,7 +59,7 @@ Note: Ollama is optional and is not required to run the application. The budgeti
 
 ---
 
-## Video Presentation Links
+### Video Presentation Links
 
 Part 2 Google Drive link: https://drive.google.com/file/d/1Zvu7crRPt1ofTaOTOw9cpOp_B9Ua7-f9/view?usp=sharing
 
