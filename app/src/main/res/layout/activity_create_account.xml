@@ -1,136 +1,170 @@
-<?xml version = "1.0" encoding = "utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Create Account screen layout
-    Same style as login with email create password and confirm password
+    Create Account screen.
+    ScrollView so short phones and the soft keyboard do not cover fields / buttons.
 -->
-<LinearLayout
-    xmlns:android = "http://schemas.android.com/apk/res/android"
-    xmlns:app = "http://schemas.android.com/apk/res-auto"
-    android:layout_width = "match_parent"
-    android:layout_height = "match_parent"
-    android:orientation = "vertical"
-    android:gravity = "center_horizontal"
-    android:padding = "32dp"
-    android:background = "#FFFFFF">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/createAccountScroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#FFFFFF"
+    android:clipToPadding="false"
+    android:isScrollContainer="true">
 
-    <!-- logo at the top -->
-    <ImageView
-        android:id = "@+id/logo"
-        android:layout_width = "240dp"
-        android:layout_height = "240dp"
-        android:layout_marginTop = "40dp"
-        android:src = "@drawable/goldfin_logo"
-        android:contentDescription = "GoldFin logo"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="32dp">
 
-    <!-- app title -->
-    <TextView
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
-        android:layout_marginTop = "16dp"
-        android:text = "GoldFin"
-        android:textSize = "40sp"
-        android:textColor = "#888888"
-        android:textStyle = "bold"/>
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/goldfin_logo"
+            android:contentDescription="GoldFin logo"
+            android:adjustViewBounds="true" />
 
-    <!-- space before the form fields -->
-    <Space
-        android:layout_width = "match_parent"
-        android:layout_height = "40dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="GoldFin"
+            android:textSize="36sp"
+            android:textColor="#888888"
+            android:textStyle="bold" />
 
-    <!-- Email -->
-    <TextView
-        android:layout_width = "match_parent"
-        android:layout_height = "wrap_content"
-        android:text = "Email: "
-        android:textSize = "16sp" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
 
-    <EditText
-        android:id = "@+id/emailEditText"
-        android:layout_width = "match_parent"
-        android:layout_height = "50dp"
-        android:layout_marginTop = "6dp"
-        android:hint = "Enter email address..."
-        android:inputType = "textEmailAddress"
-        android:paddingStart = "20dp"
-        android:paddingEnd = "20dp"
-        android:background = "@drawable/rounded_edittext"
-        android:textSize = "16sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email: "
+            android:textSize="16sp" />
 
-    <!-- Create password -->
-    <TextView
-        android:layout_width = "match_parent"
-        android:layout_height = "wrap_content"
-        android:layout_marginTop = "16dp"
-        android:text = "Create Password: "
-        android:textSize = "16sp"/>
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="6dp"
+            android:hint="Enter email address..."
+            android:inputType="textEmailAddress"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:background="@drawable/rounded_edittext"
+            android:textSize="16sp"
+            android:importantForAutofill="no" />
 
-    <EditText
-        android:id = "@+id/passwordEditText"
-        android:layout_width = "match_parent"
-        android:layout_height = "52dp"
-        android:layout_marginTop = "6dp"
-        android:hint = "Enter password..."
-        android:inputType = "textPassword"
-        android:paddingStart = "20dp"
-        android:paddingEnd = "20dp"
-        android:background = "@drawable/rounded_edittext"
-        android:textSize = "16sp"
-        android:textColor = "#000000"
-        android:textColorHint = "#999999"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Create Password: "
+            android:textSize="16sp" />
 
-    <!-- Confirm password -->
-    <TextView
-        android:layout_width = "match_parent"
-        android:layout_height = "wrap_content"
-        android:layout_marginTop = "16dp"
-        android:text = "Confirm Password: "
-        android:textSize = "16sp"/>
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="6dp"
+            android:hint="Enter password..."
+            android:inputType="textPassword"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:background="@drawable/rounded_edittext"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:textColorHint="#999999"
+            android:importantForAutofill="no" />
 
-    <EditText
-        android:id = "@+id/confirmPasswordEditText"
-        android:layout_width = "match_parent"
-        android:layout_height = "52dp"
-        android:layout_marginTop = "6dp"
-        android:hint = "Retype password..."
-        android:inputType = "textPassword"
-        android:paddingStart = "20dp"
-        android:paddingEnd = "20dp"
-        android:background = "@drawable/rounded_edittext"
-        android:textSize = "16sp"
-        android:textColor = "#000000"
-        android:textColorHint = "#999999"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Confirm Password: "
+            android:textSize="16sp" />
 
-    <!-- space before the buttons -->
-    <Space
-        android:layout_width = "match_parent"
-        android:layout_height = "32dp"/>
+        <EditText
+            android:id="@+id/confirmPasswordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="6dp"
+            android:hint="Retype password..."
+            android:inputType="textPassword"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:background="@drawable/rounded_edittext"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:textColorHint="#999999"
+            android:importantForAutofill="no" />
 
-    <!-- saves the new account into Room -->
-    <Button
-        android:id = "@+id/createAccountButton"
-        android:layout_width = "160dp"
-        android:layout_height = "52dp"
-        android:layout_marginTop = "8dp"
-        android:text = "Create Account"
-        android:textSize = "14sp"
-        android:maxLines = "1"
-        android:textColor = "#FFFFFF"
-        android:textAllCaps = "false"
-        android:background = "@drawable/rounded_button_gold"
-        app:backgroundTint = "@null" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
 
-    <!-- goes back to the login screen without creating an account -->
-    <Button
-        android:id = "@+id/backToLoginButton"
-        android:layout_width = "120dp"
-        android:layout_height = "52dp"
-        android:layout_marginTop = "16dp"
-        android:text = "Back"
-        android:textSize = "16sp"
-        android:textColor = "#FFFFFF"
-        android:textAllCaps = "false"
-        android:background = "@drawable/rounded_button_gold"
-        app:backgroundTint = "@null" />
+        <Button
+            android:id="@+id/createAccountButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="180dp"
+            android:minHeight="48dp"
+            android:layout_marginTop="8dp"
+            android:paddingStart="28dp"
+            android:paddingEnd="28dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="Create Account"
+            android:textSize="16sp"
+            android:maxLines="1"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:gravity="center"
+            android:background="@drawable/rounded_button_gold"
+            app:backgroundTint="@null" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/backToLoginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="140dp"
+            android:minHeight="48dp"
+            android:layout_marginTop="12dp"
+            android:paddingStart="28dp"
+            android:paddingEnd="28dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="Back"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:gravity="center"
+            android:background="@drawable/rounded_button_gold"
+            app:backgroundTint="@null" />
+
+    </LinearLayout>
+</ScrollView>

@@ -5,13 +5,16 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 
 // Create Account screen
 class CreateAccountActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // load the create account layout
+        // Let the window resize for the keyboard on real phones.
+        WindowCompat.setDecorFitsSystemWindows(window, true)
+
         setContentView(R.layout.activity_create_account)
 
         // fields and buttons
