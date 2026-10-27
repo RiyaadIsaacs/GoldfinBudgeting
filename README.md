@@ -156,6 +156,9 @@ In conclusion, this report outlined the purpose of Goldfin, the main design choi
 
 ### References (utilised for development)
 
+(Note on Referencing Format: Spaces have been included between the angle brackets and URLs in the reference list because removing them caused GitHub to hide or omit the brackets when the changes were committed. The spaces have therefore been retained to ensure the references display correctly.)
+
+
 Alt-Codes, [s.a.]. Star Symbols Alt Codes. [online] Available at: < https://www.alt-codes.net/star_alt_code.php > [Accessed 02 September 2026].
 
 Android Developers, [s.a.]. Connect UI components to NavController using NavigationUI. [online] Available at: < https://developer.android.com/guide/navigation/integrations/ui > [Accessed 03 September 2026].
